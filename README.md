@@ -447,6 +447,11 @@ to the cluster. Do not store a generated IAM auth token in `POSTGRES_URL`;
 tokens expire after 15 minutes and are generated automatically for new pool
 connections.
 
+When AWS S3 storage is configured without `AWS_S3_ACCESS_KEY` and
+`AWS_S3_SECRET_ACCESS_KEY`, the S3 client also uses `AWS_ROLE_ARN` through
+Vercel OIDC. Grant that role `s3:GetObject`, `s3:PutObject`,
+`s3:DeleteObject`, and `s3:ListBucket` on only the photo bucket.
+
 💬 &nbsp;&nbsp;I18N
 -
 

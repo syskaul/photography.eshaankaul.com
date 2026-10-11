@@ -7,6 +7,7 @@ import {
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { awsCredentialsProvider } from '@vercel/oidc-aws-credentials-provider';
 import { StorageListResponse, generateStorageId } from '.';
 import { formatBytes } from '@/utility/number';
 
@@ -14,6 +15,7 @@ const AWS_S3_BUCKET = process.env.NEXT_PUBLIC_AWS_S3_BUCKET ?? '';
 const AWS_S3_REGION = process.env.NEXT_PUBLIC_AWS_S3_REGION ?? '';
 const AWS_S3_ACCESS_KEY = process.env.AWS_S3_ACCESS_KEY;
 const AWS_S3_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
+const AWS_ROLE_ARN = process.env.AWS_ROLE_ARN;
 
 export const AWS_S3_BASE_URL = AWS_S3_BUCKET && AWS_S3_REGION
   ? `https://${AWS_S3_BUCKET}.s3.${AWS_S3_REGION}.amazonaws.com`
@@ -26,12 +28,19 @@ export const awsS3Client = () => {
     );
   }
 
+  // Static keys win; otherwise use Vercel OIDC when a role is configured,
+  // falling back to the AWS SDK default chain (e.g., a local CLI profile)
   const credentials = AWS_S3_ACCESS_KEY && AWS_S3_SECRET_ACCESS_KEY
     ? {
       accessKeyId: AWS_S3_ACCESS_KEY,
       secretAccessKey: AWS_S3_SECRET_ACCESS_KEY,
     }
-    : undefined;
+    : AWS_ROLE_ARN
+      ? awsCredentialsProvider({
+        roleArn: AWS_ROLE_ARN,
+        clientConfig: { region: AWS_S3_REGION },
+      })
+      : undefined;
 
   return new S3Client({
     region: AWS_S3_REGION,
