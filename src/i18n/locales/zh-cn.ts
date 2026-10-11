@@ -74,12 +74,6 @@ export const TEXT: I18NLocale = {
     shareTo: '分享 ...',
     shareX: '在 X 上分享',
   },
-  theme: {
-    theme: '主题',
-    system: '系统',
-    light: '浅色模式',
-    dark: '深色模式',
-  },
   auth: {
     signIn: '登录',
     signOut: '退出',

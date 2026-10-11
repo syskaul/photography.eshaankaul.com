@@ -186,7 +186,6 @@ export default function AppToolbar({
             href={PATH_ADMIN_PHOTOS}
             active={isPathAdmin(pathname)}
             translucent
-            className="liquid-glass-square-left"
             tooltip={{ content: appText.nav.admin }}
           />}
         {isUserSignedIn &&
@@ -204,7 +203,6 @@ export default function AppToolbar({
             iconIsFocusable
             active={isPathAdmin(pathname)}
             translucent
-            className="liquid-glass-square-left"
             tooltip={{
               ...!isAdminMenuOpen && {
                 content: appText.nav.admin,

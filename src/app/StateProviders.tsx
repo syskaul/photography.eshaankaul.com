@@ -1,10 +1,6 @@
 import { ReactNode } from 'react';
 import { ThemeProvider } from 'next-themes';
-import {
-  ADMIN_DEBUG_TOOLS_ENABLED,
-  DARK_MODE_ENABLED,
-  DEFAULT_THEME,
-} from '@/app/config';
+import { ADMIN_DEBUG_TOOLS_ENABLED } from '@/app/config';
 import AppStateProvider from '@/app/AppStateProvider';
 import UploadStateProvider from '@/admin/upload/UploadStateProvider';
 import AppTextProvider from '@/i18n/state/AppTextProvider';
@@ -31,9 +27,7 @@ export default function StateProviders({
             <EditTitlesProvider>
               <ThemeProvider
                 attribute="class"
-                defaultTheme={DEFAULT_THEME}
-                enableSystem={DARK_MODE_ENABLED}
-                forcedTheme={DARK_MODE_ENABLED ? undefined : 'light'}
+                forcedTheme="light"
               >
                 <SwrConfigClient>
                   <SharedHoverProvider>

@@ -15,6 +15,7 @@ export default async function PhotosEmptyState() {
 
   return (
     <AppGrid
+      mainFullWidth
       contentMain={
         <Container
           key="PhotosEmptyState"

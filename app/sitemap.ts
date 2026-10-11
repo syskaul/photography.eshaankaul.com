@@ -6,8 +6,6 @@ import {
   absolutePathForFilm,
   absolutePathForPhoto,
   absolutePathForRecents,
-  absolutePathForRecipe,
-  absolutePathForYear,
 } from '@/app/path';
 import { BASE_URL } from '@/app/config';
 import { getAllPhotoIdsWithUpdatedAt } from '@/photo/query';
@@ -35,9 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const {
     recents,
-    years,
     albums,
-    recipes,
     films,
   } = categories;
 
@@ -65,21 +61,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: PRIORITY_CATEGORY,
       lastModified,
     })),
-    // Years
-    ...years.map(({ year, lastModified }) => ({
-      url: absolutePathForYear(year),
-      priority: PRIORITY_CATEGORY,
-      lastModified,
-    })),
     // Albums
     ...albums.map(({ album, lastModified }) => ({
       url: absolutePathForAlbum(album),
-      priority: PRIORITY_CATEGORY,
-      lastModified,
-    })),
-    // Recipes
-    ...recipes.map(({ recipe, lastModified }) => ({
-      url: absolutePathForRecipe(recipe),
       priority: PRIORITY_CATEGORY,
       lastModified,
     })),

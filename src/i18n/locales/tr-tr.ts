@@ -74,12 +74,6 @@ export const TEXT: I18NLocale = {
     shareTo: 'Paylaş ...',
     shareX: 'X\'te Paylaş',
   },
-  theme: {
-    theme: 'Tema',
-    system: 'Sistem',
-    light: 'Aydınlık Mod',
-    dark: 'Karanlık Mod',
-  },
   auth: {
     signIn: 'Giriş Yap',
     signOut: 'Çıkış Yap',

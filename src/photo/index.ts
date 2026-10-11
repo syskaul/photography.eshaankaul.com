@@ -1,10 +1,6 @@
 import { formatFocalLength } from '@/focal';
 import { photoHasFilmData } from '@/film';
-import {
-  SHOW_FILMS,
-  SHOW_LENSES,
-  SHOW_RECIPES,
-} from '@/app/config';
+import { SHOW_FILMS } from '@/app/config';
 import { ABSOLUTE_PATH_HOME_IMAGE } from '@/app/path';
 import { cameraFromPhoto, formatCameraText } from '@/camera';
 import { formatDate, formatDateFromPostgresString } from '@/utility/date';
@@ -344,11 +340,9 @@ export const shouldShowCameraDataForPhoto = (photo: Photo) =>
   photoHasCameraData(photo);
 
 export const shouldShowLensDataForPhoto = (photo: Photo) =>
-  SHOW_LENSES &&
   photoHasLensData(photo);
 
 export const shouldShowRecipeDataForPhoto = (photo: Photo) =>
-  SHOW_RECIPES &&
   photoHasRecipeData(photo);
 
 export const shouldShowFilmDataForPhoto = (photo: Photo) =>

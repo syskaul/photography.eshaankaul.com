@@ -74,12 +74,6 @@ export const TEXT: I18NLocale = {
     shareTo: 'শেয়ার করুন ...',
     shareX: 'X এ শেয়ার করুন',
   },
-  theme: {
-    theme: 'থিম',
-    system: 'সিস্টেম',
-    light: 'লাইট মোড',
-    dark: 'ডার্ক মোড',
-  },
   auth: {
     signIn: 'সাইন ইন',
     signOut: 'সাইন আউট',

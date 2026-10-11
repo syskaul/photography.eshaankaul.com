@@ -3,8 +3,6 @@ import {
   PREFIX_RECENTS,
   pathForAlbum,
   pathForFilm,
-  pathForRecipe,
-  pathForYear,
 } from '@/app/path';
 import { CategoryKey, PhotoSetCategories, getCategoryTitle } from '@/category';
 import { PhotoQueryOptions } from '@/db';
@@ -16,7 +14,6 @@ import {
   PHOTO_FOLDER_MAX_PHOTOS,
   PHOTO_FOLDER_PEEK_PHOTOS,
 } from '@/components/folder';
-import { formatRecipe } from '@/recipe';
 import { Library, LibrarySetFolder, LibrarySetFolderRow } from '.';
 import { getLibrary } from './query';
 import { getLibraryCached } from './cache';
@@ -71,16 +68,6 @@ const getFolderQueriesForCategory = (
           count: categories.recents[0].count,
         }]
         : [];
-    case 'years':
-      return categories.years.map(({ year, count }) => ({
-        key: year,
-        options: { year },
-        caption: year,
-        path: pathForYear(year),
-        count,
-      }));
-    case 'cameras':
-    case 'lenses':
     case 'focal-lengths':
       return [];
     case 'albums':
@@ -93,14 +80,6 @@ const getFolderQueriesForCategory = (
           path: pathForAlbum(album),
           count,
         }));
-    case 'recipes':
-      return categories.recipes.map(({ recipe, count }) => ({
-        key: recipe,
-        options: { recipe },
-        caption: formatRecipe(recipe),
-        path: pathForRecipe(recipe),
-        count,
-      }));
     case 'films':
       return categories.films.map(({ film, count }) => ({
         key: film,
@@ -116,12 +95,6 @@ export const getLibraryFolderRows = async (
   categories: PhotoSetCategories,
   appText: AppTextState,
 ): Promise<LibrarySetFolderRow[]> => {
-  const recentsQueries = getFolderQueriesForCategory(
-    'recents',
-    categories,
-    appText,
-  );
-
   const rows = CATEGORY_VISIBILITY.map(category => {
     const queries = getFolderQueriesForCategory(
       category,
@@ -131,17 +104,10 @@ export const getLibraryFolderRows = async (
     return {
       key: category,
       title: getCategoryTitle(category, appText),
-      queries: category === 'years' &&
-        recentsQueries.length > 0 &&
-        queries.length > 0
-        ? [...recentsQueries, ...queries]
-        : queries,
+      queries,
     };
   })
-    .filter(({ key, queries }) =>
-      queries.length > 0 &&
-      key !== 'recents',
-    );
+    .filter(({ queries }) => queries.length > 0);
 
   const folderPhotos = await Promise.all(
     rows.flatMap(row => row.queries).map(({ options }) =>

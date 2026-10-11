@@ -17,9 +17,9 @@ Personal photography website of Eshaan Kaul.
 
 <img src="/readme/og-image-share.png" alt="OG Image Preview" width=600 />
 
-Share modals use the same theme-aware liquid-glass treatment as controls and toast notifications, over a black backdrop at 80% opacity in both themes.
+The site uses a white appearance throughout. Share modals use the same liquid-glass treatment as controls and toast notifications, over a black backdrop at 80% opacity.
 Camera, lens, and focal-length metadata are display-only. Their dedicated collection, photo, and OG image routes have been removed; these categories are not linked in the library, CMD-K menu, or sitemap. Film and recipe routes remain available.
-All dropdown surfaces, including nested menus, photo choosers, selects, and autocomplete lists, use the same theme-aware liquid-glass treatment.
+All dropdown surfaces, including nested menus, photo choosers, selects, and autocomplete lists, use the same liquid-glass treatment.
 Admin navigation, action buttons, and dialogs share that treatment while tables and form backgrounds remain solid. Admin pages without a sidebar use the full available width, with 12px interface text (editable fields stay at 16px on phones to avoid focus zoom).
 The main toolbar's admin gear stays selected throughout admin routes, and the progressive header blur has a yellow tint. Admin tabs scroll with the page; only the tabs have glass styling, not their container. Scrollable admin tabs and tables include shadow clearance around glass controls.
 
@@ -171,15 +171,13 @@ Create an Upstash Redis store from the Vercel dashboard and link it to your proj
 
 ### Categories
 - `NEXT_PUBLIC_CATEGORY_VISIBILITY`
-  - Comma-separated value controlling which photo sets appear in grid sidebar and CMD-K menu, and in what order. For example, you could move cameras above films by updating to `cameras,lenses,recipes`.
+  - Comma-separated value controlling which photo sets appear in grid sidebar and CMD-K menu, and in what order. For example, you could move films above albums by updating to `films,albums,recents`.
   - Accepted values:
      - `recents` (default)
-     - `years`
-     - `cameras` (default)
-     - `lenses` (default)
-     - `recipes` (default)
+     - `albums` (default)
      - `films` (default)
      - `focal-lengths`
+  - Automatic categories for years, cameras, lenses, and recipes are no longer available. Photo metadata remains available on photo detail pages and in admin editing; existing year and recipe URLs still work when linked directly.
 - `NEXT_PUBLIC_ENABLE_SEARCH = 1` enables search (nav button, CMD-K, editable query headers); disabled by default
 
 ### Display
@@ -189,7 +187,6 @@ Create an Upstash Redis store from the Vercel dashboard and link it to your proj
 - Photo grids use fewer, larger thumbnails by default. Aspect ratio configuration (ratios of 1 or less) can increase the number of photos per row.
 
 ### Design
-- Dark mode can be re-enabled by setting `DARK_MODE_ENABLED = true` in `src/app/config.ts`.
 - `NEXT_PUBLIC_HIGH_DENSITY_PREVIEWS = 1` shows up to 6 photos in OG images (max defaults to 5)
 
 ### Settings
@@ -519,8 +516,8 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 #### My Fujifilm recipes are missing/displaying incorrect data. What should I do?
 > If you don't see a recipe, first try syncing your photo from the ••• menu, or from `/admin/photos`. If the data looks incorrect, open an issue with the file in question attached in order for it to be investigated. Fujifilm file specifications have evolved over time and recipe parsing may need to be adjusted based on camera model/vintage.
 
-#### How do I hide Fujifilm content such as a recipes and film simulations?
-> This can be accomplished by setting `NEXT_PUBLIC_CATEGORY_VISIBILITY` (which has a default value of `recents,albums,cameras,lenses,recipes,films`) to `cameras,lenses`.
+#### How do I hide film-simulation categories?
+> Set `NEXT_PUBLIC_CATEGORY_VISIBILITY` to the photo sets you want to show, such as `recents,albums`. Recipe and lens metadata remain available on photo detail pages and in admin editing.
 
 #### Why do my images appear flipped/rotated incorrectly?
 > Image orientations 1, 3, 6, and 8 are supported. Orientations 2, 4, 5, and 7—which use mirroring—are not supported.

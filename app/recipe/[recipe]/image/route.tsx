@@ -6,16 +6,7 @@ import {
 import { getPaperMono } from '@/app/font';
 import { ImageResponse } from 'next/og';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
-import { getUniqueRecipes } from '@/photo/query';
 import RecipeImageResponse from '@/recipe/RecipeImageResponse';
-import { staticallyGenerateCategoryIfConfigured } from '@/app/static';
-
-export const generateStaticParams = staticallyGenerateCategoryIfConfigured(
-  'recipes',
-  'image',
-  getUniqueRecipes,
-  recipes => recipes.map(({ recipe }) => ({ recipe })),
-);
 
 export async function GET(
   _: Request,

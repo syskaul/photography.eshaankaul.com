@@ -74,12 +74,6 @@ export const TEXT: I18NLocale = {
     shareTo: 'Partilhar ...',
     shareX: 'Partilhar no X',
   },
-  theme: {
-    theme: 'Tema',
-    system: 'Sistema',
-    light: 'Modo Claro',
-    dark: 'Modo Escuro',
-  },
   auth: {
     signIn: 'Entrar',
     signOut: 'Sair',

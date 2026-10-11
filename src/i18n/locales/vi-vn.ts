@@ -74,12 +74,6 @@ export const TEXT: I18NLocale = {
     shareTo: 'Chia sẻ...',
     shareX: 'Chia sẻ trên X',
   },
-  theme: {
-    theme: 'Chủ đề',
-    system: 'Hệ thống',
-    light: 'Chế độ sáng',
-    dark: 'Chế độ tối',
-  },
   auth: {
     signIn: 'Đăng nhập',
     signOut: 'Đăng xuất',

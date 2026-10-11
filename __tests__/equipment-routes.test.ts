@@ -12,8 +12,7 @@ jest.mock('@/app/config', () => ({
   BASE_URL: 'http://localhost:3000',
   getBaseUrl: () => 'http://localhost:3000',
   CATEGORY_VISIBILITY: [
-    'cameras', 'lenses', 'focal-lengths',
-    'recents', 'years', 'albums', 'recipes', 'films',
+    'focal-lengths', 'recents', 'albums', 'films',
   ],
 }));
 
@@ -65,7 +64,7 @@ const categories: PhotoSetCategories = {
   recipes: [{ recipe: 'test-recipe', count: 1, lastModified }],
 };
 
-describe('removed equipment routes', () => {
+describe('automatic photo categories', () => {
   it.each([
     'shot-on/[make]/[model]',
     'lens/[make]/[model]',
@@ -76,7 +75,7 @@ describe('removed equipment routes', () => {
     });
   });
 
-  it('keeps equipment out of the sitemap and retains other pages', async () => {
+  it('omits years and recipes from the sitemap', async () => {
     jest.mocked(getDataForCategoriesCached).mockResolvedValue(categories);
     const entries = await sitemap();
     const urls = entries.map(({ url }) => url);
@@ -85,19 +84,22 @@ describe('removed equipment routes', () => {
     expect(urls).toEqual(expect.arrayContaining([
       'http://localhost:3000/p/test-photo',
       'http://localhost:3000/film/acros',
+    ]));
+    expect(urls).not.toEqual(expect.arrayContaining([
       'http://localhost:3000/recipe/test-recipe',
       'http://localhost:3000/year/2026',
     ]));
   });
 
-  it('omits equipment folders even when configured visible', async () => {
+  it('keeps removed categories out of the library', async () => {
     const rows = await getLibraryFolderRows(
       categories,
       generateAppTextState(TEXT),
     );
 
     expect(rows.map(({ key }) => key)).toEqual([
-      'years', 'recipes', 'films',
+      'recents',
+      'films',
     ]);
     expect(rows.flatMap(({ folders }) => folders).some(({ path }) =>
       /^\/(shot-on|lens|focal)\//.test(path),

@@ -7,15 +7,6 @@ import YearImageResponse from '@/year/YearImageResponse';
 import { getPaperMono } from '@/app/font';
 import { ImageResponse } from 'next/og';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
-import { getUniqueYears } from '@/photo/query';
-import { staticallyGenerateCategoryIfConfigured } from '@/app/static';
-
-export const generateStaticParams = staticallyGenerateCategoryIfConfigured(
-  'years',
-  'image',
-  getUniqueYears,
-  years => years.map(({ year }) => ({ year })),
-);
 
 export async function GET(
   _: Request,

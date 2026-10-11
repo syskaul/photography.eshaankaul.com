@@ -27,8 +27,6 @@ import {
   pathForFilm,
   pathForPhoto,
   pathForQuery,
-  pathForRecipe,
-  pathForYear,
   PREFIX_RECENTS,
   isPathGrid,
   isPathLibrary,
@@ -38,9 +36,8 @@ import Modal from '../components/Modal';
 import { clsx } from 'clsx/lite';
 import Spinner from '../components/Spinner';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTheme } from 'next-themes';
-import { BiDesktop, BiLockAlt, BiMoon, BiSun } from 'react-icons/bi';
-import { IoClose, IoInvertModeSharp } from 'react-icons/io5';
+import { BiLockAlt } from 'react-icons/bi';
+import { IoClose } from 'react-icons/io5';
 import { useAppState } from '@/app/AppState';
 import { useUploadState } from '@/admin/upload/UploadState';
 import { RiToolsFill } from 'react-icons/ri';
@@ -54,19 +51,13 @@ import PhotoDate from '@/photo/PhotoDate';
 import PhotoSmall from '@/photo/PhotoSmall';
 import { formatCount, formatCountDescriptive } from '@/utility/string';
 import CommandKItem from './CommandKItem';
-import {
-  CATEGORY_VISIBILITY,
-  DARK_MODE_ENABLED,
-} from '@/app/config';
+import { CATEGORY_VISIBILITY } from '@/app/config';
 import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { PhotoSetCategories, getCategoryTitle } from '@/category';
-import { formatRecipe } from '@/recipe';
 import IconPhoto from '../components/icons/IconPhoto';
-import IconRecipe from '../components/icons/IconRecipe';
 import IconFilm from '../components/icons/IconFilm';
 import IconLock from '../components/icons/IconLock';
-import IconYear from '../components/icons/IconYear';
 import useViewportHeight from '@/utility/useViewportHeight';
 import useMaskedScroll from '../components/useMaskedScroll';
 import { labelForFilm } from '@/film';
@@ -128,9 +119,7 @@ const renderToggle = (
 
 export default function CommandKClient({
   recents,
-  years: _years,
   albums,
-  recipes,
   films,
   footer,
 }: {
@@ -225,8 +214,6 @@ export default function CommandKClient({
     minimumQueryLength: MINIMUM_QUERY_LENGTH,
   });
 
-  const { setTheme } = useTheme();
-
   const router = useRouter();
 
   const showAllQueryResults = useCallback(() => {
@@ -310,11 +297,6 @@ export default function CommandKClient({
     return count ? { count, subhead } : undefined;
   }, [recent, appText]);
 
-  // Years only accessible by search
-  const years = useMemo(() =>
-    _years.filter(({ year }) => queryFormatted && year.includes(queryFormatted))
-  , [_years, queryFormatted]);
-
   const categorySections: CommandKSection[] = useMemo(() =>
     CATEGORY_VISIBILITY
       .map(category => {
@@ -330,16 +312,6 @@ export default function CommandKClient({
               path: PREFIX_RECENTS,
             }] : [],
           };
-          case 'years': return {
-            heading,
-            accessory: <IconYear size={14} />,
-            items: years.map(({ year, count }) => ({
-              label: year,
-              annotation: formatCount(count),
-              annotationAria: formatCountDescriptive(count),
-              path: pathForYear(year),
-            })),
-          };
           case 'albums': return {
             heading,
             accessory: <IconAlbum size={14} />,
@@ -352,19 +324,6 @@ export default function CommandKClient({
                 path: pathForAlbum(album),
               })),
           };
-          case 'recipes': return {
-            heading,
-            accessory: <IconRecipe
-              size={15}
-              className="translate-x-[-1px]"
-            />,
-            items: recipes.map(({ recipe, count }) => ({
-              label: formatRecipe(recipe),
-              annotation: formatCount(count),
-              annotationAria: formatCountDescriptive(count),
-              path: pathForRecipe(recipe),
-            })),
-          };
           case 'films': return {
             heading,
             accessory: <IconFilm size={14} />,
@@ -375,8 +334,6 @@ export default function CommandKClient({
               path: pathForFilm(film),
             })),
           };
-          case 'cameras':
-          case 'lenses':
           case 'focal-lengths':
             return undefined;
         }
@@ -385,32 +342,11 @@ export default function CommandKClient({
   , [
     appText,
     recentsStatus,
-    years,
     albums,
-    recipes,
     films,
   ]);
 
-  const clientSections: CommandKSection[] = DARK_MODE_ENABLED ? [{
-    heading: appText.theme.theme,
-    accessory: <IoInvertModeSharp
-      size={14}
-      className="translate-y-[0.5px] translate-x-[-1px]"
-    />,
-    items: [{
-      label: appText.theme.system,
-      annotation: <BiDesktop />,
-      action: () => setTheme('system'),
-    }, {
-      label: appText.theme.light,
-      annotation: <BiSun size={16} className="translate-x-[1.25px]" />,
-      action: () => setTheme('light'),
-    }, {
-      label: appText.theme.dark,
-      annotation: <BiMoon className="translate-x-[1px]" />,
-      action: () => setTheme('dark'),
-    }],
-  }] : [];
+  const clientSections: CommandKSection[] = [];
 
   if (isUserSignedIn && areAdminDebugToolsEnabled) {
     clientSections.push({

@@ -74,12 +74,6 @@ export const TEXT: I18NLocale = {
     shareTo: 'Bagikan ...',
     shareX: 'Bagikan di X',
   },
-  theme: {
-    theme: 'Tema',
-    system: 'Sistem',
-    light: 'Mode Terang',
-    dark: 'Mode Gelap',
-  },
   auth: {
     signIn: 'Masuk',
     signOut: 'Keluar',

@@ -73,12 +73,6 @@ export const TEXT = {
     shareTo: 'Share ...',
     shareX: 'Share on X',
   },
-  theme: {
-    theme: 'Theme',
-    system: 'System',
-    light: 'Light Mode',
-    dark: 'Dark Mode',
-  },
   auth: {
     signIn: 'Sign In',
     signOut: 'Sign Out',

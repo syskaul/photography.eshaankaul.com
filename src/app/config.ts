@@ -271,16 +271,8 @@ export const SHOW_RECENTS =
   CATEGORY_VISIBILITY.includes('recents');
 export const IS_RECENTS_FIRST =
   CATEGORY_VISIBILITY[0] === 'recents';
-export const SHOW_YEARS =
-  CATEGORY_VISIBILITY.includes('years');
-export const SHOW_CAMERAS =
-  CATEGORY_VISIBILITY.includes('cameras');
-export const SHOW_LENSES =
-  CATEGORY_VISIBILITY.includes('lenses');
 export const SHOW_ALBUMS =
   CATEGORY_VISIBILITY.includes('albums');
-export const SHOW_RECIPES =
-  CATEGORY_VISIBILITY.includes('recipes');
 export const SHOW_FILMS =
   CATEGORY_VISIBILITY.includes('films');
 export const SHOW_FOCAL_LENGTHS =
@@ -299,14 +291,6 @@ export const HIGH_DENSITY_GRID = false;
 
 // DESIGN
 
-export const DARK_MODE_ENABLED = false;
-export const DEFAULT_THEME = DARK_MODE_ENABLED
-  ? process.env.NEXT_PUBLIC_DEFAULT_THEME === 'dark'
-    ? 'dark'
-    : process.env.NEXT_PUBLIC_DEFAULT_THEME === 'light'
-      ? 'light'
-      : 'system'
-  : 'light';
 export const HIGH_DENSITY_PREVIEWS =
   process.env.NEXT_PUBLIC_HIGH_DENSITY_PREVIEWS === '1';
 // SETTINGS

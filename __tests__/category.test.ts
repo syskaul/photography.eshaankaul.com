@@ -7,29 +7,24 @@ describe('set', () => {
   it('parses from string', () => {
     expect(parseOrderedCategoriesFromString())
       .toStrictEqual(DEFAULT_CATEGORY_KEYS);
-    
+
     expect(parseOrderedCategoriesFromString(
-      'cameras,recipes,films,focal-lengths,lenses',
+      'years,cameras,lenses,recipes,films,focal-lengths',
     )).toStrictEqual([
-      'cameras',
-      'recipes',
       'films',
       'focal-lengths',
-      'lenses',
     ]);
-    
+
     expect(parseOrderedCategoriesFromString(
-      'cameras, recipes, films',
+      'albums, films, albums',
     )).toStrictEqual([
-      'cameras',
-      'recipes',
+      'albums',
       'films',
+      'albums',
     ]);
-    
+
     expect(parseOrderedCategoriesFromString(
-      'cameras',
-    )).toStrictEqual([
-      'cameras',
-    ]);
+      'years,cameras,lenses,recipes',
+    )).toStrictEqual([]);
   });
 });

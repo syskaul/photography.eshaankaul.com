@@ -12,11 +12,7 @@ import { Album, Albums } from '@/album';
 
 export const CATEGORY_KEYS = [
   'recents',
-  'years',
-  'cameras',
-  'lenses',
   'albums',
-  'recipes',
   'films',
   'focal-lengths',
 ] as const;
@@ -31,11 +27,7 @@ export const getCategoryTitle = (
 ) => {
   switch (category) {
     case 'recents': return appText.category.recentPlural;
-    case 'years': return appText.category.yearPlural;
-    case 'cameras': return appText.category.cameraPlural;
-    case 'lenses': return appText.category.lensPlural;
     case 'albums': return appText.category.albumPlural;
-    case 'recipes': return appText.category.recipePlural;
     case 'films': return appText.category.filmPlural;
     case 'focal-lengths': return appText.category.focalLengthPlural;
   }
@@ -44,9 +36,6 @@ export const getCategoryTitle = (
 export const DEFAULT_CATEGORY_KEYS: CategoryKeys = [
   'recents',
   'albums',
-  'cameras',
-  'lenses',
-  'recipes',
   'films',
 ];
 
