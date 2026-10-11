@@ -14,7 +14,6 @@ import { replacePathWithEvent } from '@/utility/url';
 import { isElementPartiallyInViewport } from '@/utility/dom';
 import { getPhotoOptionsCountForPathAction } from '@/photo/actions';
 import { PhotoQueryOptions } from '@/db';
-import { VisibilityValue } from '@/photo/visibility';
 
 export const DATA_KEY_PHOTO_GRID = 'data-photo-grid';
 
@@ -57,8 +56,6 @@ export default function SelectPhotosProvider({
     useState(false);
 
   const [albumTitles, setAlbumTitles] = useState<string>();
-  const [visibility, setVisibility] =
-    useState<VisibilityValue | ''>();
 
   const getPhotoGridElements = useCallback(() =>
     document.querySelectorAll(`[${DATA_KEY_PHOTO_GRID}=true]`)
@@ -140,7 +137,6 @@ export default function SelectPhotosProvider({
       setSelectAllPhotoOptions(undefined);
       setSelectAllCount(undefined);
       setAlbumTitles(undefined);
-      setVisibility(undefined);
     }
   }, [isSelectingPhotos, getPhotoGridElements]);
 
@@ -161,8 +157,6 @@ export default function SelectPhotosProvider({
       setIsPerformingSelectEdit,
       albumTitles,
       setAlbumTitles,
-      visibility,
-      setVisibility,
     }}>
       {children}
     </SelectPhotosContext.Provider>

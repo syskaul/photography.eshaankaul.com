@@ -1,5 +1,4 @@
 import { PhotoQueryOptions } from '@/db';
-import { VisibilityValue } from '@/photo/visibility';
 import { createContext, Dispatch, SetStateAction, use } from 'react';
 
 export type SelectPhotosState = {
@@ -18,8 +17,6 @@ export type SelectPhotosState = {
   setIsPerformingSelectEdit?: Dispatch<SetStateAction<boolean>>
   albumTitles?: string
   setAlbumTitles?: Dispatch<SetStateAction<string | undefined>>
-  visibility?: VisibilityValue | ''
-  setVisibility?: Dispatch<SetStateAction<VisibilityValue | '' | undefined>>
 };
 
 export const SelectPhotosContext = createContext<SelectPhotosState>({});

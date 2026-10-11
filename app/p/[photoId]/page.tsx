@@ -11,28 +11,16 @@ import {
   absolutePathForPhotoImage,
 } from '@/app/path';
 import PhotoDetailPage from '@/photo/PhotoDetailPage';
-import { getPhotoCached, getPhotosNearIdCached } from '@/photo/cache';
+import { getPhotosNearIdCached } from '@/photo/cache';
 import { cache } from 'react';
 import { staticallyGeneratePhotosIfConfigured } from '@/app/static';
 
 export const maxDuration = 60;
 
 const getPhotosNearIdCachedCached = cache(async (photoId: string) => {
-  const photo = await getPhotoCached(photoId);
-  // Omit related photos when photo is excluded from feeds
-  return photo?.excludeFromFeeds
-    ? {
-      photo: photo,
-      photos: [],
-      photosGrid: [],
-      indexNumber: 0,
-    }
-    :getPhotosNearIdCached(
-      photoId, {
-        limit: RELATED_GRID_PHOTOS_TO_SHOW + 2,
-        excludeFromFeeds: true,
-      },
-    );
+  return getPhotosNearIdCached(photoId, {
+    limit: RELATED_GRID_PHOTOS_TO_SHOW + 2,
+  });
 });
 
 export const generateStaticParams = staticallyGeneratePhotosIfConfigured(

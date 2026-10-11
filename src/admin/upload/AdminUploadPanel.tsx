@@ -45,7 +45,7 @@ export default function AdminUploadPanel({
       <StickyBanner
         isVisible={isVisible}
         className={clsx(
-          'flex items-center gap-2 pl-4',
+          'flex items-center gap-2 p-3! pl-4!',
           // Necessary for progress bar placement
           'relative overflow-hidden',
         )}
@@ -57,6 +57,7 @@ export default function AdminUploadPanel({
           <PhotoUploadStatus showProgressBarBackground={false} />
         </div>
         <LoaderButton 
+          translucent
           icon={<IoCloseSharp
             size={18}
             className="translate-y-[0.5px]"

@@ -12,22 +12,17 @@ import {
   isPathSignIn,
 } from '@/app/path';
 import AnimateItems from '../components/AnimateItems';
-import { NAV_CAPTION } from './config';
 import { useRef } from 'react';
 import useStickyHeader from './useStickyHeader';
 import { useAppState } from '@/app/AppState';
 
-const NAV_HEIGHT_CLASS = NAV_CAPTION
-  ? 'min-h-[4rem] sm:min-h-[5rem]'
-  : 'min-h-[4rem]';
+const NAV_HEIGHT_CLASS = 'min-h-[4rem]';
 
 export default function NavClient({
   navTitle,
-  navCaption,
   isInEmptyState,
 }: {
   navTitle: string
-  navCaption?: string
   isInEmptyState: boolean
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -58,10 +53,14 @@ export default function NavClient({
   return (
     <AppGrid
       containerRef={ref}
-      className={containerClassName}
+      className={clsx(
+        containerClassName,
+        isPathAdmin(pathname) && 'admin-interface',
+      )}
       style={containerStyle}
       // Stationary column would cover banners after the nav slides away
       classNameMain="pointer-events-none!"
+      mainFullWidth
       contentMain={
         <AnimateItems
           animateOnFirstLoadOnly
@@ -71,13 +70,42 @@ export default function NavClient({
             ? [<nav
               key="nav"
               className={clsx(
-                'w-full flex items-center gap-1.5 sm:gap-2 bg-main',
+                'w-full flex items-center gap-1.5 sm:gap-2 relative',
                 NAV_HEIGHT_CLASS,
                 // Enlarge nav to ensure it fully masks underlying content
                 'md:w-[calc(100%+8px)] md:translate-x-[-4px] md:px-[4px]',
                 contentClassName,
               )}
               style={contentStyle}>
+              <div
+                aria-hidden
+                className={clsx(
+                  'absolute left-1/2 w-screen -translate-x-1/2',
+                  'top-0 bottom-0 -z-10 pointer-events-none',
+                  isPathAdmin(pathname) && 'admin-header-tint',
+                )}
+              >
+                {[
+                  [1, 100],
+                  [2, 80],
+                  [4, 60],
+                  [8, 40],
+                ].map(([blur, end], i) => {
+                  const mask = `linear-gradient(to bottom, #000 ${end - 30}%, transparent ${end}%)`;
+                  return (
+                    <div
+                      key={i}
+                      className="absolute inset-0"
+                      style={{
+                        backdropFilter: `blur(${blur}px)`,
+                        WebkitBackdropFilter: `blur(${blur}px)`,
+                        maskImage: mask,
+                        WebkitMaskImage: mask,
+                      }}
+                    />
+                  );
+                })}
+              </div>
               <AppToolbar
                 animate={hasLoadedWithAnimations && isVisible}
                 isInEmptyState={isInEmptyState}
@@ -86,16 +114,9 @@ export default function NavClient({
                 'grow text-right min-w-0',
                 'translate-y-[-1px]',
               )}>
-                <div className="truncate overflow-hidden select-none">
+                <div className="truncate overflow-hidden select-none font-medium">
                   {renderLink(navTitle, PATH_ROOT)}
                 </div>
-                {navCaption &&
-                  <div className={clsx(
-                    'hidden sm:block truncate overflow-hidden',
-                    'leading-tight text-dim',
-                  )}>
-                    {navCaption}
-                  </div>}
               </div>
             </nav>]
             : []}

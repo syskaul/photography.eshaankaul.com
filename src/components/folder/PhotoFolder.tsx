@@ -9,13 +9,7 @@ import clsx from 'clsx/lite';
 import LinkWithStatus from '@/components/LinkWithStatus';
 import Spinner from '@/components/Spinner';
 import { CSSProperties, ReactNode } from 'react';
-import {
-  convertOklchToCss,
-  getKeyColorFromPhoto,
-  Oklch,
-} from '@/photo/color/client';
 import { PHOTO_FOLDER_MAX_PHOTOS, PHOTO_FOLDER_PEEK_PHOTOS } from '.';
-import ColorDot from '@/photo/color/ColorDot';
 import {
   formatCount,
   formatCountDescriptive,
@@ -100,8 +94,6 @@ const FOLDER_PATH = getFolderPath();
 
 const PHOTO_FOLDER_LAYOUT_MAX_PHOTOS = 6;
 
-const FOLDER_TINT_CHROMA_MAX = 0.07;
-
 const PEEK_DIRECTIONS = [
   { x: -28, y: -40, r: -14 },
   { x: -16, y: -48, r: -4 },
@@ -152,20 +144,6 @@ const getPeekStyle = (
     '--peek-y': `${y / 100 * folderHeight}px`,
     '--peek-rotate': `${rotate}deg`,
     transitionDelay: `${index * 35}ms`,
-  } as CSSProperties;
-};
-
-const getFolderTint = (color: Oklch) => {
-  const c = Math.min(color.c * 0.55, FOLDER_TINT_CHROMA_MAX);
-  return {
-    '--folder-fill-light': convertOklchToCss(
-      { l: 0.94, c, h: color.h }),
-    '--folder-stroke-light': convertOklchToCss(
-      { l: 0.87, c: c * 0.7, h: color.h }),
-    '--folder-fill-dark': convertOklchToCss(
-      { l: 0.33, c, h: color.h }),
-    '--folder-stroke-dark': convertOklchToCss(
-      { l: 0.43, c: c * 0.75, h: color.h }),
   } as CSSProperties;
 };
 
@@ -234,14 +212,11 @@ function FolderPhotoImage({
   );
 }
 
-export type PhotoFolderTint = 'off' | 'on' | 'debug';
-
 export default function PhotoFolder({
   photos,
   className,
   width = FOLDER_WIDTH,
   channel = true,
-  tint = 'off',
   caption,
   captionIcon,
   count,
@@ -252,7 +227,6 @@ export default function PhotoFolder({
   className?: string
   width?: number
   channel?: boolean
-  tint?: PhotoFolderTint
   caption?: ReactNode
   captionIcon?: ReactNode
   count?: number
@@ -271,14 +245,6 @@ export default function PhotoFolder({
     ...photosInFolder,
   ].slice(0, PHOTO_FOLDER_PEEK_PHOTOS);
   const peekSlots = getCenteredPeekSlots(photosPeeking.length);
-
-  const isTinted = tint === 'on' || tint === 'debug';
-  const tintColor = isTinted
-    ? getKeyColorFromPhoto(photosInFolder[0])
-    : undefined;
-  const tintStyle = tintColor
-    ? getFolderTint(tintColor)
-    : undefined;
 
   const classNameFolder = clsx(
     'group hover:cursor-pointer',
@@ -299,16 +265,9 @@ export default function PhotoFolder({
       className={clsx(
         'relative w-full',
         'perspective-midrange',
-        tintStyle && clsx(
-          '[--folder-fill:var(--folder-fill-light)]',
-          '[--folder-stroke:var(--folder-stroke-light)]',
-          'dark:[--folder-fill:var(--folder-fill-dark)]',
-          'dark:[--folder-stroke:var(--folder-stroke-dark)]',
-        ),
       )}
       style={{
         aspectRatio: `${FOLDER_WIDTH} / ${FOLDER_HEIGHT}`,
-        ...tintStyle,
       }}
     >
       <svg
@@ -325,15 +284,9 @@ export default function PhotoFolder({
         <path
           d={FOLDER_PATH}
           className={clsx(
-            !tintStyle && 'fill-gray-100 dark:fill-gray-800',
-            !tintStyle && 'stroke-gray-300 dark:stroke-gray-700',
+            'fill-gray-100 stroke-gray-300',
+            'dark:fill-gray-800 dark:stroke-gray-700',
           )}
-          style={tintStyle
-            ? {
-              fill: 'var(--folder-fill)',
-              stroke: 'var(--folder-stroke)',
-            }
-            : undefined}
           strokeWidth={FOLDER_STROKE_WIDTH}
         />
       </svg>
@@ -397,8 +350,7 @@ export default function PhotoFolder({
           'motion-reduce:group-hover:after:opacity-0',
           'motion-reduce:group-hover:group-active:after:opacity-0',
           'group-active:brightness-75',
-          !tintStyle && 'bg-gray-100 dark:bg-gray-800',
-          !tintStyle && 'outline-gray-300 dark:outline-gray-700',
+          'bg-gray-100 outline-gray-300 dark:bg-gray-800 dark:outline-gray-700',
         )}
         style={{
           top: `${FOLDER_COVER_TOP}%`,
@@ -409,12 +361,6 @@ export default function PhotoFolder({
           outlineWidth: folderStroke,
           outlineStyle: 'solid',
           outlineOffset: -folderStroke / 2,
-          ...(tintStyle
-            ? {
-              backgroundColor: 'var(--folder-fill)',
-              outlineColor: 'var(--folder-stroke)',
-            }
-            : undefined),
         }}
       >
         {photosInFolder.length > 0 &&
@@ -454,27 +400,6 @@ export default function PhotoFolder({
                       ? 'medium'
                       : 'small'}
                 />
-                {tint === 'debug' && index === 0 && photo.colorData &&
-                  <div className={clsx(
-                    'absolute top-1 left-1 z-10',
-                    'flex gap-0.5',
-                    'pointer-events-none',
-                  )}>
-                    {photo.colorData.ai &&
-                      <ColorDot
-                        title="AI"
-                        className="size-2!"
-                        color={photo.colorData.ai}
-                        includeTooltip={false}
-                      />}
-                    {photo.colorData.colors[0] &&
-                      <ColorDot
-                        title="Color 1"
-                        className="size-2!"
-                        color={photo.colorData.colors[0]}
-                        includeTooltip={false}
-                      />}
-                  </div>}
               </div>)}
           </div>}
       </div>

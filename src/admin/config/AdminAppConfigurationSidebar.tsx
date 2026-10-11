@@ -25,7 +25,8 @@ export default function AdminAppConfigurationSidebar({
             key={title}
             href={`#${parameterize(title)}`}
             className={clsx(
-              'block',
+              'block liquid-glass px-3 py-1.5',
+              parameterize(title) === hash && 'liquid-glass-selected',
               parameterize(title) === hash
                 ? 'text-main hover:text-main font-medium'
                 : 'text-dim hover:text-main',

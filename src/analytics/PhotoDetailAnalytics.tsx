@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useMixpanel } from './MixpanelConsentProvider';
+import { useMixpanel } from './MixpanelProvider';
 
 export default function PhotoDetailAnalytics({
   photoId,

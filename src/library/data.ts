@@ -35,7 +35,7 @@ const getLibraryAvatar = (library?: Library) =>
 const getLibraryHero = (library?: Library) =>
   library?.photoIdHero
     ? getPhotoCached(library?.photoIdHero ?? '')
-    : getPhotosCached({ limit: 1, sortBy: 'takenAtAsc' })
+    : getPhotosCached({ limit: 1 })
       .then(photos => photos[0]);
 
 export const getLibraryData = ({
@@ -173,7 +173,6 @@ export const getLibraryFolderRows = async (
     rows.flatMap(row => row.queries).map(({ options }) =>
       getPhotosCached({
         ...options,
-        sortBy: 'random',
         limit: PHOTO_FOLDER_MAX_PHOTOS + PHOTO_FOLDER_PEEK_PHOTOS,
       }).catch(() => [] as Photo[])),
   );

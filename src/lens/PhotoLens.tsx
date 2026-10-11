@@ -23,7 +23,6 @@ export default function PhotoLens({
       label={formatLensText(lens, longText ? 'long' : 'short')}
       labelSmall={formatLensText(lens, 'short')}
       path={pathForLens(lens)}
-      hoverQueryOptions={{ lens }}
       icon={<IconLens
         size={14}
         className="translate-x-[-0.5px]"

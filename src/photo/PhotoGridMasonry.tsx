@@ -1,9 +1,7 @@
 'use client';
 
 import { ReactNode, useState, useEffect } from 'react';
-import { clsx } from 'clsx/lite';
 import AnimateItems from '@/components/AnimateItems';
-import { GRID_GAP_CLASSNAME } from '@/components';
 import { DATA_KEY_PHOTO_GRID } from '@/admin/select/SelectPhotosProvider';
 import { Photo } from '.';
 
@@ -104,11 +102,11 @@ export default function PhotoGridMasonry({
 
   return (
     <div {...{ [DATA_KEY_PHOTO_GRID]: selectable, className }}>
-      <div className={clsx('flex flex-row', GRID_GAP_CLASSNAME, 'items-start')}>
+      <div className="flex flex-row gap-2 items-start">
         {partitionedColumns.map((colItems, i) => (
           <AnimateItems
             key={`col-${i}`}
-            className={clsx('flex flex-col flex-1', GRID_GAP_CLASSNAME)}
+            className="flex flex-col flex-1 gap-2"
             type={animate === false ? 'none' : undefined}
             canStart={canStart}
             duration={0.7}

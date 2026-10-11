@@ -1,7 +1,6 @@
 import { formatFocalLength } from '@/focal';
 import { photoHasFilmData } from '@/film';
 import {
-  SHOW_EXIF_DATA,
   SHOW_FILMS,
   SHOW_LENSES,
   SHOW_RECIPES,
@@ -22,7 +21,6 @@ import type { Metadata } from 'next';
 import { FujifilmRecipe } from '@/platforms/fujifilm/recipe';
 import { PhotoUpdateStatus, generatePhotoUpdateStatus } from './update';
 import { AppTextState } from '@/i18n/state';
-import { PhotoColorData } from './color/client';
 import { Place } from '@/place';
 
 // INFINITE SCROLL: FULL
@@ -87,10 +85,6 @@ export interface PhotoDbInsert extends PhotoExif {
   recipeTitle?: string
   locationName?: string
   location?: Place
-  colorData?: string
-  colorSort?: number
-  priorityOrder?: number
-  excludeFromFeeds?: boolean
   takenAt: string
   takenAtNaive: string
 }
@@ -104,7 +98,7 @@ export interface PhotoDb extends
 }
 
 // Parsed db response
-export interface Photo extends Omit<PhotoDb, 'recipeData' | 'colorData'> {
+export interface Photo extends Omit<PhotoDb, 'recipeData'> {
   focalLengthFormatted?: string
   focalLengthIn35MmFormatFormatted?: string
   fNumberFormatted?: string
@@ -113,7 +107,6 @@ export interface Photo extends Omit<PhotoDb, 'recipeData' | 'colorData'> {
   exposureCompensationFormatted?: string
   takenAtNaiveFormatted: string
   recipeData?: FujifilmRecipe
-  colorData?: PhotoColorData
   updateStatus?: PhotoUpdateStatus
 }
 
@@ -147,9 +140,6 @@ export const parsePhotoFromDb = (photoDbRaw: PhotoDb): Photo => {
         ? JSON.parse(photoDb.recipeData)
         : photoDb.recipeData
       : undefined,
-    colorData: photoDb.colorData
-      ? photoDb.colorData
-      : undefined,
     updateStatus: generatePhotoUpdateStatus(photoDb),
   } as Photo;
 };
@@ -170,7 +160,6 @@ export const convertPhotoToPhotoDbInsert = (
   ...photo,
   takenAt: photo.takenAt.toISOString(),
   recipeData: JSON.stringify(photo.recipeData),
-  colorData: JSON.stringify(photo.colorData),
 });
 
 export const descriptionForPhoto = (
@@ -352,26 +341,22 @@ const photoHasExifData = (photo: Photo) =>
   Boolean(photo.exposureCompensationFormatted);
 
 export const shouldShowCameraDataForPhoto = (photo: Photo) =>
-  SHOW_EXIF_DATA &&
   photoHasCameraData(photo);
 
 export const shouldShowLensDataForPhoto = (photo: Photo) =>
-  SHOW_EXIF_DATA &&
   SHOW_LENSES &&
   photoHasLensData(photo);
 
 export const shouldShowRecipeDataForPhoto = (photo: Photo) =>
-  SHOW_EXIF_DATA &&
   SHOW_RECIPES &&
   photoHasRecipeData(photo);
 
 export const shouldShowFilmDataForPhoto = (photo: Photo) =>
-  SHOW_EXIF_DATA &&
   SHOW_FILMS &&
   photoHasFilmData(photo);
 
 export const shouldShowExifDataForPhoto = (photo: Photo) =>
-  SHOW_EXIF_DATA && photoHasExifData(photo);
+  photoHasExifData(photo);
 
 /** EXIF line used by photo OG images and shared photo hovers. */
 export const ogCaptionForPhoto = (photo: Photo) =>

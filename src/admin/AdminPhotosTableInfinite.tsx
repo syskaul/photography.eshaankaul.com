@@ -11,7 +11,6 @@ export default function AdminPhotosTableInfinite({
   hasAiContentGeneration,
   canEdit,
   canDelete,
-  debugColorData,
 }: {
   initialOffset: number
   itemsPerPage: number
@@ -22,7 +21,6 @@ export default function AdminPhotosTableInfinite({
       initialOffset={initialOffset}
       itemsPerPage={itemsPerPage}
       useCachedPhotos={false}
-      sortBy="createdAt"
     >
       {({ key, photos, onLastPhotoVisible, revalidatePhoto }) =>
         <AdminPhotosTable
@@ -33,7 +31,6 @@ export default function AdminPhotosTableInfinite({
           hasAiContentGeneration={hasAiContentGeneration}
           canEdit={canEdit}
           canDelete={canDelete}
-          debugColorData={debugColorData}
         />}
     </InfinitePhotoScroll>
   );

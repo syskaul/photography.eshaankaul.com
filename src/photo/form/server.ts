@@ -8,7 +8,6 @@ import {
   convertTimestampWithOffsetToPostgresString,
   convertTimestampToNaivePostgresString,
 } from '@/utility/date';
-import { GEO_PRIVACY_ENABLED } from '@/app/config';
 import { PhotoExif } from '..';
 import { FujifilmRecipe } from '@/platforms/fujifilm/recipe';
 import { FujifilmSimulation } from '@/platforms/fujifilm/simulation';
@@ -67,12 +66,8 @@ export const convertExifToFormData = (
       getExifValue('ISOSpeed')?.toString(),
     exposureTime: getExifValue('ExposureTime')?.toString(),
     exposureCompensation: getExifValue('ExposureCompensation')?.toString(),
-    latitude: !GEO_PRIVACY_ENABLED
-      ? getExifValue('GPSLatitude', 'latitude')?.toString()
-      : undefined,
-    longitude: !GEO_PRIVACY_ENABLED
-      ? getExifValue('GPSLongitude', 'longitude')?.toString()
-      : undefined,
+    latitude: getExifValue('GPSLatitude', 'latitude')?.toString(),
+    longitude: getExifValue('GPSLongitude', 'longitude')?.toString(),
     // Make sure film is parameterized since
     // Nikon picture controls may not be parameterized
     film: film ? parameterize(film) : undefined,

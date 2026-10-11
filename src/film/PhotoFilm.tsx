@@ -36,7 +36,6 @@ export default function PhotoFilm({
       label={medium}
       labelSmall={small}
       path={pathForFilm(film)}
-      hoverQueryOptions={{ film }}
       icon={<PhotoFilmIcon
         film={film}
         make={make}

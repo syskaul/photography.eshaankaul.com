@@ -14,7 +14,6 @@ import { useRef } from 'react';
 import useVisibility from '@/utility/useVisibility';
 import LinkWithStatus from '@/components/LinkWithStatus';
 import Spinner from '@/components/Spinner';
-import PhotoColors from './color/PhotoColors';
 
 export default function PhotoMedium({
   photo,
@@ -23,7 +22,6 @@ export default function PhotoMedium({
   prefetch = SHOULD_PREFETCH_ALL_LINKS,
   className,
   onVisible,
-  debugColor,
   ...categories
 }: {
   photo: Photo
@@ -32,7 +30,6 @@ export default function PhotoMedium({
   prefetch?: boolean
   className?: string
   onVisible?: () => void
-  debugColor?: boolean
 } & PhotoSetCategory) {
   const ref = useRef<HTMLAnchorElement>(null);
 
@@ -60,16 +57,6 @@ export default function PhotoMedium({
               'z-10',
             )}>
               <Spinner size={20} color="text" />
-            </div>}
-          {debugColor && photo.colorData &&
-            <div className={clsx(
-              'absolute inset-2 z-10',
-              'opacity-0 group-hover:opacity-100 transition-opacity',
-            )}>
-              <PhotoColors
-                className="justify-end"
-                colorData={photo.colorData}
-              />
             </div>}
           <ImageMedium
             src={photo.url}

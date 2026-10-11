@@ -10,7 +10,6 @@ import {
 import UploadPageClient from '@/photo/UploadPageClient';
 import {
   AI_CONTENT_GENERATION_ENABLED,
-  AUTO_GENERATE_LOCATIONS,
   BLUR_ENABLED,
   HAS_LOCATION_SERVICES,
 } from '@/app/config';
@@ -40,7 +39,6 @@ export default async function UploadPage({ params, searchParams }: Params) {
       blobId,
       formDataFromExif: _formDataFromExif,
       imageResizedBase64: imageThumbnailBase64,
-      shouldStripGpsData,
       error,
     }] = await Promise.all([
     getAlbumsWithMeta(),
@@ -52,7 +50,6 @@ export default async function UploadPage({ params, searchParams }: Params) {
       includeInitialPhotoFields: true,
       generateBlurData: BLUR_ENABLED,
       generateResizedImage: AI_CONTENT_GENERATION_ENABLED,
-      lookupLocation: AUTO_GENERATE_LOCATIONS,
     }),
   ]);
 
@@ -104,7 +101,6 @@ export default async function UploadPage({ params, searchParams }: Params) {
         uniqueLenses,
         hasAiContentGeneration,
         imageThumbnailBase64,
-        shouldStripGpsData,
         hasLocationServices: HAS_LOCATION_SERVICES,
       }} />
       : <AppGrid contentMain={

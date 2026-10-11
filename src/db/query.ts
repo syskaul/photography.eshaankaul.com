@@ -1,6 +1,6 @@
 import {
   migrateAboutTableToLibrary,
-  migrateLegacyPhotoColumns,
+  migrateLegacyColumns,
   migrationForError,
 } from './migration';
 import { createPhotosTable } from '@/photo/query';
@@ -122,7 +122,7 @@ export const safelyQuery = async <T>(
   }
 
   if (HAS_DATABASE) {
-    await migrateLegacyPhotoColumns();
+    await migrateLegacyColumns();
   }
 
   return result;

@@ -1,6 +1,6 @@
-# Eshaan Kaul's Website
+# Photography by Eshaan Kaul
 
-Personal photography website for Eshaan Kaul.
+Personal photography website of Eshaan Kaul.
 
 ✨&nbsp;&nbsp;Features
 -
@@ -16,6 +16,11 @@ Personal photography website for Eshaan Kaul.
 - Support for Fujifilm recipes and film simulations
 
 <img src="/readme/og-image-share.png" alt="OG Image Preview" width=600 />
+
+Share modals use a theme-aware liquid-glass surface and controls, with an opaque fallback for browsers without backdrop-filter support.
+All dropdown surfaces, including nested menus, photo choosers, selects, and autocomplete lists, use the same theme-aware liquid-glass treatment and fallback.
+Admin navigation, action buttons, and dialogs share that treatment while tables and form backgrounds remain solid. Admin pages without a sidebar use the full available width, with 12px interface text (editable fields stay at 16px on phones to avoid focus zoom).
+The main toolbar's admin gear stays selected throughout admin routes, and the progressive header blur has a yellow tint. Admin tabs scroll with the page; only the tabs have glass styling, not their container. Scrollable admin tabs and tables include shadow clearance around glass controls.
 
 📋&nbsp;&nbsp;Contents
 -
@@ -37,9 +42,6 @@ Personal photography website for Eshaan Kaul.
 2. Add required storage ([Vercel Postgres](https://vercel.com/docs/postgres) + [Vercel Blob](https://vercel.com/docs/vercel-blob)) as part of template installation
    - _When creating new blob store, make sure to configure as "public"_
    - _Preferred postgres provider: Neon, from Vercel Marketplace_
-3. Configure environment variable for production domain in project settings
-   - `NEXT_PUBLIC_DOMAIN` (e.g., photos.domain.com—used in absolute urls and seen in navigation if no explicit nav title is set)
-
 ### 2. Setup Auth
 
 1. [Generate auth secret](https://generate-secret.vercel.app/32) and add to environment variables:
@@ -77,12 +79,8 @@ See FAQ for [limitations of local development](#can-i-work-locally-without-acces
 -
 
 ### Content
-- `NEXT_PUBLIC_META_TITLE` (seen in search results and browser tab)
-- `NEXT_PUBLIC_META_DESCRIPTION` (seen in search results)
-- `NEXT_PUBLIC_NAV_TITLE` (seen in top-right navigation, defaults to domain when not configured)
-- `NEXT_PUBLIC_NAV_CAPTION` (seen in top-right navigation, beneath title)
-- `NEXT_PUBLIC_SIDEBAR_TEXT` (seen in grid sidebar—accepts rich formatting tags: `<b>`, `<strong>`, `<i>`, `<em>`, `<u>`, `<br>`)
-- `NEXT_PUBLIC_DOMAIN_SHARE` (seen in share modals where a shorter url may be desirable)
+- The site domain, title, description, language, and navigation title are
+  hardcoded in `src/app/config.ts`.
 
 ### Analytics
 
@@ -92,9 +90,9 @@ public project identifier used by the browser SDK; do not hardcode it in
 source files. This setup uses the same Mixpanel project in every environment,
 so development and production events will be mixed.
 
-Mixpanel remains off until a visitor accepts the analytics prompt. The footer's
-**Privacy settings** control lets visitors change their choice later. The
-implementation records:
+Mixpanel tracks automatically, except in regions where consent would be
+required (detected by browser timezone: Europe and EU/EEA territories), where
+nothing is tracked. There is no consent UI. The implementation records:
 
 - `photo_detail_viewed`: `photo_id`, optional `photo_title`, and
   `view_context`
@@ -105,9 +103,9 @@ pseudonymous browser identifier; URL/referrer/UTM and browser/device/screen
 properties are excluded, and IP-based geolocation is disabled. Private-photo
 views, admin activity, and camera/exposure/location metadata are not tracked.
 
-Before accepting consent for the first time, verify the project uses the
+Before first use, verify the project uses the
 Simplified API and the `America/New_York` reporting timezone in Mixpanel
-Project Settings. After deploying, accept analytics and confirm both events in
+Project Settings. After deploying, confirm both events in
 Mixpanel Live View.
 
 ### Performance
@@ -123,7 +121,7 @@ Mixpanel Live View.
 
 ### AI content generation
 
-To enable AI-powered color analysis and text descriptions of photos, configure a provider. Vercel AI Gateway is the recommended path; direct OpenAI (or an OpenAI-compatible endpoint) is available as an alternate. If both variables are set, `OPENAI_SECRET_KEY` takes precedence.
+To enable AI-generated titles, captions, and semantic descriptions for photos, configure a provider. Vercel AI Gateway is the recommended path; direct OpenAI (or an OpenAI-compatible endpoint) is available as an alternate. If both variables are set, `OPENAI_SECRET_KEY` takes precedence.
 
 #### Vercel AI Gateway
 
@@ -166,9 +164,6 @@ To add location meta to entities like photos and albums:
 2. Store API key in `GOOGLE_PLACES_GEOCODING_API_KEY`
 3. Add [rate limiting](#rate-limiting) (_recommended_)
 
-- `NEXT_PUBLIC_GEO_PRIVACY = 1` disables collection/display of location-based data (⚠️ re-compresses uploaded images in order to remove GPS information)
-- `DISABLE_AUTO_GENERATE_LOCATIONS = 1` to disables auto-generation of location data
-
 ### Rate limiting
 
 Create an Upstash Redis store from the Vercel dashboard and link it to your project to enable rate limiting.
@@ -184,64 +179,19 @@ Create an Upstash Redis store from the Vercel dashboard and link it to your proj
      - `recipes` (default)
      - `films` (default)
      - `focal-lengths`
-- `NEXT_PUBLIC_HIDE_CATEGORIES_ON_MOBILE = 1` prevents categories displaying on mobile grid view
-- `NEXT_PUBLIC_HIDE_CATEGORY_IMAGE_HOVERS = 1` prevents images displaying when hovering over category links
-- `NEXT_PUBLIC_EXHAUSTIVE_SIDEBAR_CATEGORIES = 1` always shows expanded sidebar content
-
-### Sorting
-- `NEXT_PUBLIC_DEFAULT_SORT`
-  - Sets default sort on grid/full homepages
-  - Accepted values:
-    - `taken-at` (default)
-    - `taken-at-oldest-first`
-    - `uploaded-at`
-    - `uploaded-at-oldest-first`
-- `NEXT_PUBLIC_NAV_SORT_CONTROL`
-  - Controls sort UI on grid/full homepages
-  - Accepted values:
-    - `none`
-    - `toggle` (default)
-    - `menu`
-- Color-based sorting (experimental)
-  - `NEXT_PUBLIC_SORT_BY_COLOR = 1` enables color-based sorting (forces nav sort control to "menu," flags photos missing color data in admin dashboard)—color identification benefits greatly from AI being enabled
-  - `NEXT_PUBLIC_COLOR_SORT_STARTING_HUE` controls which colors start first (accepts a hue of 0 to 360, default: 80)
-  - `NEXT_PUBLIC_COLOR_SORT_CHROMA_CUTOFF` controls which colors are considered sufficiently vibrant (accepts a chroma of 0 to 0.37, default: 0.05):
-- `NEXT_PUBLIC_PRIORITY_BASED_SORTING = 1` takes priority field into account when sorting photos (⚠️ enabling may have performance consequences)
-
+- `NEXT_PUBLIC_ENABLE_SEARCH = 1` enables search (nav button, CMD-K, editable query headers); disabled by default
 
 ### Display
-- `NEXT_PUBLIC_HIDE_KEYBOARD_SHORTCUT_TOOLTIPS = 1` hides keyboard shortcut hints in areas like the main nav, and previous/next photo links
-- `NEXT_PUBLIC_HIDE_CAMERA_DATA = 1` hides camera metadata in photo details and OG images
 - `NEXT_PUBLIC_ALWAYS_SHOW_EXPOSURE_COMP = 1` displays exposure compensation even when it's 0ev
-- `NEXT_PUBLIC_HIDE_ZOOM_CONTROLS = 1` hides fullscreen photo zoom controls
-- `NEXT_PUBLIC_HIDE_TAKEN_AT_TIME = 1` hides taken at time from photo meta
 
 ### Grid
-- `NEXT_PUBLIC_GRID_HOMEPAGE = 1` shows grid layout on homepage
-- `NEXT_PUBLIC_MASONRY_GRID = 1` shows photo grid homepage in masonry layout (keeping photo aspect ratios), also known as 'Pinterest style' or 'grid-lanes'
-- `NEXT_PUBLIC_GRID_ASPECT_RATIO = 1.5` sets aspect ratio for grid tiles (defaults to `1`—setting to `0` removes the constraint)
-- `NEXT_PUBLIC_SHOW_LARGE_THUMBNAILS = 1` ensures large thumbnails on photo grid views (if not configured, density is based on aspect ratio)
+- Photo grids use fewer, larger thumbnails by default. Aspect ratio configuration (ratios of 1 or less) can increase the number of photos per row.
 
 ### Design
 - Dark mode can be re-enabled by setting `DARK_MODE_ENABLED = true` in `src/app/config.ts`.
-- `NEXT_PUBLIC_DISABLE_UPPERCASE_TITLES = 1` prevents photo titles and captions displaying in uppercase
-- `NEXT_PUBLIC_MATTE_PHOTOS = 1` constrains the size of each photo, and displays a surrounding border, potentially useful for photos with tall aspect ratios (colors can be customized via `NEXT_PUBLIC_MATTE_COLOR` + `NEXT_PUBLIC_MATTE_COLOR_DARK`)
-- `NEXT_PUBLIC_TINT_FOLDERS = 1` shows tinted folders on /library page
-- `NEXT_PUBLIC_HIGH_DENSITY_PREVIEWS = 1` shows up to 6 photos in category image hovers and OG images (max defaults to 5)
-- `NEXT_PUBLIC_OG_TEXT_ALIGNMENT = BOTTOM` keeps OG image text bottom aligned (default is top)
+- `NEXT_PUBLIC_HIGH_DENSITY_PREVIEWS = 1` shows up to 6 photos in OG images (max defaults to 5)
 
 ### Settings
-- `NEXT_PUBLIC_ALLOW_PUBLIC_DOWNLOADS = 1` enables public photo downloads for all visitors (⚠️ may result in increased bandwidth usage)
-- `NEXT_PUBLIC_SOCIAL_NETWORKS`
-  - Comma-separated list of share modal options
-  - Accepted values:
-    - `x` (default)
-    - `threads`
-    - `facebook`
-    - `linkedin`
-    - `qrcode`
-    - `all`
-    - `none`
 - `NEXT_PUBLIC_SITE_FEEDS = 1` enables feeds at `/feed.json` and `/rss.xml`
 
 ### Debugging
@@ -540,10 +490,10 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 > Many services such as iMessage, Slack, and X, require near-instant responses when unfurling link-based content. In order to guarantee sufficient responsiveness, consider rendering pages and image assets ahead of time by enabling static optimization by setting `NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTOS = 1` and `NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTO_OG_IMAGES = 1`. Keep in mind that this will increase platform usage.
 
 #### Why do vertical images take up so much space?
-> By default, all photos are shown full-width, regardless of orientation. Enable matting to showcase horizontal and vertical photos at similar scales by setting `NEXT_PUBLIC_MATTE_PHOTOS = 1`.
+> Photo details display each image at its natural aspect ratio.
 
 #### Why are my grid thumbnails so small?
-> Thumbnail grid density (seen on `/grid`, category overviews, and other photo sets) is dependent on aspect ratio configuration (ratios of 1 or less have more photos per row). This can be overridden by setting `NEXT_PUBLIC_SHOW_LARGE_THUMBNAILS = 1`.
+> Thumbnail size depends on aspect ratio configuration. Ratios of 1 or less show more photos per row.
 
 #### My images/content have fallen out of sync with my database and/or my production site no longer matches local development. What do I do?
 > Navigate to `/admin/configuration` and click "Clear Cache."
@@ -554,8 +504,8 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 #### Why can’t I upload HEIC files?
 > This site relies on `sharp` to manipulate images and `next/image` to serve them, neither of which currently support HEIC (https://github.com/vercel/next.js/discussions/30043 + https://github.com/lovell/sharp/issues/3981). HEIC files uploaded from native share controls on Apple platforms are automatically converted to JPG.
 
-#### Why are my thumbnails square?
-> Absent configuration, the default grid aspect ratio is `1`. `NEXT_PUBLIC_GRID_ASPECT_RATIO` can be set to any number (for instance, `1.5` for 3:2 images) or ignored by setting to `0`.
+#### Why are my thumbnails cropped?
+> The masonry grid preserves each photo’s original aspect ratio. If a thumbnail appears cropped, check that the photo’s aspect ratio metadata is correct.
 
 #### Why aren't Fujifilm simulations importing with camera metadata?
 > Fujifilm simulation data is stored in vendor-specific MakerNote data embedded in image metadata. Some editing or sharing tools may strip this data. If a simulation is missing, try importing the original camera file or select the simulation manually when editing the photo.

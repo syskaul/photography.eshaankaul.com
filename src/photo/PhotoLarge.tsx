@@ -14,7 +14,7 @@ import AppGrid from '@/components/AppGrid';
 import ImageLarge from '@/components/image/ImageLarge';
 import { clsx } from 'clsx/lite';
 import Link from 'next/link';
-import { pathForFocalLength, pathForPhoto } from '@/app/path';
+import { pathForFocalLength } from '@/app/path';
 import ShareButton from '@/share/ShareButton';
 import DownloadButton from '@/components/DownloadButton';
 import PhotoCamera from '../camera/PhotoCamera';
@@ -24,12 +24,6 @@ import DivDebugBaselineGrid from '@/components/DivDebugBaselineGrid';
 import PhotoLink from './PhotoLink';
 import {
   SHOULD_PREFETCH_ALL_LINKS,
-  ALLOW_PUBLIC_DOWNLOADS,
-  SHOW_TAKEN_AT_TIME,
-  MATTE_COLOR,
-  MATTE_COLOR_DARK,
-  UPPERCASE_TITLES,
-  GEO_PRIVACY_ENABLED,
 } from '@/app/config';
 import AdminPhotoMenu from '@/admin/AdminPhotoMenu';
 import { RevalidatePhoto } from './InfinitePhotoScroll';
@@ -74,7 +68,7 @@ export default function PhotoLarge({
   showLens = true,
   showFilm = true,
   showRecipe = true,
-  showZoomControls: _showZoomControls = true,
+  showZoomButton = true,
   shouldZoomOnFKeydown = true,
   shouldShare = true,
   shouldShareQuery,
@@ -106,7 +100,7 @@ export default function PhotoLarge({
   showLens?: boolean
   showFilm?: boolean
   showRecipe?: boolean
-  showZoomControls?: boolean
+  showZoomButton?: boolean
   shouldZoomOnFKeydown?: boolean
   shouldShare?: boolean
   shouldShareQuery?: boolean
@@ -128,8 +122,6 @@ export default function PhotoLarge({
   const refPhotoFilm = useRef<HTMLDivElement>(null);
 
   const {
-    areZoomControlsShown,
-    arePhotosMatted,
     shouldDebugRecipeOverlays,
     isUserSignedIn,
   } = useAppState();
@@ -152,7 +144,6 @@ export default function PhotoLarge({
     ? getPhotoEdit?.(photo.id, photoEditOriginal) ?? photoEditOriginal
     : photoEditOriginal;
 
-  const showZoomControls = _showZoomControls && areZoomControlsShown;
   const selectZoomImageElement = useCallback(
     (container: HTMLElement | null) => Array
       .from(container?.getElementsByTagName('img') ?? [])
@@ -184,9 +175,7 @@ export default function PhotoLarge({
   const showLensContent = showLens && shouldShowLensDataForPhoto(photo);
   const showRecipeContent = showRecipe && shouldShowRecipeDataForPhoto(photo);
   const showFilmContent = showFilm && shouldShowFilmDataForPhoto(photo);
-  const showPlaceContent =
-    Boolean(photo.location) &&
-    !GEO_PRIVACY_ENABLED;
+  const showPlaceContent = Boolean(photo.location);
 
   useVisibility({ ref, onVisible });
 
@@ -216,37 +205,18 @@ export default function PhotoLarge({
       photo={photo}
       className={clsx(
         'font-bold grow',
-        UPPERCASE_TITLES && 'uppercase',
       )}
       prefetch={prefetch}
     />;
 
-  // Restrict width for landscape photos
-  // (portrait photos are always height restricted)
-  const matteContentWidthForAspectRatio =
-    photo.aspectRatio > 3 / 2 + 0.1
-      ? 'w-[90%]'
-      : photo.aspectRatio >= 1
-        ? 'w-[80%]'
-        : undefined;
-
   const renderLargePhoto =
-    <div className={clsx(
-      'relative',
-      arePhotosMatted && 'flex items-center justify-center',
-      // Always specify height to ensure fallback doesn't collapse
-      arePhotosMatted && 'h-[90%]',
-      arePhotosMatted && matteContentWidthForAspectRatio,
-    )}>
+    <div className="relative">
       <ZoomControls
         ref={refZoomControls}
         selectImageElement={selectZoomImageElement}
-        {...{ isEnabled: showZoomControls, shouldZoomOnFKeydown }}
+        {...{ isEnabled: true, shouldZoomOnFKeydown }}
       >
         <ImageLarge
-          className={clsx(arePhotosMatted && 'h-full')}
-          classNameImage={clsx(arePhotosMatted &&
-            'object-contain w-full h-full')}
           alt={altTextForPhoto(photo)}
           src={photo.url}
           aspectRatio={photo.aspectRatio}
@@ -287,38 +257,16 @@ export default function PhotoLarge({
       showKeyCommands: showAdminKeyCommands,
     }} />;
 
-  const largePhotoContainerClassName = clsx(
-    arePhotosMatted && 'flex items-center justify-center aspect-3/2',
-    // Matte theme colors defined in root layout
-    arePhotosMatted && (MATTE_COLOR
-      ? 'bg-(--matte-bg)'
-      : 'bg-gray-100'),
-    arePhotosMatted && (MATTE_COLOR_DARK
-      ? 'dark:bg-(--matte-bg-dark)'
-      // Only specify dark background when MATTE_COLOR is not configured
-      : !MATTE_COLOR && 'dark:bg-gray-700/30'),
-  );
-
   return (
     <AppGrid
       containerRef={ref}
       className={className}
       {...{ [DATA_KEY_PHOTO_LARGE]: true }}
-      contentMain={showZoomControls
-        ? <div className={largePhotoContainerClassName}>
-          {renderLargePhoto}
-        </div>
-        : <Link
-          href={pathForPhoto({ photo })}
-          className={largePhotoContainerClassName}
-          prefetch={prefetch}
-        >
-          {renderLargePhoto}
-        </Link>}
+      contentMain={<div>{renderLargePhoto}</div>}
       classNameSide="relative"
       sideHiddenOnMobile={false}
       contentSide={
-        <div className="md:absolute inset-0 -mt-1">
+        <div className="md:absolute inset-0 mt-1 text-xs">
           <MaskedScroll className="sticky top-4 self-start">
             <DivDebugBaselineGrid className={clsx(
               'grid grid-cols-2 md:grid-cols-1',
@@ -370,7 +318,7 @@ export default function PhotoLarge({
                     : renderPhotoLink)}
                 <div className="space-y-baseline">
                   {!isEditingTitles && photo.caption &&
-                    <div className={clsx(UPPERCASE_TITLES && 'uppercase')}>
+                    <div>
                       {photo.caption}
                     </div>}
                   {(
@@ -492,20 +440,22 @@ export default function PhotoLarge({
                     // 'createdAt' is a naive datetime which does not require
                     // a timezone and will not cause server/client mismatch
                     timezone={null}
-                    hideTime={!SHOW_TAKEN_AT_TIME}
                   />
                   <div className={clsx(
                     'flex gap-1 translate-y-[0.5px]',
                     'translate-x-[-2.5px]',
                   )}>
-                    {showZoomControls &&
+                    {showZoomButton &&
                       <LoaderButton
                         tooltip={appText.tooltip.zoom}
                         aria-label={appText.tooltip.zoom}
                         icon={<LuExpand size={15} />}
                         onClick={() => refZoomControls.current?.open()}
                         styleAs="link"
-                        className="text-medium translate-y-[0.25px]"
+                        className={clsx(
+                          'action-button text-medium',
+                          'translate-y-[0.25px]',
+                        )}
                         hideFocusOutline
                       />}
                     {shouldShare &&
@@ -541,11 +491,10 @@ export default function PhotoLarge({
                           : undefined}
                         prefetch={prefetchRelatedLinks}
                       />}
-                    {ALLOW_PUBLIC_DOWNLOADS && 
-                      <DownloadButton 
-                        className="translate-y-[0.5px] md:translate-y-0"
-                        photo={photo} 
-                      />}
+                    <DownloadButton
+                      className="translate-y-[0.5px] md:translate-y-0"
+                      photo={photo}
+                    />
                   </div>
                   {showStorageCheck &&
                     <AdminPhotoStorageCheck photo={photo} />}

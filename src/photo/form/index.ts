@@ -13,21 +13,12 @@ import { FujifilmRecipe } from '@/platforms/fujifilm/recipe';
 import { ReactNode } from 'react';
 import { FujifilmSimulation } from '@/platforms/fujifilm/simulation';
 import { SelectMenuOptionType } from '@/components/SelectMenuOption';
-import {
-  applyAiColorToColorData,
-  convertJsonStringToOklch,
-  convertOklchToJsonString,
-  generateColorDataFromString,
-} from '@/photo/color/client';
-import { calculateColorSort } from '@/photo/color/sort';
 
 type VirtualFields =
   'albums' |
   'applyRecipeTitleGlobally' |
-  'shouldStripGpsData' |
   'locationPlace' |
-  'locationDisplayName' |
-  'keyColor';
+  'locationDisplayName';
 
 export type FormFields = keyof PhotoDbInsert | VirtualFields;
 
@@ -109,7 +100,6 @@ const FORM_METADATA = (
   lensMakeOptions?: AnnotatedOption[],
   lensModelOptions?: AnnotatedOption[],
   hasAiContentGeneration?: boolean,
-  shouldStripGpsData?: boolean,
   hasLocationServices?: boolean,
 ): Record<keyof PhotoFormData, FormMeta> => ({
   title: {
@@ -132,24 +122,10 @@ const FORM_METADATA = (
     validateStringMaxLength: STRING_MAX_LENGTH_LONG,
     shouldHide: () => !hasAiContentGeneration,
   },
-  keyColor: {
-    section: 'text',
-    label: 'key color',
-    excludeFromInsert: true,
-    shouldHide: () => !hasAiContentGeneration,
-    validate: value => value && !convertJsonStringToOklch(value)
-      ? 'Invalid color'
-      : undefined,
-  },
   albums: {
     section: 'text',
     label: 'albums',
     excludeFromInsert: true,
-  },
-  excludeFromFeeds: {
-    section: 'text',
-    label: 'exclude from feeds',
-    type: 'checkbox',
   },
   make: {
     section: 'exif',
@@ -313,70 +289,6 @@ const FORM_METADATA = (
     label: 'aspect ratio',
     readOnly: true,
   },
-  colorData: {
-    section: 'misc',
-    type: 'textarea',
-    label: 'color data',
-    isJson: true,
-  },
-  colorSort: {
-    section: 'misc',
-    label: 'color sort',
-  },
-  priorityOrder: {
-    section: 'misc',
-    label: 'priority order',
-  },
-  shouldStripGpsData: {
-    section: 'misc',
-    label: 'strip gps data',
-    type: 'hidden',
-    excludeFromInsert: true,
-    staticValue: shouldStripGpsData ? 'true' : 'false',
-  },
-});
-
-export const FIELDS_TO_NOT_TOAST: (keyof PhotoFormData)[] = [
-  'colorData',
-  'colorSort',
-  'keyColor',
-];
-
-const applyKeyColorToColorFields = (
-  colorDataString?: string,
-  keyColor?: string,
-) => {
-  const colorData = generateColorDataFromString(colorDataString);
-  if (!colorData) { return; }
-  const ai = keyColor
-    ? convertJsonStringToOklch(keyColor)
-    : undefined;
-  if (keyColor && !ai) { return; }
-  const updated = applyAiColorToColorData(colorData, ai);
-  return {
-    colorData: JSON.stringify(updated),
-    colorSort: `${calculateColorSort(updated)}`,
-  };
-};
-
-export const formDataWithUpdatedKeyColor = (
-  data: Partial<PhotoFormData>,
-  keyColor: string,
-): Partial<PhotoFormData> => ({
-  ...data,
-  keyColor,
-  ...applyKeyColorToColorFields(data.colorData, keyColor),
-});
-
-export const formDataWithUpdatedColorData = (
-  data: Partial<PhotoFormData>,
-  colorData: string,
-): Partial<PhotoFormData> => ({
-  ...data,
-  colorData,
-  keyColor: convertOklchToJsonString(
-    generateColorDataFromString(colorData)?.ai,
-  ),
 });
 
 export const FIELDS_WITH_JSON = Object.entries(FORM_METADATA())
@@ -447,8 +359,6 @@ export const convertPhotoToFormData = (photo: Photo): PhotoFormData => {
         return value?.toISOString ? value.toISOString() : value;
       case 'recipeData':
         return JSON.stringify(value);
-      case 'colorData':
-        return JSON.stringify(value);
       case 'location':
         return value ? JSON.stringify(value) : undefined;
       default:
@@ -463,7 +373,6 @@ export const convertPhotoToFormData = (photo: Photo): PhotoFormData => {
   }), {
     locationDisplayName:
       photo.location?.nameFormatted ?? photo.location?.name ?? '',
-    keyColor: convertOklchToJsonString(photo.colorData?.ai),
   } as PhotoFormData);
 };
 
@@ -477,8 +386,6 @@ export const convertFormDataToPhotoDbInsert = (
     : formData;
 
   const locationDisplayName = photoForm.locationDisplayName;
-  const keyColor = photoForm.keyColor;
-  const hasKeyColorField = typeof keyColor === 'string' && keyColor.length > 0;
 
   // Parse FormData:
   // - remove server action ID
@@ -497,17 +404,6 @@ export const convertFormDataToPhotoDbInsert = (
       (photoForm as any)[key] = (photoForm as any)[key].trim();
     }
   });
-
-  if (hasKeyColorField) {
-    const colorFields = applyKeyColorToColorFields(
-      photoForm.colorData,
-      keyColor,
-    );
-    if (colorFields) {
-      photoForm.colorData = colorFields.colorData;
-      photoForm.colorSort = colorFields.colorSort;
-    }
-  }
 
   return {
     ...(photoForm as PhotoFormData & {
@@ -556,13 +452,6 @@ export const convertFormDataToPhotoDbInsert = (
     exposureCompensation: photoForm.exposureCompensation
       ? parseFloat(photoForm.exposureCompensation)
       : undefined,
-    colorSort: photoForm.colorSort
-      ? parseInt(photoForm.colorSort)
-      : undefined,
-    priorityOrder: photoForm.priorityOrder
-      ? parseFloat(photoForm.priorityOrder)
-      : undefined,
-    excludeFromFeeds: photoForm.excludeFromFeeds === 'true',
     ...generateTakenAtFields(photoForm),
   };
 };

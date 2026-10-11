@@ -1,6 +1,6 @@
 import { getPhotosCached } from '@/photo/cache';
 import NavClient from './NavClient';
-import { HAS_DATABASE, NAV_CAPTION, NAV_TITLE } from './config';
+import { HAS_DATABASE, NAV_TITLE } from './config';
 
 export default async function Nav() {
   const photos = HAS_DATABASE
@@ -8,7 +8,6 @@ export default async function Nav() {
     : [];
   return <NavClient
     navTitle={NAV_TITLE}
-    navCaption={NAV_CAPTION}
     isInEmptyState={photos.length === 0}
-  />; 
+  />;
 }

@@ -20,7 +20,6 @@ import ShareModals from '@/share/ShareModals';
 import AdminUploadPanel from '@/admin/upload/AdminUploadPanel';
 import { revalidatePath } from 'next/cache';
 import RecipeModal from '@/recipe/RecipeModal';
-import ThemeColors from '@/app/ThemeColors';
 import { PATH_FEED_JSON, PATH_RSS_XML } from '@/app/path';
 import AdminBatchEditPanel from '@/admin/select/AdminBatchEditPanel';
 import AdminEditTitlesPanel from '@/admin/edit-titles/AdminEditTitlesPanel';
@@ -95,8 +94,7 @@ export default function RootLayout({
         '3xl:flex flex-col items-center',
       )}>
         <StateProviders>
-          <ThemeColors />
-          <div className={clsx(
+          <div data-app-shell="" className={clsx(
             'mx-3 pb-3',
             'lg:mx-6 lg:pb-6',
             'min-h-dvh flex flex-col',

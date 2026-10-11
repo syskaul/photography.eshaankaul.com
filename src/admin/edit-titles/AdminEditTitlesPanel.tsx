@@ -72,6 +72,7 @@ export default function AdminEditTitlesPanel() {
           </ResponsiveText>}
       </div>
       <LoaderButton
+        translucent
         className="min-h-[2.5rem]"
         icon={<FaCheck size={15} />}
         // eslint-disable-next-line @stylistic/max-len
@@ -105,6 +106,7 @@ export default function AdminEditTitlesPanel() {
         </ResponsiveText>
       </LoaderButton>
       <LoaderButton
+        translucent
         className="min-h-[2.5rem]"
         icon={<IoCloseSharp size={19} />}
         onClick={stopEditingTitles}

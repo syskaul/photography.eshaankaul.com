@@ -10,7 +10,6 @@ import {
   useState,
 } from 'react';
 import {
-  FIELDS_TO_NOT_TOAST,
   FIELDS_WITH_JSON,
   FORM_METADATA_ENTRIES_BY_SECTION,
   FORM_SECTIONS,
@@ -21,13 +20,10 @@ import {
   getChangedFormFields,
   getFormErrors,
   isFormValid,
-  formDataWithUpdatedColorData,
-  formDataWithUpdatedKeyColor,
 } from '.';
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
 import {
   createPhotoAction,
-  getAiColorAction,
   updatePhotoAction,
 } from '../actions';
 import SubmitButtonWithStatus from '@/components/SubmitButtonWithStatus';
@@ -43,8 +39,6 @@ import { getDimensionsFromSize } from '@/utility/size';
 import ImageWithFallback from '@/components/image/ImageWithFallback';
 import { AiContent } from '../ai/useAiImageQueries';
 import AiButton from '../ai/AiButton';
-import { HiSparkles } from 'react-icons/hi';
-import LoaderButton from '@/components/primitives/LoaderButton';
 import Spinner from '@/components/Spinner';
 import usePreventNavigation from '@/utility/usePreventNavigation';
 import { useAppState } from '@/app/AppState';
@@ -71,14 +65,6 @@ import {
 import { isMakeFujifilm } from '@/platforms/fujifilm';
 import PhotoFilmIcon from '@/film/PhotoFilmIcon';
 import IconAddUpload from '@/components/icons/IconAddUpload';
-import PhotoColors from '../color/PhotoColors';
-import ColorDot from '../color/ColorDot';
-import {
-  convertJsonStringToOklch,
-  convertOklchToJsonString,
-  generateColorDataFromString,
-  getKeyColorFromColorData,
-} from '../color/client';
 import { capitalize } from '@/utility/string';
 import AnchorSections from '@/components/AnchorSections';
 import useIsVisible from '@/utility/useIsVisible';
@@ -111,7 +97,6 @@ export default function PhotoForm({
   uniqueCameras,
   uniqueLenses,
   aiContent,
-  shouldStripGpsData,
   hasLocationServices,
   onTitleChange,
   onFormDataChange,
@@ -129,7 +114,6 @@ export default function PhotoForm({
   uniqueCameras?: Cameras
   uniqueLenses?: Lenses
   aiContent?: AiContent
-  shouldStripGpsData?: boolean
   hasLocationServices?: boolean
   onTitleChange?: (updatedTitle: string) => void
   onFormDataChange?: (formData: Partial<PhotoFormData>) => void,
@@ -139,6 +123,7 @@ export default function PhotoForm({
 
   const [formData, setFormData] =
     useState<Partial<PhotoFormData>>(initialPhotoForm);
+  const url = formData.url ?? '';
   const [formErrors, setFormErrors] =
     useState(getFormErrors(initialPhotoForm));
   const [formActionErrorMessage, setFormActionErrorMessage] = useState('');
@@ -150,7 +135,6 @@ export default function PhotoForm({
     .sort((a, b) => a.localeCompare(b))
     .join(','));
   const [isLoadingPlace, setIsLoadingPlace] = useState(false);
-  const [isLoadingKeyColor, setIsLoadingKeyColor] = useState(false);
 
   const areAlbumTitlesModified = albumTitles !== photoAlbumTitles
     .sort((a, b) => a.localeCompare(b))
@@ -173,8 +157,7 @@ export default function PhotoForm({
   const canFormBeSubmitted =
     (type === 'create' || formHasChanged) &&
     isFormValid(formData) &&
-    !aiContent?.isLoading &&
-    !isLoadingKeyColor;
+    !aiContent?.isLoading;
 
   // Update form when EXIF data
   // is refreshed by parent
@@ -201,17 +184,9 @@ export default function PhotoForm({
             }
           });
 
-        const colorData = generateColorDataFromString(
-          updatedExifData?.colorData,
-        );
-        const keyColor = convertOklchToJsonString(
-          getKeyColorFromColorData(colorData),
-        );
-
         return {
           ...currentForm,
           ...updatedExifData,
-          ...updatedExifData?.colorData !== undefined && { keyColor },
         };
       });
 
@@ -219,8 +194,7 @@ export default function PhotoForm({
         setDetectedFilm(updatedExifData.film);
       }
 
-      const keysToToast = changedKeys.filter(key =>
-        !FIELDS_TO_NOT_TOAST.includes(key));
+      const keysToToast = changedKeys;
       if (keysToToast.length > 0) {
         const fields = convertFormKeysToLabels(keysToToast);
         toastSuccess(`Updated camera metadata: ${fields.join(', ')}`, 8000);
@@ -229,28 +203,6 @@ export default function PhotoForm({
       }
     }
   }, [updatedExifData]);
-
-  const url = formData.url ?? '';
-
-  const regenerateKeyColor = useCallback(async () => {
-    if (!url) { return; }
-    setIsLoadingKeyColor(true);
-    try {
-      const ai = await getAiColorAction(url);
-      if (ai) {
-        setFormData(data => formDataWithUpdatedKeyColor(
-          data,
-          convertOklchToJsonString(ai),
-        ));
-      } else {
-        toastWarning('Could not generate key color');
-      }
-    } catch (error: any) {
-      toastWarning(error.message || 'Could not generate key color');
-    } finally {
-      setIsLoadingKeyColor(false);
-    }
-  }, [url]);
 
   useEffect(() => {
     if (updatedBlurData) {
@@ -292,8 +244,6 @@ export default function PhotoForm({
         return aiContent?.isLoadingCaption;
       case 'semanticDescription':
         return aiContent?.isLoadingSemantic;
-      case 'keyColor':
-        return isLoadingKeyColor;
       default:
         return false;
     }
@@ -324,21 +274,6 @@ export default function PhotoForm({
             aiContent={aiContent}
             requestFields={['semantic']}
             shouldConfirm={Boolean(formData.semanticDescription)}
-          />;
-        case 'keyColor':
-          return <LoaderButton
-            tabIndex={-1}
-            icon={<HiSparkles size={16} />}
-            className="h-full"
-            isLoading={isLoadingKeyColor}
-            onClick={() => {
-              if (
-                !formData.keyColor ||
-                confirm('Are you sure you want to overwrite existing content?')
-              ) {
-                regenerateKeyColor();
-              }
-            }}
           />;
         case 'blurData':
           return shouldDebugImageFallbacks && type === 'edit' && formData.url
@@ -478,7 +413,6 @@ export default function PhotoForm({
       convertLensMakesForForm(uniqueLenses),
       convertLensModelsForForm(uniqueLenses),
       aiContent !== undefined,
-      shouldStripGpsData,
       hasLocationServices,
     ), [
     uniqueRecipes,
@@ -488,7 +422,6 @@ export default function PhotoForm({
     formData.make,
     detectedFilm,
     aiContent,
-    shouldStripGpsData,
     hasLocationServices,
   ]);
 
@@ -762,52 +695,6 @@ export default function PhotoForm({
                           didCopyRecipeData={didCopyRecipeData}
                           onRecipeDataFound={onRecipeDataFound}
                         />;
-                      case 'colorData':
-                        return <FieldsetWithStatus
-                          key={key}
-                          {...fieldProps}
-                          noteComplex={<PhotoColors
-                            classNameDot="size-[13px]!"
-                            // eslint-disable-next-line @stylistic/max-len
-                            colorData={generateColorDataFromString(formData.colorData)}
-                          />}
-                          onChange={value => {
-                            const formUpdated = formDataWithUpdatedColorData(
-                              formData,
-                              value,
-                            );
-                            setFormData(formUpdated);
-                          }}
-                        />;
-                      case 'keyColor': {
-                        const keyColorOklch =
-                          convertJsonStringToOklch(formData.keyColor) ??
-                          generateColorDataFromString(
-                            formData.colorData,
-                          )?.ai;
-                        return <FieldsetWithStatus
-                          key={key}
-                          {...fieldProps}
-                          noteComplex={keyColorOklch &&
-                            <ColorDot
-                              className="size-[13px]!"
-                              color={keyColorOklch}
-                            />}
-                          onChange={value => {
-                            const formUpdated = formDataWithUpdatedKeyColor(
-                              formData,
-                              value,
-                            );
-                            setFormData(formUpdated);
-                            if (validate) {
-                              setFormErrors({
-                                ...formErrors,
-                                [key]: validate(value),
-                              });
-                            }
-                          }}
-                        />;
-                      }
                       case 'albums':
                         return <FieldsetAlbum
                           key={key}
@@ -861,7 +748,7 @@ export default function PhotoForm({
           'relative z-10',
         )}>
           <Link
-            className="button"
+            className="button liquid-glass"
             href={type === 'edit' ? PATH_ADMIN_PHOTOS : PATH_ADMIN_UPLOADS}
           >
             Cancel

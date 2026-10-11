@@ -59,6 +59,7 @@ export default function ShareButton({
         ...rest,
       })}
       className={clsx(
+        'action-button',
         className,
         dim ? 'text-dim' : 'text-medium',
       )}

@@ -13,7 +13,7 @@ export default async function AdminAlbumBadge({
 }) {
   return (
     <AdminBadge
-      entity={<PhotoAlbum {...{ album }} hoverType="image" />}
+      entity={<PhotoAlbum {...{ album }} hoverType="none" />}
       count={count}
       hideBadge={hideBadge}
     />

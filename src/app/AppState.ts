@@ -8,7 +8,6 @@ import {
 } from 'react';
 import { AnimationConfig } from '@/components/AnimateItems';
 import { ShareModalProps } from '@/share';
-import { InsightsIndicatorStatus } from '@/admin/insights';
 import { AdminData } from '@/admin/actions';
 import { RecipeProps } from '@/recipe';
 import { getCountsForCategoriesCachedAction } from '@/category/actions';
@@ -55,25 +54,17 @@ export type AppStateContextType = {
   isLoadingAdminData?: boolean
   refreshAdminData?: () => void
   updateAdminData?: (updatedData: Partial<AdminData>) => void
-  insightsIndicatorStatus?: InsightsIndicatorStatus
   // VIEW
   isPhotoSetFull?: boolean
   setIsPhotoSetFull?: Dispatch<SetStateAction<boolean>>
   // DEBUG
   areAdminDebugToolsEnabled?: boolean
-  isAdminAiModelDebugEnabled?: boolean
   isGridHighDensity?: boolean
   setIsGridHighDensity?: Dispatch<SetStateAction<boolean>>
-  areZoomControlsShown?: boolean
-  setAreZoomControlsShown?: Dispatch<SetStateAction<boolean>>
-  arePhotosMatted?: boolean
-  setArePhotosMatted?: Dispatch<SetStateAction<boolean>>
   shouldDebugImageFallbacks?: boolean
   setShouldDebugImageFallbacks?: Dispatch<SetStateAction<boolean>>
   shouldShowBaselineGrid?: boolean
   setShouldShowBaselineGrid?: Dispatch<SetStateAction<boolean>>
-  shouldDebugInsights?: boolean
-  setShouldDebugInsights?: Dispatch<SetStateAction<boolean>>
   shouldDebugRecipeOverlays?: boolean
   setShouldDebugRecipeOverlays?: Dispatch<SetStateAction<boolean>>
 } & Partial<AdminData>;

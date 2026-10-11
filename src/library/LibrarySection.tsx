@@ -1,6 +1,5 @@
 'use client';
 
-import { TINT_FOLDERS } from '@/app/config';
 import CategoryIcon from '@/category/CategoryIcon';
 import type { CategoryKey } from '@/category';
 import PhotoFolder from '@/components/folder/PhotoFolder';
@@ -101,9 +100,8 @@ export default function LibrarySection({
                 photos={folder.photos}
                 caption={folder.caption}
                 captionIcon={getFolderCaptionIcon(folder.key)}
-                count={folder.count}
+                count={category === 'albums' ? undefined : folder.count}
                 href={folder.path}
-                tint={TINT_FOLDERS ? 'on' : 'off'}
               />
             </div>)}
         </div>}

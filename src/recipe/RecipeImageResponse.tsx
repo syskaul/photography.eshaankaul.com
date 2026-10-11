@@ -58,7 +58,6 @@ export default function RecipeImageResponse({
         width,
         height,
         fontFamily,
-        legacyBottomAlignment: false,
         gap: '0',
         icon: <IconRecipe
           size={height * .087}

@@ -44,9 +44,9 @@ export default function ZoomControls({
       type="button"
       className={clsx(
         'fixed top-[20px] right-[70px]',
-        'size-10 items-center justify-center',
+        'size-9 items-center justify-center',
         'rounded-full border-none',
-        'text-white bg-black/50 hover:bg-black/85',
+        'text-white liquid-glass-dark',
       )}
       onClick={() => shouldZoomTo2x ? zoomTo(2) : reset()}
     >

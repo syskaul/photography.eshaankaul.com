@@ -16,7 +16,6 @@ import { pluralize } from '@/utility/string';
 import IconBroom from '@/components/icons/IconBroom';
 import ResponsiveText from '@/components/primitives/ResponsiveText';
 import { useAppText } from '@/i18n/state/client';
-import SyncColorButton from '@/photo/color/SyncColorButton';
 import AdminPageHeader from './AdminPageHeader';
 
 export default function AdminPhotosClient({
@@ -29,7 +28,6 @@ export default function AdminPhotosClient({
   infiniteScrollInitial,
   infiniteScrollMultiple,
   timezone,
-  debugColorData,
 }: {
   photos: Photo[]
   photosCount: number
@@ -40,7 +38,6 @@ export default function AdminPhotosClient({
   infiniteScrollInitial: number
   infiniteScrollMultiple: number
   timezone: Timezone
-  debugColorData?: boolean
 }) {
   const { uploadState: { isUploading } } = useUploadState();
 
@@ -56,8 +53,6 @@ export default function AdminPhotosClient({
             plural={appText.photo.photoPlural}
             hideLabel={isUploading}
             accessory={<>
-              {debugColorData && !isUploading &&
-                <SyncColorButton />}
               {photosCountNeedsSync > 0 && !isUploading &&
                 <PathLoaderButton
                   path={PATH_ADMIN_PHOTOS_UPDATES}
@@ -116,7 +111,6 @@ export default function AdminPhotosClient({
               photos={photos}
               hasAiContentGeneration={hasAiContentGeneration}
               timezone={timezone}
-              debugColorData={debugColorData}
             />
             {photosCount > photos.length &&
               <AdminPhotosTableInfinite
@@ -124,7 +118,6 @@ export default function AdminPhotosClient({
                 itemsPerPage={infiniteScrollMultiple}
                 hasAiContentGeneration={hasAiContentGeneration}
                 timezone={timezone}
-                debugColorData={debugColorData}
               />}
           </div>
         </div>}

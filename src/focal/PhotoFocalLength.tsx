@@ -20,7 +20,6 @@ export default function PhotoFocalLength({
       {...props}
       label={formatFocalLength(focal)}
       path={pathForFocalLength(focal)}
-      hoverQueryOptions={{ focal }}
       icon={<IconFocalLength className="translate-y-[-1px]" />}
       hoverCount={props.hoverCount ?? getFocalLengthCount(focal)}
     />

@@ -17,6 +17,8 @@ import {
   getMenuItemColorClasses,
   MENU_SURFACE_STYLES,
 } from '../primitives/surface';
+import { usePathname } from 'next/navigation';
+import { isPathAdmin } from '@/app/path';
 
 type MoreMenuOpenListener = (menuId: string) => void;
 
@@ -83,6 +85,11 @@ export default function MoreMenu({
   disabled?: boolean
 } & ComponentProps<typeof DropdownMenu.Content>){
   const menuId = useId();
+  const pathname = usePathname();
+  const surfaceClassName = clsx(
+    MENU_SURFACE_STYLES,
+    isPathAdmin(pathname) && 'admin-interface',
+  );
   const [isOpenInternal, setIsOpenInternal] = useState(isOpenProp ?? false);
   const setOpenStateRef = useRef(setIsOpenProp ?? setIsOpenInternal);
   setOpenStateRef.current = setIsOpenProp ?? setIsOpenInternal;
@@ -164,7 +171,7 @@ export default function MoreMenu({
                 </DropdownMenu.SubTrigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.SubContent
-                    className={MENU_SURFACE_STYLES}
+                    className={surfaceClassName}
                     sideOffset={-4}
                   >
                     {renderSections(item.sections ?? [{ items: item.items }])}
@@ -212,7 +219,7 @@ export default function MoreMenu({
           align={align}
           sideOffset={sideOffset}
           className={clsx(
-            MENU_SURFACE_STYLES,
+            surfaceClassName,
             className,
           )}
         >

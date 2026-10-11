@@ -56,7 +56,7 @@ export default function AdminRecipeForm({
       {children}
       <div className="flex gap-3">
         <Link
-          className="button"
+          className="button liquid-glass"
           href={PATH_ADMIN_RECIPES}
         >
           Cancel

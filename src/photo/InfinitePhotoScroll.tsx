@@ -10,7 +10,6 @@ import { PhotoSetCategory } from '../category';
 import { clsx } from 'clsx/lite';
 import { useAppState } from '@/app/AppState';
 import useVisibility from '@/utility/useVisibility';
-import { SortBy } from './sort';
 import { useAppText } from '@/i18n/state/client';
 
 // Future reader:
@@ -31,9 +30,6 @@ export default function InfinitePhotoScroll({
   cacheKey,
   initialOffset,
   itemsPerPage,
-  sortBy,
-  sortWithPriority,
-  excludeFromFeeds,
   query,
   recent,
   year,
@@ -53,9 +49,6 @@ export default function InfinitePhotoScroll({
   initialPhotos?: Photo[]
   initialOffset: number
   itemsPerPage: number
-  sortBy?: SortBy
-  sortWithPriority?: boolean
-  excludeFromFeeds?: boolean
   cacheKey: string
   moreButtonClassName?: string
   wrapMoreButtonInGrid?: boolean
@@ -83,9 +76,6 @@ export default function InfinitePhotoScroll({
   ) =>
     (useCachedPhotos ? getPhotosCachedAction : getPhotosAction)({
       offset: initialOffset + getSizeFromKey(keyWithSize) * itemsPerPage,
-      sortBy,
-      sortWithPriority,
-      excludeFromFeeds,
       limit: itemsPerPage,
       query,
       recent,
@@ -99,9 +89,6 @@ export default function InfinitePhotoScroll({
     }, warmOnly)
   , [
     useCachedPhotos,
-    sortBy,
-    sortWithPriority,
-    excludeFromFeeds,
     initialOffset,
     itemsPerPage,
     query,

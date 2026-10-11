@@ -13,7 +13,6 @@ import AnimateItems from '@/components/AnimateItems';
 import { useAppState } from '@/app/AppState';
 import Spinner from '@/components/Spinner';
 import { useAppText } from '@/i18n/state/client';
-import { useMixpanel } from '@/analytics/MixpanelConsentProvider';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -26,7 +25,6 @@ export default function Footer() {
   } = useAppState();
 
   const appText = useAppText();
-  const { openPrivacySettings } = useMixpanel();
 
   const showFooter = !isPathSignIn(pathname);
 
@@ -34,6 +32,7 @@ export default function Footer() {
 
   return (
     <AppGrid
+      className={clsx(isPathAdmin(pathname) && 'admin-interface')}
       contentMain={
         <AnimateItems
           animateOnFirstLoadOnly
@@ -72,13 +71,6 @@ export default function Footer() {
                     </Link>}
               </div>
               <div className="flex items-center h-10 shrink-0 gap-3">
-                <button
-                  type="button"
-                  className="text-sm underline underline-offset-4"
-                  onClick={openPrivacySettings}
-                >
-                  {appText.privacy.privacySettings}
-                </button>
                 {DARK_MODE_ENABLED && <ThemeSwitcher />}
               </div>
             </footer>]

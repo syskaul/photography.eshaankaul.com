@@ -24,7 +24,7 @@ export default async function AdminTagsPage() {
               plural={appText.category.albumPlural}
               accessory={<Link
                 href={PATH_ADMIN_ALBUM_NEW}
-                className="button primary"
+                className="button primary liquid-glass"
               >
                 <IconAlbum
                   size={16}

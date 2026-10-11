@@ -18,6 +18,7 @@
 # misc
 .DS_Store
 *.pem
+!src/platforms/rds-global-bundle.pem
 
 # debug
 npm-debug.log*

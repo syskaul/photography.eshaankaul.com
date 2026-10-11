@@ -41,7 +41,10 @@ function AdminChildPage({
                 {backPath &&
                   <Link
                     href={backPath}
-                    className="flex gap-1.5 items-center"
+                    className={clsx(
+                      'liquid-glass px-3 py-1.5',
+                      'flex gap-1.5 items-center',
+                    )}
                   >
                     <FiArrowLeft size={16} />
                     <span className="hidden xs:inline-block">

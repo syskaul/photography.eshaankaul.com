@@ -15,11 +15,6 @@ import {
   SWITCHER_ITEM_INTERACTIVE_BG,
 } from '@/components/switcher/SwitcherItem';
 import { useAppText } from '@/i18n/state/client';
-import { KEY_COMMANDS } from '@/photo/key-commands';
-import {
-  GRID_HOMEPAGE_ENABLED,
-  SHOW_KEYBOARD_SHORTCUT_TOOLTIPS,
-} from './config';
 
 const VIEW_ICON_CLASS = 'w-[24px] -ml-[4px] translate-x-[1px]';
 
@@ -62,7 +57,6 @@ export default function AppViewMenuCompact({
     ...hrefGrid
       ? { href: hrefGrid }
       : { action: () => onSelectView?.(false) },
-    ...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && { keyCommand: KEY_COMMANDS.grid },
   };
 
   const itemFull = {
@@ -74,19 +68,16 @@ export default function AppViewMenuCompact({
     ...hrefFull
       ? { href: hrefFull }
       : { action: () => onSelectView?.(true) },
-    ...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && { keyCommand: KEY_COMMANDS.full },
   };
 
-  const items: MoreMenuSection['items'] = GRID_HOMEPAGE_ENABLED
-    ? [itemGrid, itemFull]
-    : [itemFull, itemGrid];
+  const items: MoreMenuSection['items'] = [itemFull, itemGrid];
 
   return (
     <Tooltip
       classNameTrigger={className}
       delayDuration={500}
       triggerIsFocusable
-      {...!isOpen && SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
+      {...!isOpen && {
         content: appText.nav.viewOptions,
       }}
     >
@@ -116,9 +107,10 @@ export default function AppViewMenuCompact({
           </>}
           classNameButton={clsx(
             'inline-flex items-center',
-            'h-[28px]',
+            HEIGHT_CLASS,
             'rounded-full',
             'text-main!',
+            'liquid-glass',
             SWITCHER_ITEM_INTERACTIVE_BG,
             'cursor-pointer',
           )}

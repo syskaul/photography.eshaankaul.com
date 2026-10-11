@@ -15,7 +15,6 @@ export default function PhotoRecents(props: EntityLinkExternalProps) {
       {...props}
       label={appText.category.recentPlural}
       path={PREFIX_RECENTS}
-      hoverQueryOptions={{ recent: true }}
       icon={<IconRecents size={16} />}
       iconBadgeStart={<IconRecents size={10} solid />}
       hoverCount={props.hoverCount ?? recentsCount}

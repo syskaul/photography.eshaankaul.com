@@ -5,7 +5,6 @@ import * as Tooltip from '@radix-ui/react-tooltip';
 import ComponentSurface from './surface/ComponentSurface';
 import clsx from 'clsx/lite';
 import useClickInsideOutside from '@/utility/useClickInsideOutside';
-import KeyCommand from './KeyCommand';
 import { clearGlobalFocus } from '@/utility/dom';
 import { useAppState } from '@/app/AppState';
 
@@ -15,8 +14,6 @@ export default function TooltipPrimitive({
   className,
   classNameTrigger: classNameTriggerProp,
   color,
-  keyCommand,
-  keyCommandModifier,
   supportMobile,
   triggerIsFocusable,
   animateLarge,
@@ -33,8 +30,6 @@ export default function TooltipPrimitive({
   className?: string
   classNameTrigger?: string
   color?: ComponentProps<typeof ComponentSurface>['color']
-  keyCommand?: string
-  keyCommandModifier?: ComponentProps<typeof KeyCommand>['modifier']
   supportMobile?: boolean
   // Set when `children` already contains a button or link, to avoid nesting
   // interactive elements. Otherwise the trigger renders as a real button.
@@ -70,16 +65,6 @@ export default function TooltipPrimitive({
     'cursor-default inline-flex',
     classNameTriggerProp,
   );
-
-  const content = keyCommand
-    ? <div className="-mr-0.5 whitespace-nowrap">
-      {contentProp}
-      {' '}
-      <KeyCommand {...{ modifier: keyCommandModifier }}>
-        {keyCommand}
-      </KeyCommand>
-    </div>
-    : contentProp;
 
   return (
     <Tooltip.Provider {...{ delayDuration, skipDelayDuration }}>
@@ -134,12 +119,18 @@ export default function TooltipPrimitive({
               'z-100',
             )}
           >
-            {content &&
+            {contentProp &&
               <ComponentSurface {...{
                 color,
-                className: clsx('rounded-lg', className),
+                className: clsx(
+                  'rounded-full liquid-glass outline-hidden!',
+                  color === 'light' && 'bg-white/70!',
+                  color === 'dark' && 'bg-black/70!',
+                  color === 'frosted-light' && 'bg-neutral-200/75!',
+                  className,
+                ),
               }}>
-                {content}
+                {contentProp}
               </ComponentSurface>}
           </Tooltip.Content>
         </Tooltip.Portal>

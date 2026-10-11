@@ -1,16 +1,11 @@
 'use client';
 
-import LinkWithIconLoader from '@/components/LinkWithIconLoader';
 import Note from '@/components/Note';
 import AppGrid from '@/components/AppGrid';
-import Spinner from '@/components/Spinner';
 import {
-  PATH_ADMIN_CONFIGURATION,
-  PATH_ADMIN_INSIGHTS,
   PATH_ADMIN_PHOTOS_UPDATES,
   checkPathPrefix,
   isPathAdminInfo,
-  isPathAdminPhotoEdit,
   isPathTopLevelAdmin,
 } from '@/app/path';
 import { useAppState } from '@/app/AppState';
@@ -19,11 +14,9 @@ import { differenceInMinutes } from 'date-fns';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { FaRegClock } from 'react-icons/fa';
-import AdminAppInfoIcon from './AdminAppInfoIcon';
 import AdminInfoNav from './AdminInfoNav';
 import LinkWithLoaderBackground from '@/components/LinkWithLoaderBackground';
 import MaskedScroll from '@/components/MaskedScroll';
-import StickySubNav from '@/components/StickySubNav';
 
 // Updates from past 5 minutes considered recent
 const areTimesRecent = (dates: Date[]) => dates
@@ -32,14 +25,12 @@ const areTimesRecent = (dates: Date[]) => dates
 export default function AdminNavClient({
   items,
   mostRecentPhotoUpdateTime,
-  includeInsights = true,
 }: {
   items: {
     label: string,
     href: string,
   }[]
   mostRecentPhotoUpdateTime?: Date
-  includeInsights?: boolean
 }) {
   const pathname = usePathname();
 
@@ -68,14 +59,15 @@ export default function AdminNavClient({
 
   return (
     <>
-      <StickySubNav isEnabled={!isPathAdminPhotoEdit(pathname)}>
+      <AppGrid contentMain={
         <div className={clsx(
           'flex gap-2 pb-3',
           'border-b border-gray-200 dark:border-gray-800',
         )}>
           <MaskedScroll
-            className="grow -mx-1 flex gap-1 md:gap-1.5"
+            className="grow min-w-0 -m-3 p-3 flex gap-1 md:gap-1.5"
             direction="horizontal"
+            setMaxSize={false}
           >
             {items.map(({ label, href }) =>
               <LinkWithLoaderBackground
@@ -83,6 +75,8 @@ export default function AdminNavClient({
                 href={href}
                 className={clsx(
                   checkPathPrefix(pathname, href) ? 'font-bold' : 'text-dim',
+                  'liquid-glass px-3! py-1.5!',
+                  checkPathPrefix(pathname, href) && 'liquid-glass-selected',
                   'hover:text-main active:text-medium',
                 )}
                 prefetch={false}
@@ -90,21 +84,8 @@ export default function AdminNavClient({
                 {label}
               </LinkWithLoaderBackground>)}
           </MaskedScroll>
-          <LinkWithIconLoader
-            href={includeInsights
-              ? PATH_ADMIN_INSIGHTS
-              : PATH_ADMIN_CONFIGURATION}
-            className={clsx(
-              isPathAdminInfo(pathname)
-                ? 'font-bold'
-                : 'text-dim',
-              'hover:text-main active:text-dim',
-            )}
-            icon={<AdminAppInfoIcon />}
-            loader={<Spinner className="translate-y-[-0.75px]" />}
-          />
-        </div>
-      </StickySubNav>
+        </div>}
+      />
       {(shouldShowBanner || isPathAdminInfo(pathname)) &&
         <AppGrid
           contentMain={
@@ -115,7 +96,7 @@ export default function AdminNavClient({
                   up for visitors
                 </Note>}
               {isPathAdminInfo(pathname) &&
-                <AdminInfoNav {...{ includeInsights }} />}
+                <AdminInfoNav />}
             </div>
           }
         />}

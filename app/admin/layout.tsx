@@ -6,7 +6,7 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="sm:mt-2 space-y-2">
+    <div className="admin-interface sm:mt-2 space-y-2">
       <AdminNav />
       {children}
     </div>

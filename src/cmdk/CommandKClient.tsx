@@ -14,11 +14,9 @@ import {
 } from 'react';
 import {
   PATH_LIBRARY,
-  PATH_ADMIN_AI_MODELS,
   PATH_ADMIN_BASELINE,
   PATH_ADMIN_COMPONENTS,
   PATH_ADMIN_CONFIGURATION,
-  PATH_ADMIN_INSIGHTS,
   PATH_ADMIN_PHOTOS,
   PATH_ADMIN_RECIPES,
   PATH_ADMIN_ALBUMS,
@@ -36,7 +34,6 @@ import {
   pathForRecipe,
   pathForYear,
   PREFIX_RECENTS,
-  isPathFull,
   isPathGrid,
   isPathLibrary,
   isPathRoot,
@@ -63,13 +60,10 @@ import { formatCount, formatCountDescriptive } from '@/utility/string';
 import CommandKItem from './CommandKItem';
 import {
   CATEGORY_VISIBILITY,
-  COLOR_SORT_ENABLED,
   DARK_MODE_ENABLED,
-  GRID_HOMEPAGE_ENABLED,
 } from '@/app/config';
 import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
-import InsightsIndicatorDot from '@/admin/insights/InsightsIndicatorDot';
 import { PhotoSetCategories, getCategoryTitle } from '@/category';
 import { formatCameraText } from '@/camera';
 import { formatFocalLength } from '@/focal';
@@ -90,12 +84,10 @@ import { useAppText } from '@/i18n/state/client';
 import LoaderButton from '@/components/primitives/LoaderButton';
 import IconRecents from '@/components/icons/IconRecents';
 import KeyCommand from '@/components/primitives/KeyCommand';
-import { CgClose, CgFileDocument } from 'react-icons/cg';
+import { CgFileDocument } from 'react-icons/cg';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
 import IconCheck from '@/components/icons/IconCheck';
-import { getSortStateFromPath } from '@/photo/sort/path';
-import IconSort from '@/components/icons/IconSort';
 import { useSelectPhotosState } from '@/admin/select/SelectPhotosState';
 import { useEditTitlesState } from '@/admin/edit-titles/EditTitlesState';
 import IconAlbum from '@/components/icons/IconAlbum';
@@ -153,10 +145,8 @@ export default function CommandKClient({
   recipes,
   films,
   focalLengths,
-  isInEmptyState,
   footer,
 }: {
-  isInEmptyState?: boolean
   footer?: string
 } & PhotoSetCategories) {
   const pathname = usePathname();
@@ -173,24 +163,16 @@ export default function CommandKClient({
     uploadsCount,
     albumsCount,
     recipesCount,
-    insightsIndicatorStatus,
     isGridHighDensity,
-    areZoomControlsShown,
-    arePhotosMatted,
     areAdminDebugToolsEnabled,
-    isAdminAiModelDebugEnabled,
     shouldShowBaselineGrid,
     shouldDebugImageFallbacks,
-    shouldDebugInsights,
     shouldDebugRecipeOverlays,
     setIsCommandKOpen: setIsOpen,
     setNextCommandKQuery,
     setShouldShowBaselineGrid,
     setIsGridHighDensity,
-    setAreZoomControlsShown,
-    setArePhotosMatted,
     setShouldDebugImageFallbacks,
-    setShouldDebugInsights,
     setShouldDebugRecipeOverlays,
   } = useAppState();
 
@@ -207,26 +189,6 @@ export default function CommandKClient({
     startEditingTitles,
     stopEditingTitles,
   } = useEditTitlesState();
-
-  const {
-    doesPathOfferSort,
-    isSortedByDefault,
-    isAscending,
-    isTakenAt,
-    isUploadedAt,
-    isColor,
-    descendingLabel,
-    ascendingLabel,
-    pathDescending,
-    pathAscending,
-    pathTakenAt,
-    pathUploadedAt,
-    pathColor,
-    pathClearSort,
-  } = useMemo(
-    () => getSortStateFromPath(pathname, appText),
-    [pathname, appText],
-  );
 
   const isOpenRef = useRef(isOpen);
 
@@ -499,16 +461,6 @@ export default function CommandKClient({
       accessory: <RiToolsFill size={16} className="translate-x-[-1px]" />,
       items: [
         renderToggle(
-          'Zoom Controls',
-          setAreZoomControlsShown,
-          areZoomControlsShown,
-        ),
-        renderToggle(
-          'Photo Matting',
-          setArePhotosMatted,
-          arePhotosMatted,
-        ),
-        renderToggle(
           'High Density Grid',
           setIsGridHighDensity,
           isGridHighDensity,
@@ -524,11 +476,6 @@ export default function CommandKClient({
           shouldShowBaselineGrid,
         ),
         renderToggle(
-          'Insights Debugging',
-          setShouldDebugInsights,
-          shouldDebugInsights,
-        ),
-        renderToggle(
           'Recipe Overlays',
           setShouldDebugRecipeOverlays,
           shouldDebugRecipeOverlays,
@@ -537,71 +484,19 @@ export default function CommandKClient({
     });
   }
 
-  const sortItems = [{
-    label: descendingLabel,
-    path: pathDescending,
-    annotation: renderCheck(!isAscending),
-  }, {
-    label: ascendingLabel,
-    path: pathAscending,
-    annotation: renderCheck(isAscending),
-  }, {
-    label: appText.sort.byTakenAt,
-    path: pathTakenAt,
-    annotation: renderCheck(isTakenAt),
-  }, {
-    label: appText.sort.byUploadedAt,
-    path: pathUploadedAt,
-    annotation: renderCheck(isUploadedAt),
-  }];
-
-  if (COLOR_SORT_ENABLED) {
-    sortItems.push({
-      label: appText.sort.byColor,
-      path: pathColor,
-      annotation: renderCheck(isColor),
-    });
-  }
-
-  if (!isSortedByDefault) {
-    sortItems.push({
-      label: appText.sort.clearSort,
-      path: pathClearSort,
-      annotation: <CgClose />,
-    });
-  }
-
-  const sortSection: CommandKSection = {
-    heading: appText.sort.sort,
-    accessory: <IconSort size={14} className="translate-x-[0.5px]" />,
-    items: doesPathOfferSort && !isInEmptyState
-      ? sortItems
-      : [],
-  };
-
   const pageFull: CommandKItem = {
-    label: GRID_HOMEPAGE_ENABLED
-      ? appText.nav.full
-      : `${appText.nav.full} (${appText.nav.home})`,
+    label: `${appText.nav.full} (${appText.nav.home})`,
     path: PATH_FULL_INFERRED,
-    annotation: renderCheck(GRID_HOMEPAGE_ENABLED
-      ? isPathFull(pathname)
-      : isPathRoot(pathname)),
+    annotation: renderCheck(isPathRoot(pathname)),
   };
 
   const pageGrid: CommandKItem = {
-    label: GRID_HOMEPAGE_ENABLED
-      ? `${appText.nav.grid} (${appText.nav.home})`
-      : appText.nav.grid,
+    label: appText.nav.grid,
     path: PATH_GRID_INFERRED,
-    annotation: renderCheck(GRID_HOMEPAGE_ENABLED
-      ? isPathRoot(pathname)
-      : isPathGrid(pathname)),
+    annotation: renderCheck(isPathGrid(pathname)),
   };
 
-  const pageItems: CommandKItem[] = GRID_HOMEPAGE_ENABLED
-    ? [pageGrid, pageFull]
-    : [pageFull, pageGrid];
+  const pageItems: CommandKItem[] = [pageFull, pageGrid];
 
   pageItems.push({
     label: appText.nav.library,
@@ -692,15 +587,6 @@ export default function CommandKClient({
           toastSuccess(appText.admin.clearCacheSuccess);
         }),
     }, {
-      explicitKey: appText.admin.appInsights,
-      label: <span className="flex items-center gap-3">
-        {appText.admin.appInsights}
-        {insightsIndicatorStatus &&
-          <InsightsIndicatorDot />}
-      </span>,
-      annotation: <IconLock narrow />,
-      path: PATH_ADMIN_INSIGHTS,
-    }, {
       label: appText.admin.appConfig,
       annotation: <IconLock narrow />,
       path: PATH_ADMIN_CONFIGURATION,
@@ -714,13 +600,6 @@ export default function CommandKClient({
         label: 'Components Overview',
         annotation: <BiLockAlt />,
         path: PATH_ADMIN_COMPONENTS,
-      });
-    }
-    if (isAdminAiModelDebugEnabled) {
-      adminSection.items.push({
-        label: 'AI Model Comparison',
-        annotation: <BiLockAlt />,
-        path: PATH_ADMIN_AI_MODELS,
       });
     }
     adminSection.items.push({
@@ -846,7 +725,6 @@ export default function CommandKClient({
             </Command.Empty>
             {queriedSections
               .concat(categorySections)
-              .concat(sortSection)
               .concat(sectionPages)
               .concat(adminSection)
               .concat(clientSections)

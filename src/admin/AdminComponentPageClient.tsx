@@ -7,16 +7,12 @@ import {
 } from '@/camera/brand';
 import AppGrid from '@/components/AppGrid';
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
-import IconHidden from '@/components/icons/IconHidden';
-import SelectMenu from '@/components/SelectMenu';
 import StatusIcon from '@/components/StatusIcon';
 import clsx from 'clsx/lite';
 import { useState } from 'react';
-import { TINT_FOLDERS } from '@/app/config';
 import { Photo } from '@/photo';
 import FieldsetPhotoChooser from '@/photo/form/FieldsetPhotoChooser';
 import PhotoFolder from '@/components/folder/PhotoFolder';
-import type { PhotoFolderTint } from '@/components/folder';
 
 const CAMERA_BRAND_TEXT_SIZES = [{
   className: 'text-xs',
@@ -54,12 +50,6 @@ export default function AdminComponentPageClient({
 }) {
   const [valuePhoto, setValuePhoto] = useState(photo?.id ?? '');
 
-  const [value, setValue] = useState('visible');
-
-  const [tint, setTint] = useState<PhotoFolderTint>(
-    TINT_FOLDERS ? 'on' : 'off',
-  );
-
   const [showAllTextSizes, setShowAllTextSizes] = useState(false);
 
   const cameraBrandTextSizes = showAllTextSizes
@@ -96,12 +86,6 @@ export default function AdminComponentPageClient({
                   </span>))}
             </div>)}
         </div>
-        <FieldsetWithStatus
-          label="Color tint"
-          type="checkbox"
-          value={tint !== 'off' ? 'true' : 'false'}
-          onChange={value => setTint(value === 'true' ? 'on' : 'off')}
-        />
         <div className={clsx(
           'grid gap-3',
           'grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5',
@@ -114,7 +98,6 @@ export default function AdminComponentPageClient({
               <PhotoFolder
                 photos={folder.photos}
                 caption={folder.caption}
-                tint={tint}
                 maxPhotos={folder.maxPhotos}
                 count={folder.count}
               />
@@ -153,26 +136,6 @@ export default function AdminComponentPageClient({
               label: 'Album 2',
             }]}
             onChange={() => {}}
-          />
-        </div>
-        <div className="z-9">
-          <SelectMenu
-            name="select-menu"
-            value={value}
-            onChange={setValue}
-            options={[{
-              value: 'visible',
-              accessoryStart: <IconHidden size={15} visible />,
-              label: 'Always visible',
-              accessoryEnd: '× 2',
-              note: 'Exclude photo from core feeds',
-            }, {
-              value: 'exclude',
-              accessoryStart: <IconHidden size={15} />,
-              label: 'Exclude from feeds',
-              accessoryEnd: '× 2',
-              note: 'Exclude photo from core feeds',
-            }]}
           />
         </div>
       </div>}

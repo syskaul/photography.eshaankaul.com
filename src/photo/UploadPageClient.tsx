@@ -26,7 +26,6 @@ export default function UploadPageClient({
   uniqueLenses,
   hasAiContentGeneration,
   imageThumbnailBase64,
-  shouldStripGpsData,
   hasLocationServices,
 }: {
   blobId?: string
@@ -38,7 +37,6 @@ export default function UploadPageClient({
   uniqueLenses: Lenses
   hasAiContentGeneration?: boolean
   imageThumbnailBase64?: string
-  shouldStripGpsData?: boolean
   hasLocationServices?: boolean
 }) {
   const {
@@ -84,7 +82,6 @@ export default function UploadPageClient({
         uniqueCameras={uniqueCameras}
         uniqueLenses={uniqueLenses}
         aiContent={hasAiContentGeneration ? aiContent : undefined}
-        shouldStripGpsData={shouldStripGpsData}
         hasLocationServices={hasLocationServices}
         onTitleChange={setUpdatedTitle}
         onFormStatusChange={setIsPending}

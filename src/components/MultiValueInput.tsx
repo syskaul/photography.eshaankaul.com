@@ -438,10 +438,7 @@ export default function MultiValueInput({
                 'cursor-pointer select-none',
                 'whitespace-nowrap',
                 'px-1.5 py-0.5',
-                'bg-gray-200/60 dark:bg-gray-800',
-                'active:bg-gray-200 dark:active:bg-gray-900',
-                'rounded-sm',
-                'border-none shadow-none',
+                'liquid-glass',
               )}
               onClick={() => removeOption(option)}
             >
@@ -513,10 +510,9 @@ export default function MultiValueInput({
         {shouldShowMenu && optionsFiltered.length > 0 &&
           <div
             className={clsx(
-              'component-surface z-1',
+              'liquid-glass-surface text-main z-1',
               'absolute top-3 w-full px-1.5 py-1.5 -mx-px',
               'max-h-[8rem] overflow-y-auto flex flex-col',
-              'shadow-lg dark:shadow-xl',
             )}
           >
             <MaskedScroll

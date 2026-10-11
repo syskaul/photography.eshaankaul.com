@@ -1,5 +1,5 @@
 import LoaderButton from '@/components/primitives/LoaderButton';
-import { storeColorDataForPhotoAction, syncPhotoAction } from '@/photo/actions';
+import { syncPhotoAction } from '@/photo/actions';
 import IconGrSync from '@/components/icons/IconGrSync';
 import { toastSuccess } from '@/toast';
 import { ComponentProps, useRef, useState } from 'react';
@@ -8,7 +8,6 @@ import clsx from 'clsx/lite';
 import useScrollIntoView from '@/utility/useScrollIntoView';
 import { Photo } from '@/photo';
 import { syncPhotoConfirmText } from './confirm';
-import { isPhotoOnlyMissingColorData } from '@/photo/update';
 import IconBroom from '@/components/icons/IconBroom';
 
 export default function PhotoSyncButton({
@@ -43,14 +42,9 @@ export default function PhotoSyncButton({
       shouldScrollIntoViewOnExternalSync,
   });
 
-  const onlySyncColorData = updateMode &&
-    isPhotoOnlyMissingColorData(photo);
-
   return (
     <Tooltip
-      content={onlySyncColorData
-        ? 'Update color data'
-        : 'Regenerate photo data'}
+      content={updateMode ? 'Update photo data' : 'Sync photo data'}
       triggerIsFocusable
     >
       <LoaderButton
@@ -70,13 +64,10 @@ export default function PhotoSyncButton({
             window.confirm(syncPhotoConfirmText(
               photo,
               hasAiContentGeneration,
-              onlySyncColorData,
             ))
           ) {
             setIsSyncing(true);
-            (onlySyncColorData
-              ? storeColorDataForPhotoAction(photo.id)
-              : syncPhotoAction(photo.id, { updateMode }))
+            syncPhotoAction(photo.id)
               .then(() => {
                 onSyncComplete?.();
                 if (shouldToast) {

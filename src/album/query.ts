@@ -22,7 +22,6 @@ export const createAlbumPhotoTable = () =>
     CREATE TABLE IF NOT EXISTS album_photo (
       album_id uuid NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
       photo_id VARCHAR(8) NOT NULL REFERENCES photos(id) ON DELETE CASCADE,
-      sort_order SMALLINT NOT NULL DEFAULT 0,
       PRIMARY KEY (album_id, photo_id)
     )
   `;

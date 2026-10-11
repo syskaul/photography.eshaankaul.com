@@ -5,7 +5,6 @@ import { cache } from 'react';
 import { getPhotos } from '@/photo/query';
 import PhotoFullPage from '@/photo/PhotoFullPage';
 import { getPhotosMetaCached } from '@/photo/cache';
-import { USER_DEFAULT_SORT_OPTIONS } from '@/app/config';
 import { FEED_META_QUERY_OPTIONS, feedQueryOptions } from '@/feed';
 
 export const dynamic = 'force-static';
@@ -38,7 +37,6 @@ export default async function FullPage() {
       ? <PhotoFullPage {...{
         photos,
         photosCount,
-        ...USER_DEFAULT_SORT_OPTIONS,
       }} />
       : <PhotosEmptyState />
   );

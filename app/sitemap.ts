@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getDataForCategoriesCached } from '@/category/cache';
 import {
-  ABSOLUTE_PATH_FULL,
   ABSOLUTE_PATH_GRID,
   absolutePathForAlbum,
   absolutePathForCamera,
@@ -13,7 +12,7 @@ import {
   absolutePathForRecipe,
   absolutePathForYear,
 } from '@/app/path';
-import { BASE_URL, GRID_HOMEPAGE_ENABLED } from '@/app/config';
+import { BASE_URL } from '@/app/config';
 import { getAllPhotoIdsWithUpdatedAt } from '@/photo/query';
 import {
   getLastModifiedForCategories,
@@ -60,9 +59,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: PRIORITY_HOME,
       lastModified: lastModifiedSite,
     },
-    // Grid or full
+    // Grid
     {
-      url: GRID_HOMEPAGE_ENABLED ? ABSOLUTE_PATH_FULL : ABSOLUTE_PATH_GRID,
+      url: ABSOLUTE_PATH_GRID,
       priority: PRIORITY_HOME_VIEW,
       lastModified: lastModifiedSite,
     },

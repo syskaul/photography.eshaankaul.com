@@ -7,7 +7,6 @@ import { AiFillApple } from 'react-icons/ai';
 import ImageCaption from '@/image-response/components/ImageCaption';
 import ImagePhotoGrid from '@/image-response/components/ImagePhotoGrid';
 import ImageContainer from '@/image-response/components/ImageContainer';
-import { OG_TEXT_BOTTOM_ALIGNMENT } from '@/app/config';
 import { NextImageSize } from '@/platforms/next-image';
 import { isCameraMakeApple } from '@/platforms/apple';
 
@@ -30,7 +29,7 @@ export default function PhotoImageResponse({
         photos: [photo],
         width,
         height,
-        ...OG_TEXT_BOTTOM_ALIGNMENT && { imagePosition: 'top' },
+        imagePosition: 'center',
       }} />
       {shouldShowExifDataForPhoto(photo) &&
         <ImageCaption {...{

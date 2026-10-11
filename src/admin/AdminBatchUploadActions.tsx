@@ -20,8 +20,6 @@ import DeleteUploadButton from './DeleteUploadButton';
 import { useAppState } from '@/app/AppState';
 import { pluralize } from '@/utility/string';
 import IconAddUpload from '@/components/icons/IconAddUpload';
-import { PhotoFormData } from '@/photo/form';
-import FieldsetVisibility from '@/photo/visibility/FieldsetVisibility';
 import { Albums } from '@/album';
 import FieldsetAlbum from '@/album/FieldsetAlbum';
 
@@ -51,7 +49,6 @@ export default function AdminBatchUploadActions({
   const { updateAdminData } = useAppState();
 
   const [showBulkSettings, setShowBulkSettings] = useState(false);
-  const [formData, setFormData] = useState<Partial<PhotoFormData>>({});
   const [albumTitles, setAlbumTitles] = useState<string>();
 
   const [buttonText, setButtonText] = useState('Add All Uploads');
@@ -67,14 +64,12 @@ export default function AdminBatchUploadActions({
     titles: string[],
     isFinalBatch: boolean,
   ) => {
-    const { excludeFromFeeds } = formData;
     try {
       const stream = await addUploadsAction({
         uploadUrls: urls,
         uploadTitles: titles,
         ...showBulkSettings && {
           albumTitles: albumTitles?.split(','),
-          excludeFromFeeds,
         },
         takenAtLocal: generateLocalPostgresString(),
         takenAtNaiveLocal: generateLocalNaivePostgresString(),
@@ -149,11 +144,6 @@ export default function AdminBatchUploadActions({
                 onChange={albums => setAlbumTitles(albums)}
                 readOnly={isAdding}
                 className="relative z-11"
-              />
-              <FieldsetVisibility
-                formData={formData}
-                setFormData={setFormData}
-                readOnly={isAdding}
               />
             </div>}
           <div className="flex flex-col sm:flex-row-reverse gap-2">

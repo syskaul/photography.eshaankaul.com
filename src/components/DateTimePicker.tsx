@@ -166,13 +166,13 @@ export default function DateTimePicker({
           }
           setIsOpen(o => !o);
         }}
-        className="h-9"
+        className="h-9 liquid-glass"
       >
         <TbCalendar size={16} />
       </button>
       {isOpen && (
         <div className={clsx(
-          'component-surface shadow-lg dark:shadow-xl',
+          'liquid-glass-surface text-main',
           'absolute right-0 top-full mt-1 z-10',
           'p-3 w-60',
           'animate-fade-in-from-top',
@@ -292,6 +292,7 @@ export default function DateTimePicker({
                 className={clsx(
                   'shrink-0 text-xs px-1.5! py-1!',
                   'border font-mono',
+                  'liquid-glass',
                   displayMode === 'local'
                     ? 'border-gray-900 dark:border-gray-100 text-main'
                     : 'border-gray-300 dark:border-gray-600 text-dim',

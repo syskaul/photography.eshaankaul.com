@@ -5,6 +5,7 @@ import LoaderButton from './primitives/LoaderButton';
 import { useState } from 'react';
 import { downloadFileFromBrowser } from '@/utility/url';
 import { useAppText } from '@/i18n/state/client';
+import { useMixpanel } from '@/analytics/MixpanelProvider';
 
 export default function DownloadButton({
   photo,
@@ -16,12 +17,14 @@ export default function DownloadButton({
   const [isLoading, setIsLoading] = useState(false);
 
   const appText = useAppText();
+  const { track } = useMixpanel();
 
   return (
     <LoaderButton
       tooltip={appText.tooltip.download}
       aria-label={appText.tooltip.download}
       className={clsx(
+        'action-button',
         className,
         'text-medium',
       )}
@@ -31,6 +34,11 @@ export default function DownloadButton({
       isLoading={isLoading}
       onClick={async () => {
         setIsLoading(true);
+        track('photo_download', {
+          photo_id: photo.id,
+          photo_title: photo.title ?? '',
+          download_method: 'button',
+        });
         downloadFileFromBrowser(photo.url, downloadFileNameForPhoto(photo))
           .finally(() => setIsLoading(false));
       }}

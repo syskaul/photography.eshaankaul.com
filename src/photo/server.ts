@@ -10,12 +10,7 @@ import {
 import { ExifData, ExifParserFactory } from 'ts-exif-parser';
 import { PhotoFormData } from './form';
 import sharp, { Sharp } from 'sharp';
-import {
-  AUTO_GENERATE_LOCATIONS,
-  GEO_PRIVACY_ENABLED,
-  HAS_LOCATION_SERVICES,
-  PRESERVE_ORIGINAL_UPLOADS,
-} from '@/app/config';
+import { HAS_LOCATION_SERVICES } from '@/app/config';
 import { isExifForFujifilm } from '@/platforms/fujifilm/server';
 import {
   FujifilmRecipe,
@@ -33,9 +28,7 @@ import {
 } from '@/photo/query';
 import { MAX_PHOTO_UPLOAD_SIZE_IN_BYTES, PhotoDbInsert } from '.';
 import { convertExifToFormData } from './form/server';
-import { getColorFieldsForPhotoForm } from './color/server';
 import exifr from 'exifr';
-import { getCompatibleExifValue } from '@/utility/exif';
 import { fetchUrlWithByteLimit } from '@/utility/fetch';
 import { getPlaceFromCoordinates } from '@/platforms/google-places';
 
@@ -53,20 +46,15 @@ export const extractImageDataFromBlobPath = async (
     includeInitialPhotoFields,
     generateBlurData,
     generateResizedImage,
-    updateColorFields = true,
-    lookupLocation,
   }: {
     includeInitialPhotoFields?: boolean
     generateBlurData?: boolean
     generateResizedImage?: boolean
-    updateColorFields?: boolean
-    lookupLocation?: boolean
   } = {},
 ): Promise<{
   blobId?: string
   formDataFromExif?: Partial<PhotoFormData>
   imageResizedBase64?: string
-  shouldStripGpsData?: boolean
   fileBytes?: ArrayBuffer
   error?: string
 }> => {
@@ -83,7 +71,6 @@ export const extractImageDataFromBlobPath = async (
   let recipe: FujifilmRecipe | undefined;
   let blurData: string | undefined;
   let imageResizedBase64: string | undefined;
-  let shouldStripGpsData = false;
   let error: string | undefined;
 
   const fileBytes = blobPath
@@ -127,21 +114,12 @@ export const extractImageDataFromBlobPath = async (
       if (generateResizedImage) {
         imageResizedBase64 = await resizeImage(fileBytes);
       }
-
-      shouldStripGpsData = GEO_PRIVACY_ENABLED && (
-        Boolean(getCompatibleExifValue('GPSLatitude', dataExif, dataExifr)) ||
-        Boolean(getCompatibleExifValue('GPSLongitude', dataExif, dataExifr))
-      );
     }
   } catch (e) {
     error = `Error extracting image data from ${url}: "${e}"`;
   }
 
   if (error) { console.log(error); }
-
-  const colorFields = updateColorFields
-    ? await getColorFieldsForPhotoForm(url)
-    : undefined;
 
   const formDataFromExif = dataExif
     ? {
@@ -151,7 +129,6 @@ export const extractImageDataFromBlobPath = async (
       },
       ...generateBlurData && { blurData },
       ...convertExifToFormData(dataExif, dataExifr, film, recipe),
-      ...colorFields,
     } satisfies Partial<PhotoFormData>
     : undefined;
 
@@ -160,14 +137,10 @@ export const extractImageDataFromBlobPath = async (
     ...formDataFromExif && {
       formDataFromExif: {
         ...formDataFromExif,
-        ...await getLocationFormFieldsFromExif(
-          formDataFromExif,
-          lookupLocation,
-        ),
+        ...await getLocationFormFieldsFromExif(formDataFromExif),
       },
     },
     imageResizedBase64,
-    shouldStripGpsData,
     fileBytes,
     error,
   };
@@ -175,12 +148,8 @@ export const extractImageDataFromBlobPath = async (
 
 const getLocationFormFieldsFromExif = async (
   formData: Partial<PhotoFormData>,
-  lookupLocation?: boolean,
 ): Promise<Partial<PhotoFormData> | undefined> => {
   if (
-    !lookupLocation ||
-    !AUTO_GENERATE_LOCATIONS ||
-    GEO_PRIVACY_ENABLED ||
     !HAS_LOCATION_SERVICES ||
     !formData.latitude ||
     !formData.longitude
@@ -271,32 +240,6 @@ export const resizeImageToBytes = async (
     .toFormat('jpeg', { quality })
     .toBuffer();
 
-const GPS_NULL_STRING = '-';
-
-export const removeGpsData = async (image: ArrayBuffer) =>
-  sharp(image)
-    .withExifMerge({
-      IFD3: {
-        GPSMapDatum: GPS_NULL_STRING,
-        GPSLatitude: GPS_NULL_STRING,
-        GPSLongitude: GPS_NULL_STRING,
-        GPSDateStamp: GPS_NULL_STRING,
-        GPSDateTime: GPS_NULL_STRING,
-        GPSTimeStamp: GPS_NULL_STRING,
-        GPSAltitude: GPS_NULL_STRING,
-        GPSSatellites: GPS_NULL_STRING,
-        GPSAreaInformation: GPS_NULL_STRING,
-        GPSSpeed: GPS_NULL_STRING,
-        GPSImgDirection: GPS_NULL_STRING,
-        GPSDestLatitude: GPS_NULL_STRING,
-        GPSDestLongitude: GPS_NULL_STRING,
-        GPSDestBearing: GPS_NULL_STRING,
-        GPSDestDistance: GPS_NULL_STRING,
-        GPSHPositioningError: GPS_NULL_STRING,
-      },
-    })
-    .toFormat('jpeg', { quality: PRESERVE_ORIGINAL_UPLOADS ? 95 : 80 })
-    .toBuffer();
 
 export const convertFormDataToPhotoDbInsertAndLookupRecipeTitle =
   async (...args: Parameters<typeof convertFormDataToPhotoDbInsert>):

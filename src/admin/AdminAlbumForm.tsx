@@ -142,7 +142,7 @@ export default function AdminAlbumForm({
         'relative z-10',
       )}>
         <Link
-          className="button"
+          className="button liquid-glass"
           href={PATH_ADMIN_ALBUMS}
         >
           Cancel

@@ -9,6 +9,8 @@ import {
   RefObject,
 } from 'react';
 import Tooltip from '../Tooltip';
+import { usePathname } from 'next/navigation';
+import { isPathAdmin } from '@/app/path';
 
 export default function LoaderButton({
   ref,
@@ -32,6 +34,7 @@ export default function LoaderButton({
   tooltip,
   tooltipColor,
   tooltipSide,
+  translucent,
   ...rest
 }: {
   ref?: RefObject<HTMLButtonElement | null>
@@ -50,7 +53,11 @@ export default function LoaderButton({
   tooltip?: string
   tooltipColor?: ComponentProps<typeof Tooltip>['color']
   tooltipSide?: ComponentProps<typeof Tooltip>['side']
+  translucent?: boolean
 } & ButtonHTMLAttributes<HTMLButtonElement>) {
+  const pathname = usePathname();
+  const useGlass = translucent ?? isPathAdmin(pathname);
+
   const button =
     <button
       {...rest}
@@ -72,6 +79,7 @@ export default function LoaderButton({
         ),
         styleAs === 'link' && 'hover:text-dim',
         styleAs === 'link-without-hover' && 'hover:text-main',
+        styleAs === 'button' && useGlass && 'liquid-glass',
         'inline-flex items-center gap-1.5 self-start whitespace-nowrap',
         primary && 'primary',
         // Hide mouse-click focus ring, but keep one for keyboard navigation

@@ -1,11 +1,10 @@
-import { useAppState } from '@/app/AppState';
 import clsx from 'clsx/lite';
 import { FaCircle } from 'react-icons/fa6';
 
-export default function InsightsIndicatorDot({
+export default function IndicatorDot({
   className,
   size = 'medium',
-  colorOverride,
+  color = 'blue',
   top,
   right,
   bottom,
@@ -13,14 +12,12 @@ export default function InsightsIndicatorDot({
 }: {
   className?: string
   size?: 'small' | 'medium' | 'large'
-  colorOverride?: 'blue' | 'yellow'
+  color?: 'blue' | 'yellow'
   top?: number
   right?: number
   bottom?: number
   left?: number
 }) {
-  const { insightsIndicatorStatus } = useAppState();
-
   const getSize = () => {
     switch (size) {
       case 'small': return 6;
@@ -39,7 +36,7 @@ export default function InsightsIndicatorDot({
           bottom !== undefined ||
           left !== undefined
         ) && 'absolute',
-        (colorOverride ?? insightsIndicatorStatus) === 'blue'
+        color === 'blue'
           ? 'text-blue-500'
           : 'text-amber-500',
         className,

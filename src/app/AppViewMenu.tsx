@@ -5,12 +5,7 @@ import IconFull from '@/components/icons/IconFull';
 import IconGrid from '@/components/icons/IconGrid';
 import IconGridMasonry from '@/components/icons/IconGridMasonry';
 import { useAppText } from '@/i18n/state/client';
-import { KEY_COMMANDS } from '@/photo/key-commands';
 import clsx from 'clsx/lite';
-import {
-  GRID_HOMEPAGE_ENABLED,
-  SHOW_KEYBOARD_SHORTCUT_TOOLTIPS,
-} from './config';
 
 export default function AppViewMenu({
   isViewFull,
@@ -40,11 +35,9 @@ export default function AppViewMenu({
       ? undefined
       : () => onSelectView?.(false)}
     active={!isViewFull}
-    tooltip={{...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-      content: appText.nav.grid,
-      keyCommand: KEY_COMMANDS.grid,
-    }}}
-    width="narrow"
+    translucent
+    className="liquid-glass-square-left liquid-glass-border-left"
+    tooltip={{ content: appText.nav.grid }}
     noPadding
   />;
 
@@ -56,11 +49,9 @@ export default function AppViewMenu({
       ? undefined
       : () => onSelectView?.(true)}
     active={isViewFull}
-    tooltip={{...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-      content: appText.nav.full,
-      keyCommand: KEY_COMMANDS.full,
-    }}}
-    width="narrow"
+    translucent
+    className="liquid-glass-square-right"
+    tooltip={{ content: appText.nav.full }}
     noPadding
   />;
 
@@ -69,12 +60,9 @@ export default function AppViewMenu({
       className={clsx(
         className,
         'flex items-center',
-        '*:rounded-lg *:overflow-hidden',
       )}
     >
-      {GRID_HOMEPAGE_ENABLED
-        ? [switcherItemGrid, switcherItemFull]
-        : [switcherItemFull, switcherItemGrid]}
+      {[switcherItemFull, switcherItemGrid]}
     </div>
   );
 }

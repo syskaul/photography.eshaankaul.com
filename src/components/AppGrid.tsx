@@ -23,6 +23,7 @@ export default function AppGrid({
   classNameSide,
   contentMain,
   contentSide,
+  mainFullWidth,
   sideFirstOnMobile,
   sideHiddenOnMobile = true,
   ...props
@@ -33,6 +34,7 @@ export default function AppGrid({
   classNameSide?: string
   contentMain: ReactNode
   contentSide?: ReactNode
+  mainFullWidth?: boolean
   sideFirstOnMobile?: boolean
   sideHiddenOnMobile?: boolean
 } & HTMLAttributes<HTMLDivElement>) {
@@ -40,6 +42,8 @@ export default function AppGrid({
     <div
       {...props}
       ref={containerRef}
+      data-app-grid=""
+      data-app-grid-sidebar={contentSide ? '' : undefined}
       className={clsx(
         'grid',
         'grid-cols-1 md:grid-cols-12',
@@ -50,9 +54,10 @@ export default function AppGrid({
         className,
       )}
     >
-      <div className={clsx(
-        'col-span-1 md:col-span-9',
-        CLASS_COLUMN_OFFSET,
+      <div data-app-grid-main="" className={clsx(
+        mainFullWidth
+          ? 'col-span-1 md:col-span-12'
+          : clsx('col-span-1 md:col-span-9', CLASS_COLUMN_OFFSET),
         sideFirstOnMobile && 'order-2 md:order-none',
         // Reenable pointer events
         'pointer-events-auto',

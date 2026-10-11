@@ -102,21 +102,6 @@ export const streamOpenAiImageQuery = async (
   return stream.value;
 };
 
-export const generateOpenAiImageQuery = async (
-  imageBase64: string,
-  query: string,
-  isBatch?: boolean,
-) => {
-  await checkRateLimitAndThrow(isBatch);
-
-  const args = getImageTextArgs(imageBase64, query);
-
-  if (args) {
-    return generateText(args)
-      .then(({ text }) => cleanUpAiTextResponse(text));
-  }
-};
-
 // Sole path to an object query, so the rate limit can't be skipped by a
 // caller. Checked after the model is resolved to avoid spending a token
 // on a request that was never going to be sent.
@@ -148,49 +133,6 @@ export const generateOpenAiImageObjectQuery = async <T extends z.ZodSchema>(
     return generateImageObjectQuery(model, imageBase64, query, schema, isBatch);
   } else {
     throw new Error('No AI model configured');
-  }
-};
-
-// Pins an explicit model id rather than the configured OPENAI_MODEL, so that
-// models can be compared side-by-side. Requiring `openaiClient` keeps the
-// no-auto-spend backstop intact: a secret key is what makes direct OpenAI the
-// active provider in the first place. Rate limited as a batch, since a single
-// comparison fans out across several models and photos.
-export const generateOpenAiImageObjectQueryForModel = async <
-  T extends z.ZodSchema,
->(
-  imageBase64: string,
-  query: string,
-  schema: T,
-  modelId: OpenAIModel,
-): Promise<z.infer<T>> => {
-  if (openaiClient) {
-    return generateImageObjectQuery(
-      openaiClient(modelId),
-      imageBase64,
-      query,
-      schema,
-      true,
-    );
-  } else {
-    throw new Error('OPENAI_SECRET_KEY required to query a specific model');
-  }
-};
-
-export const generateOpenAiImageQueryForModel = async (
-  imageBase64: string,
-  query: string,
-  modelId: OpenAIModel,
-) => {
-  if (openaiClient) {
-    await checkRateLimitAndThrow(true);
-    return generateText(getImageTextArgsForModel(
-      openaiClient(modelId),
-      imageBase64,
-      query,
-    )).then(({ text }) => cleanUpAiTextResponse(text));
-  } else {
-    throw new Error('OPENAI_SECRET_KEY required to query a specific model');
   }
 };
 

@@ -1,18 +1,13 @@
-import { META_TITLE } from '@/app/config';
 import type { CategoryKey } from '@/category';
-import { AppTextState } from '@/i18n/state';
 import type { Photo } from '@/photo';
 
-export interface LibraryInsert {
+export interface Library {
   id: number
   title?: string
   subhead?: string
   description?: string
   photoIdAvatar?: string
   photoIdHero?: string
-}
-
-export interface Library extends LibraryInsert {
   createdAt: Date
   updatedAt: Date
 }
@@ -30,13 +25,3 @@ export interface LibrarySetFolderRow {
   title: string
   folders: LibrarySetFolder[]
 }
-
-// Leave title/subhead blank to reveal default values
-export const getLibraryMeta = (
-  appText: AppTextState,
-  title?: string,
-  subhead?: string,
-) => ({
-  title: title || META_TITLE || appText.library.titleDefault,
-  subhead,
-});

@@ -1,7 +1,7 @@
 /* eslint-disable @stylistic/max-len */
 import { Photo } from '@/photo';
 import { PhotoSetCategory } from '@/category';
-import { getBaseUrl, GRID_HOMEPAGE_ENABLED } from './config';
+import { getBaseUrl } from './config';
 import { Camera } from '@/camera';
 import { parameterize } from '@/utility/string';
 import { Lens } from '@/lens';
@@ -18,27 +18,12 @@ export const PATH_SIGN_IN               = '/sign-in';
 export const PATH_OG                    = '/og';
 
 // Core: inferred
-export const PATH_GRID_INFERRED = GRID_HOMEPAGE_ENABLED
-  ? PATH_ROOT
-  : PATH_GRID;
-export const PATH_FULL_INFERRED = GRID_HOMEPAGE_ENABLED
-  ? PATH_FULL
-  : PATH_ROOT;
+export const PATH_GRID_INFERRED = PATH_GRID;
+export const PATH_FULL_INFERRED = PATH_ROOT;
 
 // Modifiers
 const EDIT = 'edit';
 const IMAGE = 'image';
-
-// Sort
-export const PARAM_SORT_TYPE_TAKEN_AT     = 'taken-at';
-export const PARAM_SORT_TYPE_UPLOADED_AT  = 'uploaded-at';
-export const PARAM_SORT_TYPE_COLOR        = 'chromatic';
-export const PARAM_SORT_ORDER_DESCENDING  = 'descending';
-export const PARAM_SORT_ORDER_ASCENDING   = 'ascending';
-export const doesPathOfferSort = (pathname: string) =>
-  pathname === PATH_ROOT ||
-  pathname.startsWith(PATH_GRID) ||
-  pathname.startsWith(PATH_FULL);
 
 // Feeds
 export const PATH_SITEMAP               = '/sitemap.xml';
@@ -76,11 +61,9 @@ export const PATH_ADMIN_ALBUMS          = `${PATH_ADMIN}/albums`;
 export const PATH_ADMIN_ALBUM_NEW       = `${PATH_ADMIN_ALBUMS}/new`;
 export const PATH_ADMIN_RECIPES         = `${PATH_ADMIN}/recipes`;
 export const PATH_ADMIN_CONFIGURATION   = `${PATH_ADMIN}/configuration`;
-export const PATH_ADMIN_INSIGHTS        = `${PATH_ADMIN}/insights`;
 export const PATH_ADMIN_LIBRARY_EDIT    = `${PATH_LIBRARY}/${EDIT}`;
 export const PATH_ADMIN_BASELINE        = `${PATH_ADMIN}/baseline`;
 export const PATH_ADMIN_COMPONENTS      = `${PATH_ADMIN}/components`;
-export const PATH_ADMIN_AI_MODELS       = `${PATH_ADMIN}/ai-models`;
 
 // Debug paths
 export const PATH_DEBUG_CONFIGURATION   = `${PATH_ADMIN_CONFIGURATION}/export.json`;
@@ -108,12 +91,10 @@ export const PATHS_ADMIN = [
   PATH_ADMIN_UPLOADS,
   PATH_ADMIN_ALBUMS,
   PATH_ADMIN_RECIPES,
-  PATH_ADMIN_INSIGHTS,
   PATH_ADMIN_CONFIGURATION,
   PATH_ADMIN_LIBRARY_EDIT,
   PATH_ADMIN_BASELINE,
   PATH_ADMIN_COMPONENTS,
-  PATH_ADMIN_AI_MODELS,
 ];
 
 export const PATHS_TO_CACHE = [
@@ -444,7 +425,7 @@ export const isPathPhotoSet = (pathname?: string) =>
   isPathFilm(pathname) ||
   isPathFocalLength(pathname);
 
-// Home screen paths, including sort variants of grid/full
+// Home screen paths
 export const isPathHome = (pathname?: string) =>
   isPathRoot(pathname) ||
   isPathGrid(pathname) ||
@@ -469,14 +450,10 @@ export const isPathAdminPhotos = (pathname?: string) =>
 export const isPathAdminPhotoEdit = (pathname = '') =>
   new RegExp(`^${PATH_ADMIN_PHOTOS}/[^/]+/${EDIT}/?$`).test(pathname);
 
-export const isPathAdminInsights = (pathname?: string) =>
-  checkPathPrefix(pathname, PATH_ADMIN_INSIGHTS);
-
 export const isPathAdminConfiguration = (pathname?: string) =>
   checkPathPrefix(pathname, PATH_ADMIN_CONFIGURATION);
 
 export const isPathAdminInfo = (pathname?: string) =>
-  isPathAdminInsights(pathname) ||
   isPathAdminConfiguration(pathname);
 
 export const isPathProtected = (pathname?: string) => {

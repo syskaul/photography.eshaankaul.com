@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import { AppTextContext } from './client';
 import { I18N } from '..';
 import { generateAppTextState } from '.';
-import MixpanelConsentProvider from '@/analytics/MixpanelConsentProvider';
+import MixpanelProvider from '@/analytics/MixpanelProvider';
 
 export default function AppTextProviderClient({
   children,
@@ -15,9 +15,9 @@ export default function AppTextProviderClient({
 }) {
   return (
     <AppTextContext.Provider value={generateAppTextState(value)}>
-      <MixpanelConsentProvider privacyText={value.privacy}>
+      <MixpanelProvider>
         {children}
-      </MixpanelConsentProvider>
+      </MixpanelProvider>
     </AppTextContext.Provider>
   );
 }

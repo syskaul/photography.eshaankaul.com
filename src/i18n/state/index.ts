@@ -33,23 +33,10 @@ export const generateAppTextState = (i18n: I18N) => {
       found: (quantity: string) =>
         i18n.cmdk.found.replace('{{quantity}}', quantity),
     },
-    library: {
-      ...i18n.library,
-      updated: (distance: string) =>
-        i18n.library.updated.replace('{{distance}}', distance),
-    },
     admin: {
       ...i18n.admin,
       deleteConfirm: (photoTitle: string) =>
         i18n.admin.deleteConfirm.replace('{{photoTitle}}', photoTitle),
-      setVisibilityPlaceholder: (quantity: string) =>
-        i18n.admin.setVisibilityPlaceholder.replace('{{quantity}}', quantity),
-      setVisibilityConfirm: (visibility: string, quantity: string) =>
-        i18n.admin.setVisibilityConfirm
-          .replace('{{visibility}}', visibility)
-          .replace('{{quantity}}', quantity),
-      setVisibilitySuccess: (quantity: string) =>
-        i18n.admin.setVisibilitySuccess.replace('{{quantity}}', quantity),
       photosSelected: (quantity: string) =>
         i18n.admin.photosSelected.replace('{{quantity}}', quantity),
       albumPlaceholder: (quantity: string) =>

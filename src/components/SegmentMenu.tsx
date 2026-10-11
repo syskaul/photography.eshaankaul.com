@@ -29,9 +29,9 @@ export default function SegmentMenu<T extends string>({
           onClick={() => onChange(value)}
           className={clsx(
             'link',
-            'rounded-full',
+            'rounded-full liquid-glass',
             value === selected
-              ? 'bg-dim text-main'
+              ? 'liquid-glass-selected text-main'
               : 'bg-transparent text-medium',
             'flex items-center justify-center',
             'h-7 min-w-14',

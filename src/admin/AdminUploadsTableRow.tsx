@@ -85,13 +85,13 @@ export default function AdminUploadsTableRow({
       className={clsx(
         'flex items-center grow',
         'transition-opacity',
-        'rounded-lg overflow-hidden',
+        'rounded-lg',
         'border border-medium bg-extra-dim',
         isAdding && !isComplete && status !== 'adding' && 'opacity-30',
       )}
     >
       <div className={clsx(
-        'self-stretch',
+        'self-stretch rounded-l-lg overflow-hidden',
         'w-[40%] sm:w-auto shrink-0',
         'transition-transform',
       )}>

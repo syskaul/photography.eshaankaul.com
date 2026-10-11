@@ -3,31 +3,26 @@
 import {
   PATH_ADMIN_ALBUMS,
   PATH_ADMIN_CONFIGURATION,
-  PATH_ADMIN_INSIGHTS,
   PATH_ADMIN_PHOTOS,
   PATH_ADMIN_PHOTOS_UPDATES,
   PATH_ADMIN_RECIPES,
   PATH_ADMIN_UPLOADS,
 } from '@/app/path';
 import { useAppState } from '@/app/AppState';
-import { useUploadState } from '@/admin/upload/UploadState';
-import { IoArrowDown, IoArrowUp } from 'react-icons/io5';
 import { clsx } from 'clsx/lite';
 import AdminAppInfoIcon from './AdminAppInfoIcon';
 import { signOutAction } from '@/auth/actions';
 import { useMemo } from 'react';
 import IconPhoto from '@/components/icons/IconPhoto';
-import IconUpload from '@/components/icons/IconUpload';
 import IconRecipe from '@/components/icons/IconRecipe';
 import IconFolder from '@/components/icons/IconFolder';
 import IconSignOut from '@/components/icons/IconSignOut';
 import IconBroom from '@/components/icons/IconBroom';
-import InsightsIndicatorDot from './insights/InsightsIndicatorDot';
-import Spinner from '@/components/Spinner';
+import IndicatorDot from './IndicatorDot';
 import { useAppText } from '@/i18n/state/client';
 import SwitcherItemMenu from '@/components/switcher/SwitcherItemMenu';
 import { MoreMenuSection } from '@/components/more/MoreMenu';
-import { FiXSquare } from 'react-icons/fi';
+import { FiSettings, FiXSquare } from 'react-icons/fi';
 import { useSelectPhotosState } from './select/SelectPhotosState';
 import { useEditTitlesState } from './edit-titles/EditTitlesState';
 import IconAlbum from '@/components/icons/IconAlbum';
@@ -50,9 +45,11 @@ const labelWithTrailingEllipsis = (text: string) => {
 export default function AdminAppMenu({
   isOpen,
   setIsOpen,
+  isActive,
 }: {
   isOpen?: boolean
   setIsOpen?: (isOpen: boolean) => void
+  isActive?: boolean
 }) {
   const {
     photosCountTotal = 0,
@@ -60,12 +57,9 @@ export default function AdminAppMenu({
     uploadsCount = 0,
     albumsCount = 0,
     recipesCount = 0,
-    isLoadingAdminData,
     refreshAdminData,
     clearAuthStateAndRedirectIfNecessary,
   } = useAppState();
-
-  const { startUpload } = useUploadState();
 
   const {
     isSelectingPhotos,
@@ -80,17 +74,6 @@ export default function AdminAppMenu({
   } = useEditTitlesState();
 
   const appText = useAppText();
-
-  const sectionUpload: MoreMenuSection = useMemo(() => ({ items: [{
-    label: appText.admin.uploadPhotos,
-    icon: <IconUpload
-      size={15}
-      className="translate-x-[0.5px] translate-y-[0.5px]"
-    />,
-    annotation: isLoadingAdminData &&
-      <Spinner className="translate-y-[1.5px]" />,
-    action: startUpload,
-  }]}), [appText, isLoadingAdminData, startUpload]);
 
   const sectionMain: MoreMenuSection = useMemo(() => {
     const items: MoreMenuSection['items'] = [];
@@ -113,9 +96,8 @@ export default function AdminAppMenu({
           <span className="mr-3 text-blue-500">
             {photosCountNeedSync}
           </span>
-          <InsightsIndicatorDot
+          <IndicatorDot
             className="inline-block translate-y-[-1px]"
-            colorOverride="blue"
             size="small"
           />
         </>,
@@ -203,13 +185,7 @@ export default function AdminAppMenu({
         size="small"
         className="translate-x-[-0.5px]"
       />,
-      items: [{
-        label: appText.admin.appInsightsShort,
-        href: PATH_ADMIN_INSIGHTS,
-      }, {
-        label: appText.admin.appConfigShort,
-        href: PATH_ADMIN_CONFIGURATION,
-      }],
+      href: PATH_ADMIN_CONFIGURATION,
     });
 
     return { items };
@@ -232,25 +208,25 @@ export default function AdminAppMenu({
     items: [{
       label: appText.auth.signOut,
       icon: <IconSignOut size={15} />,
+      className: 'text-error *:hover:text-error *:active:text-error',
+      color: 'red',
       action: () => signOutAction().then(clearAuthStateAndRedirectIfNecessary),
     }],
   }), [appText.auth.signOut, clearAuthStateAndRedirectIfNecessary]);
 
   const sections = useMemo(() =>
-    [sectionUpload, sectionMain, sectionSignOut]
-  , [sectionUpload, sectionMain, sectionSignOut]);
+    [sectionMain, sectionSignOut]
+  , [sectionMain, sectionSignOut]);
 
   return (
     <SwitcherItemMenu
       {...{ isOpen, setIsOpen }}
-      icon={<div className={`w-full ${HEIGHT_CLASS} overflow-hidden`}>
-        <div className={clsx(
-          'relative flex flex-col items-center gap-2',
-          'translate-y-[-16px]',
-        )}>
-          <IoArrowDown size={16} className="shrink-0" />
-          <IoArrowUp size={16} className="shrink-0" />
-        </div>
+      classNameButton={clsx(isActive && 'text-main! hover:text-main!')}
+      icon={<div className={clsx(
+        `w-full ${HEIGHT_CLASS}`,
+        'flex items-center justify-center',
+      )}>
+        <FiSettings size={16} className="shrink-0" />
       </div>}
       align="start"
       sideOffset={10}
@@ -258,10 +234,6 @@ export default function AdminAppMenu({
       onOpen={refreshAdminData}
       sections={sections}
       ariaLabel="Admin Menu"
-      classNameButtonOpen={clsx(
-        '[&>*>*]:translate-y-[8px]',
-        '[&>*>*]:duration-300',
-      )}
     />
   );
 }

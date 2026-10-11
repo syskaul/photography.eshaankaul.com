@@ -6,7 +6,6 @@ import { Fragment } from 'react';
 import PhotoSmall from '@/photo/PhotoSmall';
 import { clsx } from 'clsx/lite';
 import { pathForAdminPhotoEdit } from '@/app/path';
-import { COLOR_SORT_ENABLED } from '@/app/config';
 import PhotoDate from '@/photo/PhotoDate';
 import EditButton from './EditButton';
 import { useAppState } from '@/app/AppState';
@@ -14,13 +13,7 @@ import { RevalidatePhoto } from '@/photo/InfinitePhotoScroll';
 import PhotoSyncButton from './PhotoSyncButton';
 import { Timezone } from '@/utility/timezone';
 import { photoNeedsToBeUpdated } from '@/photo/update';
-import PhotoVisibilityIcon from '@/photo/visibility/PhotoVisibilityIcon';
-import { doesPhotoHaveDefaultVisibility } from '@/photo/visibility';
 import UpdateTooltip from '@/photo/update/UpdateTooltip';
-import PhotoColors from '@/photo/color/PhotoColors';
-import SyncColorButton from '@/photo/color/SyncColorButton';
-import ColorDot from '@/photo/color/ColorDot';
-import { getKeyColorFromPhoto } from '@/photo/color/client';
 import AdminPhotoMenu from './AdminPhotoMenu';
 import PhotoLink from '@/photo/PhotoLink';
 
@@ -37,7 +30,6 @@ export default function AdminPhotosTable({
   timezone,
   shouldScrollIntoViewOnExternalSync,
   updateMode,
-  debugColorData,
 }: {
   photos: Photo[],
   onLastPhotoVisible?: () => void
@@ -50,9 +42,7 @@ export default function AdminPhotosTable({
   canDelete?: boolean
   timezone?: Timezone
   shouldScrollIntoViewOnExternalSync?: boolean
-  // Only sync color data where possible
   updateMode?: boolean
-  debugColorData?: boolean
 }) {
   const { invalidateSwr } = useAppState();
 
@@ -80,47 +70,19 @@ export default function AdminPhotosTable({
               key={photo.id}
               className="lg:min-w-[50%] flex items-center gap-1.5"
             >
-              {COLOR_SORT_ENABLED &&
-                <span className="inline-flex shrink-0">
-                  <ColorDot
-                    color={getKeyColorFromPhoto(photo)}
-                    title="Key Color"
-                    size="small"
-                    className="mr-1"
-                  />
-                </span>}
               <span className={clsx(
                 'truncate',
               )}>
                 <PhotoLink
                   photo={photo}
                   prefetch={false}
-                  showHover
                 >
                   {titleForPhoto(photo, false)}
                 </PhotoLink>
-                {debugColorData && photo.colorData &&
-                  <div>
-                    <PhotoColors colorData={photo.colorData} />
-                  </div>}
               </span>
-              {!doesPhotoHaveDefaultVisibility(photo) &&
-                <span className={clsx(
-                  'inline-flex items-center',
-                )}>
-                  <PhotoVisibilityIcon photo={photo} />
-                </span>}
               {photoNeedsToBeUpdated(photo) &&
                 <span>
                   <UpdateTooltip photo={photo} />
-                </span>}
-              {photo.priorityOrder !== null &&
-                <span className={clsx(
-                  'px-[5px] py-[3px] sm:ml-[3px]',
-                  'text-xs leading-none',
-                  'bg-medium text-main rounded-sm',
-                )}>
-                  {photo.priorityOrder}
                 </span>}
             </span>
             <div className={clsx(
@@ -154,8 +116,6 @@ export default function AdminPhotosTable({
                   shouldScrollIntoViewOnExternalSync}
                 updateMode={updateMode}
               />}
-            {debugColorData &&
-              <SyncColorButton photoId={photo.id} />}
             <AdminPhotoMenu
               photo={photo}
               revalidatePhoto={revalidatePhoto}

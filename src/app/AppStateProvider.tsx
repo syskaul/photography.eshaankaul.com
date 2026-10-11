@@ -12,10 +12,7 @@ import { getAuthAction } from '@/auth/actions';
 import useSWR, { useSWRConfig } from 'swr';
 import {
   HIGH_DENSITY_GRID,
-  IS_DEVELOPMENT,
   IS_PRODUCTION,
-  MATTE_PHOTOS,
-  SHOW_ZOOM_CONTROLS,
 } from '@/app/config';
 import { ShareModalProps } from '@/share';
 import { storeTimezoneCookie } from '@/utility/timezone';
@@ -43,11 +40,9 @@ import useSupportsHover from '@/utility/useSupportsHover';
 export default function AppStateProvider({
   children,
   areAdminDebugToolsEnabled,
-  isAdminAiModelDebugEnabled,
 }: {
   children: ReactNode
   areAdminDebugToolsEnabled?: boolean
-  isAdminAiModelDebugEnabled?: boolean
 }) {
   const router = useRouter();
 
@@ -104,16 +99,10 @@ export default function AppStateProvider({
   // DEBUG
   const [isGridHighDensity, setIsGridHighDensity] =
     useState(HIGH_DENSITY_GRID);
-  const [areZoomControlsShown, setAreZoomControlsShown] =
-    useState(SHOW_ZOOM_CONTROLS);
-  const [arePhotosMatted, setArePhotosMatted] =
-    useState(MATTE_PHOTOS);
   const [shouldDebugImageFallbacks, setShouldDebugImageFallbacks] =
     useState(false);
   const [shouldShowBaselineGrid, setShouldShowBaselineGrid] =
     useState(false);
-  const [shouldDebugInsights, setShouldDebugInsights] =
-    useState(IS_DEVELOPMENT);
   const [shouldDebugRecipeOverlays, setShouldDebugRecipeOverlays] =
     useState(false);
 
@@ -264,19 +253,12 @@ export default function AppStateProvider({
         setIsPhotoSetFull,
         // DEBUG
         areAdminDebugToolsEnabled,
-        isAdminAiModelDebugEnabled,
         isGridHighDensity,
         setIsGridHighDensity,
-        areZoomControlsShown,
-        setAreZoomControlsShown,
-        arePhotosMatted,
-        setArePhotosMatted,
         shouldDebugImageFallbacks,
         setShouldDebugImageFallbacks,
         shouldShowBaselineGrid,
         setShouldShowBaselineGrid,
-        shouldDebugInsights,
-        setShouldDebugInsights,
         shouldDebugRecipeOverlays,
         setShouldDebugRecipeOverlays,
       }}

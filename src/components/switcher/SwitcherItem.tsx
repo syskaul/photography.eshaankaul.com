@@ -30,6 +30,7 @@ export default function SwitcherItem({
   tooltip,
   width = 'normal',
   iconIsFocusable,
+  translucent = false,
 }: {
   icon: ReactNode
   title?: string
@@ -43,6 +44,7 @@ export default function SwitcherItem({
   prefetch?: boolean
   tooltip?: ComponentProps<typeof Tooltip>
   width?: 'narrow' | 'normal'
+  translucent?: boolean
   // Set when `icon` contains its own focusable element, so the tooltip
   // doesn't wrap it in a button. See `triggerIsFocusable` on TooltipPrimitive
   iconIsFocusable?: boolean
@@ -58,12 +60,23 @@ export default function SwitcherItem({
     `${widthClass} ${HEIGHT_CLASS}`,
     isInteractive && 'cursor-pointer',
     isInteractive && SWITCHER_ITEM_INTERACTIVE_BG,
-    active
-      ? 'text-black dark:text-white'
-      : 'text-gray-400 dark:text-gray-600',
-    active
-      ? 'hover:text-black dark:hover:text-white'
-      : 'hover:text-gray-700 dark:hover:text-gray-400',
+    translucent && 'liquid-glass',
+    translucent && active && 'liquid-glass-selected',
+    translucent && !active && 'liquid-glass-inactive',
+    translucent
+      ? active
+        ? 'text-black dark:text-white'
+        : 'text-gray-400 dark:text-gray-400'
+      : active
+        ? 'text-black dark:text-white'
+        : 'text-gray-400 dark:text-gray-600',
+    translucent
+      ? active
+        ? 'hover:text-black dark:hover:text-white'
+        : 'hover:text-gray-400 dark:hover:text-gray-400'
+      : active
+        ? 'hover:text-black dark:hover:text-white'
+        : 'hover:text-gray-700 dark:hover:text-gray-400',
     classNameProp,
   );
 

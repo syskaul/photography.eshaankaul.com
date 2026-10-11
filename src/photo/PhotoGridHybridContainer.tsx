@@ -9,8 +9,6 @@ import { clsx } from 'clsx/lite';
 import AnimateItems from '@/components/AnimateItems';
 import { ComponentProps, useCallback, useState, ReactNode } from 'react';
 import { GRID_SPACE_CLASSNAME } from '@/components';
-import { SortBy } from './sort';
-import { MASONRY_GRID_ENABLED } from '@/app/config';
 import { useAppState } from '@/app/AppState';
 import {
   INFINITE_SCROLL_FULL_INITIAL,
@@ -23,22 +21,14 @@ export default function PhotoGridHybridContainer({
   cacheKey,
   photos,
   count,
-  sortBy,
-  sortWithPriority,
-  excludeFromFeeds,
   animateOnFirstLoadOnly,
   header,
-  sidebar,
   className,
   ...categories
 }: {
   cacheKey: string
   count: number
-  sortBy?: SortBy
-  sortWithPriority?: boolean
-  excludeFromFeeds?: boolean
   header?: ReactNode
-  sidebar?: ReactNode
   className?: string
 } & ComponentProps<typeof PhotoGrid>) {
   const { isPhotoSetFull } = useAppState();
@@ -66,8 +56,12 @@ export default function PhotoGridHybridContainer({
 
   return photosFull
     ? <div className={className}>
-      <AppGrid className="mt-1.5 mb-6" contentMain={renderHeader} />
-      <div className="space-y-1">
+      <AppGrid
+        className="mt-1.5 mb-6"
+        contentMain={renderHeader}
+        mainFullWidth
+      />
+      <div className="space-y-4">
         <PhotosLarge {...{ photos: photosFull, ...categories }} />
         {count > photosFull.length &&
           <PhotosLargeInfinite {...{
@@ -75,21 +69,19 @@ export default function PhotoGridHybridContainer({
             cacheKey: `${cacheKey}-full`,
             initialOffset: photosFull.length,
             itemsPerPage: INFINITE_SCROLL_FULL_MULTIPLE,
-            sortBy,
-            sortWithPriority,
-            excludeFromFeeds,
             ...categories,
           }} />}
       </div>
     </div>
     : <AppGrid
+      mainFullWidth
       contentMain={<div className={clsx(
         header && 'space-y-8 mt-1.5',
         className,
       )}>
         {renderHeader}
         <div className={GRID_SPACE_CLASSNAME}>
-          {(!MASONRY_GRID_ENABLED || count <= photos.length) && (
+          {count <= photos.length && (
             <PhotoGrid {...{
               photos,
               ...categories,
@@ -101,17 +93,13 @@ export default function PhotoGridHybridContainer({
             <PhotoGridInfinite {...{
               // Keep grid and full frame caches separate
               cacheKey: `${cacheKey}-grid`,
-              initialPhotos: MASONRY_GRID_ENABLED ? photos : undefined,
+              initialPhotos: photos,
               initialOffset: photos.length,
-              sortBy,
-              sortWithPriority,
-              excludeFromFeeds,
               ...categories,
               canStart: shouldAnimateDynamicItems,
               animateOnFirstLoadOnly,
             }} />}
         </div>
       </div>}
-      contentSide={sidebar}
     />;
 }

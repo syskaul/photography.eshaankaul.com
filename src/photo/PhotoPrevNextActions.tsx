@@ -21,11 +21,8 @@ import {
   syncPhotoAction,
 } from './actions';
 import Tooltip from '@/components/Tooltip';
-import {
-  ALLOW_PUBLIC_DOWNLOADS,
-  SHOW_KEYBOARD_SHORTCUT_TOOLTIPS,
-} from '@/app/config';
 import { downloadFileFromBrowser } from '@/utility/url';
+import { useMixpanel } from '@/analytics/MixpanelProvider';
 import useKeydownHandler from '@/utility/useKeydownHandler';
 import { KEY_COMMANDS } from './key-commands';
 import { syncPhotoConfirmText } from '@/admin/confirm';
@@ -49,6 +46,7 @@ export default function PhotoPrevNextActions({
   const { setNextPhotoAnimation, isUserSignedIn } = useAppState();
 
   const appText = useAppText();
+  const { track } = useMixpanel();
 
   const photoTitle = photo
     ? photo.title
@@ -126,11 +124,12 @@ export default function PhotoPrevNextActions({
           }
           break;
         case KEY_COMMANDS.download:
-          if (
-            (isUserSignedIn || ALLOW_PUBLIC_DOWNLOADS) &&
-          downloadUrl &&
-          downloadFileName
-          ) {
+          if (photo && downloadUrl && downloadFileName) {
+            track('photo_download', {
+              photo_id: photo.id,
+              photo_title: photo.title ?? '',
+              download_method: 'keyboard',
+            });
             downloadFileFromBrowser(downloadUrl, downloadFileName);
           }
           break;
@@ -154,6 +153,7 @@ export default function PhotoPrevNextActions({
     photo,
     downloadUrl,
     downloadFileName,
+    track,
     syncPhoto,
     deletePhoto,
     hasAiContentGeneration,
@@ -174,10 +174,7 @@ export default function PhotoPrevNextActions({
       )}>
         <Tooltip
           triggerIsFocusable
-          {...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-            content: appText.nav.prev,
-            keyCommand: KEY_COMMANDS.prev[0],
-          }}
+          content={appText.nav.prev}
         >
           <PhotoLink
             {...categories}
@@ -199,10 +196,7 @@ export default function PhotoPrevNextActions({
         </span>
         <Tooltip
           triggerIsFocusable
-          {...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-            content: appText.nav.next,
-            keyCommand: KEY_COMMANDS.next[0],
-          }}
+          content={appText.nav.next}
         >
           <PhotoLink
             {...categories}

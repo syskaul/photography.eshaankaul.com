@@ -85,7 +85,9 @@ describe('Postgres IAM authentication', () => {
         port: 5432,
         user: 'photos_app',
         database: 'photos',
-        ssl: true,
+        ssl: {
+          ca: expect.stringContaining('-----BEGIN CERTIFICATE-----'),
+        },
       }));
       expect(await poolConfig.password?.()).toBe('short-lived-token');
       expect(signer.Signer).toHaveBeenCalledWith(expect.objectContaining({

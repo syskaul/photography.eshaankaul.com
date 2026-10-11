@@ -76,21 +76,6 @@ export const MIGRATIONS: Migration[] = [{
     END $$;
   `,
 }, {
-  label: '06: Exclude from feeds',
-  fields: ['exclude_from_feeds'],
-  run: () => sql`
-    ALTER TABLE photos
-    ADD COLUMN IF NOT EXISTS exclude_from_feeds BOOLEAN DEFAULT FALSE
-  `,
-}, {
-  label: '07: Color Data',
-  fields: ['color_data', 'color_sort'],
-  run: () => sql`
-    ALTER TABLE photos
-    ADD COLUMN IF NOT EXISTS color_data JSONB,
-    ADD COLUMN IF NOT EXISTS color_sort SMALLINT
-  `,
-}, {
   label: '08: Location',
   table: 'albums',
   fields: ['location'],
@@ -148,10 +133,10 @@ export const migrateAboutTableToLibrary = () =>
     END $$;
   `);
 
-let legacyPhotoColumnsMigration: Promise<void> | undefined;
+let legacyColumnsMigration: Promise<void> | undefined;
 
-export const migrateLegacyPhotoColumns = () => {
-  legacyPhotoColumnsMigration ??= query(`
+export const migrateLegacyColumns = () => {
+  legacyColumnsMigration ??= query(`
     DO $$
     BEGIN
       IF EXISTS(
@@ -163,16 +148,29 @@ export const migrateLegacyPhotoColumns = () => {
       THEN
         ALTER TABLE photos
         DROP COLUMN IF EXISTS tags,
-        DROP COLUMN IF EXISTS hidden;
+        DROP COLUMN IF EXISTS hidden,
+        DROP COLUMN IF EXISTS color_sort,
+        DROP COLUMN IF EXISTS color_data,
+        DROP COLUMN IF EXISTS priority_order;
+      END IF;
+      IF EXISTS(
+        SELECT 1
+        FROM information_schema.tables
+        WHERE table_schema = current_schema()
+        AND table_name = 'album_photo'
+      )
+      THEN
+        ALTER TABLE album_photo
+        DROP COLUMN IF EXISTS sort_order;
       END IF;
     END $$;
   `)
     .then(() => undefined)
     .catch(error => {
-      legacyPhotoColumnsMigration = undefined;
+      legacyColumnsMigration = undefined;
       throw error;
     });
-  return legacyPhotoColumnsMigration;
+  return legacyColumnsMigration;
 };
 
 export const migrationForError = (e: any) =>

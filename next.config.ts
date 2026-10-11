@@ -83,6 +83,9 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31536000,
   },
   serverExternalPackages: ['exifr'],
+  outputFileTracingIncludes: {
+    '/*': ['./src/platforms/rds-global-bundle.pem'],
+  },
   turbopack: {
     resolveAlias: {
       [LOCALE_ALIAS]: `@/${LOCALE_DYNAMIC}`,

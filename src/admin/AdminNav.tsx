@@ -1,5 +1,4 @@
 import {
-  getPhotosMetaCached,
   getPhotosMostRecentUpdateCached,
   getUniqueRecipesCached,
 } from '@/photo/cache';
@@ -14,19 +13,14 @@ import { getAppText } from '@/i18n/state/server';
 import { HAS_DATABASE } from '@/app/config';
 
 export default async function AdminNav() {
-  let countPhotos = 0;
   let countRecipes = 0;
   let mostRecentPhotoUpdateTime;
 
   if (HAS_DATABASE) {
     [
-      countPhotos,
       countRecipes,
       mostRecentPhotoUpdateTime,
     ] = await Promise.all([
-      getPhotosMetaCached()
-        .then(({ count }) => count)
-        .catch(() => 0),
       getUniqueRecipesCached().then(recipes => recipes.length)
         .catch(() => 0),
       getPhotosMostRecentUpdateCached().catch(() => undefined),
@@ -34,8 +28,6 @@ export default async function AdminNav() {
   }
 
   const appText = await getAppText();
-
-  const includeInsights = countPhotos > 0;
 
   // Photos
   const items = [{
@@ -65,7 +57,6 @@ export default async function AdminNav() {
     <AdminNavClient {...{
       items,
       mostRecentPhotoUpdateTime,
-      includeInsights,
     }} />
   );
 }

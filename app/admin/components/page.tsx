@@ -29,10 +29,10 @@ const FOLDER_LIMITS = [
   MAX_PHOTOS_TO_SHOW_PER_CATEGORY,
 ] as const;
 
-const getRandomPreviewPhotos = (
+const getPreviewPhotos = (
   options: PhotoQueryOptions,
   limit: number,
-) => getPhotosCached({ ...options, sortBy: 'random', limit })
+) => getPhotosCached({ ...options, limit })
   .catch(() => [] as Photo[]);
 
 const previewIndexes = (length: number) =>
@@ -127,7 +127,7 @@ export default async function ComponentsPage() {
 
   const folderPhotos = await Promise.all(
     folderQueries.map((query, index) =>
-      getRandomPreviewPhotos(
+      getPreviewPhotos(
         query.options,
         FOLDER_LIMITS[index % FOLDER_LIMITS.length] +
           PHOTO_FOLDER_PEEK_PHOTOS,

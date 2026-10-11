@@ -2,7 +2,7 @@
 
 import { descriptionForPhotoSet, Photo, PhotoDateRangePostgres } from '@/photo';
 import PhotoHeader from '@/photo/PhotoHeader';
-import { AI_CONTENT_GENERATION_ENABLED } from '@/app/config';
+import { AI_CONTENT_GENERATION_ENABLED, SEARCH_ENABLED } from '@/app/config';
 import { useAppText } from '@/i18n/state/client';
 import PhotoQuery from './PhotoQuery';
 
@@ -31,7 +31,7 @@ export default function QueryHeader({
         contrast="high"
         hoverType="none"
         // Editing the query only makes sense where it drives the whole page
-        editable={!selectedPhoto}
+        editable={SEARCH_ENABLED && !selectedPhoto}
       />}
       entityDescription={descriptionForPhotoSet(
         photos,

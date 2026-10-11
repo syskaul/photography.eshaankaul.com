@@ -201,10 +201,9 @@ export default function SelectMenu({
         {isOpen &&
           <div
             className={clsx(
-              'component-surface z-1',
+              'liquid-glass-surface text-main z-1',
               'absolute top-3 w-full px-1.5 py-1.5',
               'max-h-[12rem] overflow-y-auto flex flex-col',
-              'shadow-lg dark:shadow-xl',
               'animate-fade-in-from-top',
               '*:select-none',
             )}

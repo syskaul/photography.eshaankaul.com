@@ -9,10 +9,6 @@ import { testGooglePlacesConnection } from '@/platforms/google-places';
 import { APP_CONFIGURATION } from '@/app/config';
 import { getStorageUploadUrlsNoStore } from '@/platforms/storage/cache';
 import {
-  getGitHubMetaForCurrentApp,
-  indicatorStatusForSignificantInsights,
-} from './insights';
-import {
   getPhotosInNeedOfUpdateCountCached,
   getPhotosMetaCached,
   getUniqueRecipesCached,
@@ -33,7 +29,6 @@ export const getAdminDataAction = async () =>
     const [
       photosCount,
       photosCountNeedSync,
-      codeMeta,
       uploadsCount,
       albumsCount,
       recipesCount,
@@ -42,7 +37,6 @@ export const getAdminDataAction = async () =>
         .then(({ count }) => count)
         .catch(() => 0),
       getPhotosInNeedOfUpdateCountCached(),
-      getGitHubMetaForCurrentApp(),
       getStorageUploadUrlsNoStore()
         .then(urls => urls.length)
         .catch(e => {
@@ -57,11 +51,6 @@ export const getAdminDataAction = async () =>
         .catch(() => 0),
     ]);
 
-    const insightsIndicatorStatus = indicatorStatusForSignificantInsights({
-      codeMeta,
-      photosCountNeedSync,
-    });
-
     const photosCountTotal = photosCount;
 
     return {
@@ -71,7 +60,6 @@ export const getAdminDataAction = async () =>
       uploadsCount,
       albumsCount,
       recipesCount,
-      insightsIndicatorStatus,
     } as const;
   });
 

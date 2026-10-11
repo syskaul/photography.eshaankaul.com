@@ -10,21 +10,20 @@ import {
   isPathLibrary,
   isPathFull,
   isPathHome,
+  isPathAdmin,
   isPathPhotoSet,
 } from '@/app/path';
 import IconSearch from '../components/icons/IconSearch';
 import { useAppState } from '@/app/AppState';
 import {
-  SHOW_KEYBOARD_SHORTCUT_TOOLTIPS,
-  MASONRY_GRID_ENABLED,
+  SEARCH_ENABLED,
+  SHOW_LIBRARY,
 } from './config';
 import AdminAppMenu from '@/admin/AdminAppMenu';
 import Spinner from '@/components/Spinner';
 import clsx from 'clsx/lite';
 import {
   useCallback,
-  useEffect,
-  useMemo,
   useRef,
   useState,
   useTransition,
@@ -34,7 +33,6 @@ import useDelayedLoading from '@/utility/useDelayedLoading';
 import { usePathname, useRouter } from 'next/navigation';
 import { KEY_COMMANDS } from '@/photo/key-commands';
 import { useAppText } from '@/i18n/state/client';
-import { getSortStateFromPath } from '@/photo/sort/path';
 import { motion } from 'framer-motion';
 import IconLibrary from '@/components/icons/IconLibrary';
 import { BiHomeAlt as HomeIcon } from 'react-icons/bi';
@@ -58,30 +56,9 @@ export default function AppToolbar({
     isUserSignedIn,
     isUserSignedInEager,
     setIsCommandKOpen,
-    invalidateSwr,
     isPhotoSetFull,
     setIsPhotoSetFull,
   } = useAppState();
-
-  const sortConfig = useMemo(
-    () => getSortStateFromPath(pathname, appText),
-    [pathname, appText],
-  );
-
-  const {
-    sortBy,
-    pathGrid,
-    pathFull,
-  } = sortConfig;
-
-  const hasLoadedRef = useRef(false);
-  useEffect(() => {
-    if (hasLoadedRef.current) {
-      // After initial load, invalidate cache every time sort changes
-      invalidateSwr?.();
-    }
-    hasLoadedRef.current = true;
-  }, [invalidateSwr, sortBy]);
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -99,9 +76,9 @@ export default function AppToolbar({
   const isPhotoSet = isPathPhotoSet(pathname);
 
   const navigateHomeView = useCallback((isGrid: boolean) => {
-    const path = isGrid ? pathGrid : pathFull;
+    const path = isGrid ? PATH_GRID_INFERRED : PATH_FULL_INFERRED;
     startTransition(() => router.push(path));
-  }, [pathFull, pathGrid, router]);
+  }, [router]);
 
   const onKeyDown = useCallback((e: KeyboardEvent) => {
     if (!e.metaKey) {
@@ -136,6 +113,9 @@ export default function AppToolbar({
   ]);
   useKeydownHandler({ onKeyDown });
 
+  const hasAdminItem =
+    isUserSignedIn || (isUserSignedInEager && !isUserSignedIn);
+
   const showViewMenu = isHome || isPhotoSet;
   const isViewFull = isHome
     ? pathname === PATH_FULL_INFERRED || isPathFull(pathname)
@@ -147,46 +127,52 @@ export default function AppToolbar({
       'flex',
       'gap-1.5 sm:gap-4',
     )}>
-      <Switcher>
+      <Switcher type="borderless" divide={false}>
         <SwitcherItem
           icon={<HomeIcon size={17} />}
           href={PATH_ROOT}
           hrefRef={refHrefHome}
           active={isHome}
-          tooltip={{...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-            content: appText.nav.home,
-            keyCommand: KEY_COMMANDS.home,
-          }}}
+          translucent
+          className={clsx(
+            (SHOW_LIBRARY || SEARCH_ENABLED || hasAdminItem) &&
+              'liquid-glass-square-right',
+          )}
+          tooltip={{ content: appText.nav.home }}
         />
-        <SwitcherItem
-          icon={<IconLibrary />}
-          href={PATH_LIBRARY}
-          hrefRef={refHrefLibrary}
-          active={isPathLibrary(pathname)}
-          tooltip={{...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-            content: appText.nav.library,
-            keyCommand: KEY_COMMANDS.library,
-          }}}
-          noPadding
-        />
-        <SwitcherItem
-          icon={<IconSearch />}
-          onClick={() => setIsCommandKOpen?.(true)}
-          tooltip={{...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-            content: appText.nav.search,
-            keyCommandModifier: KEY_COMMANDS.search[0],
-            keyCommand: KEY_COMMANDS.search[1],
-          }}}
-          noPadding
-        />
+        {SHOW_LIBRARY &&
+          <SwitcherItem
+            icon={<IconLibrary />}
+            href={PATH_LIBRARY}
+            hrefRef={refHrefLibrary}
+            active={isPathLibrary(pathname)}
+            translucent
+            className={clsx(
+              SEARCH_ENABLED || hasAdminItem
+                ? 'liquid-glass-square liquid-glass-border-inline'
+                : 'liquid-glass-square-left liquid-glass-border-left',
+            )}
+            tooltip={{ content: appText.nav.library }}
+            noPadding
+          />}
+        {SEARCH_ENABLED &&
+          <SwitcherItem
+            icon={<IconSearch />}
+            onClick={() => setIsCommandKOpen?.(true)}
+            translucent
+            className="liquid-glass-square-left"
+            tooltip={{ content: appText.nav.search }}
+            noPadding
+          />}
         {/* Show spinner if admin is suspected to be logged in */}
         {(isUserSignedInEager && !isUserSignedIn) &&
           <SwitcherItem
             icon={<Spinner />}
             isInteractive={false}
+            translucent
             noPadding
             tooltip={{
-              ...!isAdminMenuOpen && SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
+              ...!isAdminMenuOpen && {
                 content: appText.nav.admin,
               },
             }}
@@ -194,6 +180,7 @@ export default function AppToolbar({
         {isUserSignedIn &&
           <SwitcherItem
             icon={<AdminAppMenu
+              isActive={isPathAdmin(pathname)}
               isOpen={isAdminMenuOpen}
               setIsOpen={isOpen => {
                 setIsAdminMenuOpen(isOpen);
@@ -203,8 +190,11 @@ export default function AppToolbar({
               }}
             />}
             iconIsFocusable
+            active={isPathAdmin(pathname)}
+            translucent
+            className="liquid-glass-square-left"
             tooltip={{
-              ...!isAdminMenuOpen && SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
+              ...!isAdminMenuOpen && {
                 content: appText.nav.admin,
               },
             }}
@@ -223,10 +213,9 @@ export default function AppToolbar({
           <AppViewMenuCompact
             className="sm:hidden"
             isViewFull={isViewFull}
-            isMasonry={MASONRY_GRID_ENABLED && isHome}
-            // Sort-aware paths retain the active sort while switching views
-            hrefGrid={isHome ? pathGrid : undefined}
-            hrefFull={isHome ? pathFull : undefined}
+            isMasonry={isHome}
+            hrefGrid={isHome ? PATH_GRID_INFERRED : undefined}
+            hrefFull={isHome ? PATH_FULL_INFERRED : undefined}
             onSelectView={setIsPhotoSetFull}
             isLoading={isViewSwitchLoading}
             isOpen={isViewMenuOpen}
@@ -240,9 +229,9 @@ export default function AppToolbar({
           <AppViewMenu
             className="max-sm:hidden"
             isViewFull={isViewFull}
-            isMasonry={MASONRY_GRID_ENABLED && isHome}
-            hrefGrid={isHome ? pathGrid : undefined}
-            hrefFull={isHome ? pathFull : undefined}
+            isMasonry={isHome}
+            hrefGrid={isHome ? PATH_GRID_INFERRED : undefined}
+            hrefFull={isHome ? PATH_FULL_INFERRED : undefined}
             onSelectView={setIsPhotoSetFull}
           />
         </motion.div>}

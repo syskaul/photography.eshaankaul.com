@@ -1,155 +1,26 @@
 'use client';
 
-import PhotoAlbum from '@/album/PhotoAlbum';
-import { useAppState } from '@/app/AppState';
-import PhotoCamera from '@/camera/PhotoCamera';
 import AnimateItems from '@/components/AnimateItems';
 import AppGrid from '@/components/AppGrid';
-import PhotoFilm from '@/film/PhotoFilm';
-import PhotoLens from '@/lens/PhotoLens';
 import { Photo } from '@/photo';
-import PhotoRecipe from '@/recipe/PhotoRecipe';
 import clsx from 'clsx/lite';
-import { formatDistanceToNowStrict } from 'date-fns';
-import AdminLibraryMenu from './AdminLibraryMenu';
-import { ReactNode, useMemo } from 'react';
-import { Camera } from '@/camera';
-import { Lens } from '@/lens';
-import { Album } from '@/album';
-import { useAppText } from '@/i18n/state/client';
+import { ReactNode } from 'react';
 import PhotoAvatar from '@/photo/PhotoAvatar';
-import Link from 'next/link';
-import { PATH_ADMIN_LIBRARY_EDIT } from '@/app/path';
-import { LuCirclePlus, LuUser } from 'react-icons/lu';
-import EmptyState from '@/components/EmptyState';
-import { Place } from '@/place';
-import PlaceEntity from '@/place/PlaceEntity';
+import { LuUser } from 'react-icons/lu';
 import LibrarySection from './LibrarySection';
 import type { LibrarySetFolderRow } from '.';
 
 export default function LibraryPageClient({
   title,
-  subhead,
   descriptionHtml,
-  photosCount = 0,
-  photosOldest,
   photoAvatar,
-  camera,
-  lens,
-  recipe,
-  film,
-  place,
-  album,
-  lastUpdated,
   folderRows,
 }: {
-  title?: string
-  subhead?: string
-  descriptionHtml?: ReactNode
-  photosCount?: number
-  photosOldest?: string
+  title: string
+  descriptionHtml: ReactNode
   photoAvatar?: Photo
-  camera?: Camera
-  lens?: Lens
-  recipe?: string
-  film?: string
-  place?: Place
-  album?: Album
-  lastUpdated?: Date
   folderRows: LibrarySetFolderRow[]
 }) {
-  const {
-    isUserSignedIn,
-  } = useAppState();
-
-  const appText = useAppText();
-
-  const renderItem = (label: string, content?: ReactNode) => (
-    <div
-      key={label}
-      className="border-t border-medium pt-1 space-y-px"
-    >
-      <div className="text-[13px] uppercase tracking-wide text-dim truncate">
-        {label}
-      </div>
-      <div className="text-[16px] truncate">
-        {content || '--'}
-      </div>
-    </div>
-  );
-
-  const items = useMemo(() => [
-    renderItem(
-      appText.library.photoCount,
-      photosCount.toString().padStart(4, '0'),
-    ),
-    renderItem(
-      appText.library.firstPhoto,
-      photosOldest?.slice(0, 10),
-    ),
-    camera && renderItem(
-      appText.library.topCamera,
-      <PhotoCamera
-        camera={camera}
-        type="text-only"
-        contrast="high"
-        showBrandLogo
-      />,
-    ),
-    lens && renderItem(
-      appText.library.topLens,
-      <PhotoLens
-        lens={lens}
-        type="text-only"
-        contrast="high"
-      />,
-    ),
-    recipe && renderItem(
-      appText.library.topRecipe,
-      <PhotoRecipe
-        recipe={recipe}
-        type="text-only"
-        contrast="high"
-      />,
-    ),
-    film && renderItem(
-      appText.library.topFilm,
-      <PhotoFilm
-        film={film}
-        type="text-only"
-        contrast="high"
-        badged={false}
-      />,
-    ),
-    place && renderItem(
-      appText.library.popularPlace,
-      <PlaceEntity
-        place={place}
-        type="text-only"
-        contrast="high"
-        badged={false}
-      />,
-    ),
-    album && renderItem(
-      appText.library.recentAlbum,
-      <PhotoAlbum
-        album={album}
-        type="text-only"
-        contrast="high"
-      />,
-    ),
-  ].filter(Boolean), [
-    appText.library,
-    photosCount,
-    photosOldest,
-    camera,
-    lens,
-    recipe,
-    film,
-    album,
-    place,
-  ]);
-
   return (
     <AnimateItems
       type="bottom"
@@ -170,44 +41,12 @@ export default function LibraryPageClient({
               >
                 <div>
                   <div className="font-bold">
-                    {title || appText.library.titleDefault}
+                    {title}
                   </div>
-                  {subhead &&
-                    <div>{subhead}</div>}
                 </div>
-                {lastUpdated && <div className={clsx('text-dim')}>
-                  {appText.library.updated(
-                    formatDistanceToNowStrict(lastUpdated),
-                  )}
-                </div>}
               </div>
-              {isUserSignedIn && <AdminLibraryMenu />}
             </div>
-            {descriptionHtml
-              ? descriptionHtml
-              : isUserSignedIn &&
-                  <Link
-                    href={PATH_ADMIN_LIBRARY_EDIT}
-                    className={clsx(
-                      'flex items-center justify-center gap-2.5',
-                      'border border-dashed border-medium rounded-lg',
-                    )}
-                  >
-                    <EmptyState
-                      icon={<LuCirclePlus size={22} />}
-                      includeContainer={false}
-                      className="gap-3! p-6!"
-                    >
-                      Add optional description
-                    </EmptyState>
-                  </Link>}
-            <AnimateItems
-              className={clsx(
-                'grid gap-x-2 gap-y-6',
-                'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
-              )}
-              items={items}
-            />
+            {descriptionHtml}
           </div>}
         />
         {folderRows.length > 0 &&

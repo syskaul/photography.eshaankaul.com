@@ -13,18 +13,16 @@ export default function SwitcherItemMenu({
   return (
     <MoreMenu
       {...props}
-      className={clsx(
-        'outline outline-medium',
-        className,
-      )}
+      className={className}
       classNameButton={clsx(
         'p-0!',
         'w-full h-full',
         'flex items-center justify-center',
+        'bg-transparent dark:bg-transparent',
         'hover:bg-transparent dark:hover:bg-transparent',
         'active:bg-transparent dark:active:bg-transparent',
-        'rounded-none focus:outline-none',
-        'text-gray-400 dark:text-gray-600 hover:text-main',
+        'rounded-[inherit] focus:outline-none',
+        'text-gray-400 dark:text-gray-400 hover:text-gray-400',
         classNameButton,
       )}
       classNameButtonOpen={clsx(

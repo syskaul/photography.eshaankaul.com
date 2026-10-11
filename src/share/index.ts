@@ -20,7 +20,7 @@ export type ShareModalProps = Omit<PhotoSetAttributes, 'photos'> & {
 export type ShareMethod =
   | 'copy_link'
   | 'native'
-  | Exclude<SocialKey, 'qrcode'>;
+  | SocialKey;
 
 export const getSharePathFromShareModalProps = ({
   photo,

@@ -40,7 +40,6 @@ export default function PhotoQuery({
           setIsCommandKOpen?.(true);
         }
         : undefined}
-      hoverQueryOptions={{ query }}
       icon={<span className={clsx(
         'grid',
         '[&>*]:col-start-1 [&>*]:row-start-1',

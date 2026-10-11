@@ -12,10 +12,7 @@ import ResponsiveText from '@/components/primitives/ResponsiveText';
 import { LiaBroomSolid } from 'react-icons/lia';
 import ProgressButton from '@/components/primitives/ProgressButton';
 import ErrorNote from '@/components/ErrorNote';
-import {
-  getPhotosUpdateStatusText,
-  isPhotoOnlyMissingColorData,
-} from '@/photo/update';
+import { getPhotosUpdateStatusText } from '@/photo/update';
 import IconBroom from '@/components/icons/IconBroom';
 
 const SYNC_BATCH_SIZE_MAX = 3;
@@ -79,12 +76,7 @@ export default function AdminPhotosUpdateClient({
               const photoIds = photoIdsToSync.current
                 .slice(0, SYNC_BATCH_SIZE_MAX);
               setPhotoIdsSyncing(photoIds);
-              await syncPhotosAction(photoIds.map(id => ({
-                photoId: id,
-                onlySyncColorData: isPhotoOnlyMissingColorData(
-                  photos.find(photo => photo.id === id),
-                ),
-              })))
+              await syncPhotosAction(photoIds.map(photoId => ({ photoId })))
                 .then(() => {
                   photoIdsToSync.current = photoIdsToSync.current.filter(
                     id => !photoIds.includes(id),

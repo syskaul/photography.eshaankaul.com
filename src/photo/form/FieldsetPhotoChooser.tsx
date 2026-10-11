@@ -116,6 +116,7 @@ export default function FieldsetPhotoChooser({
         <DropdownMenu.Trigger asChild>
           <button type="button" className={clsx(
             'inline-flex flex-col p-1.5 pt-0 gap-0',
+            'liquid-glass rounded-xl!',
           )}>
             <span className={clsx(
               'w-full',
@@ -162,14 +163,15 @@ export default function FieldsetPhotoChooser({
             sideOffset={-98}
             className={clsx(
               MENU_SURFACE_STYLES,
+              'admin-interface',
               'z-20 rounded-2xl pb-0 overflow-auto',
             )}
           >
             <div className={clsx(
               'flex items-center',
-              'pt-1 pb-2',
+              'pt-3 pb-3',
               photo
-                ? 'justify-between pl-1.5 pr-3'
+                ? 'justify-between px-3'
                 : 'justify-center',
             )}>
               <SegmentMenu
@@ -257,7 +259,7 @@ export default function FieldsetPhotoChooser({
                   cacheKey="photo-chooser"
                   initialOffset={photos.length}
                   itemsPerPage={INFINITE_SCROLL_GRID_MULTIPLE}
-                  moreButtonClassName="mt-2"
+                  moreButtonClassName="m-3"
                 >
                   {({ key, photos }) => (
                     <div key={key} className={CLASSNAME_GRID}>

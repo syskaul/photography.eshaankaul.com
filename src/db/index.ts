@@ -2,7 +2,6 @@ import { parameterize } from '@/utility/string';
 import { PhotoSetCategory } from '@/category';
 import { Camera } from '@/camera';
 import { Lens } from '@/lens';
-import { APP_DEFAULT_SORT_BY, SortBy } from '@/photo/sort';
 import { Album } from '@/album';
 import { getPathComponents } from '@/app/path';
 import { getAlbumFromSlug } from '@/album/query';
@@ -25,8 +24,6 @@ export const parameterizeForDb = (field: string) =>
   )`;
 
 export type PhotoQueryOptions = {
-  sortBy?: SortBy
-  sortWithPriority?: boolean
   limit?: number
   offset?: number
   query?: string
@@ -34,7 +31,6 @@ export type PhotoQueryOptions = {
   takenBefore?: Date
   takenAfterInclusive?: Date
   updatedBefore?: Date
-  excludeFromFeeds?: boolean
 } & Omit<PhotoSetCategory, 'camera' | 'lens' | 'album'> & {
   camera?: Partial<Camera>
   lens?: Partial<Lens>
@@ -52,7 +48,6 @@ export const getWheresFromOptions = (
   initialValuesIndex = 1,
 ) => {
   const {
-    excludeFromFeeds,
     takenBefore,
     takenAfterInclusive,
     updatedBefore,
@@ -73,9 +68,6 @@ export const getWheresFromOptions = (
   const wheresValues = [] as (string | number)[];
   let valuesIndex = initialValuesIndex;
 
-  if (excludeFromFeeds) {
-    wheres.push('exclude_from_feeds IS NOT TRUE');
-  }
   if (takenBefore) {
     wheres.push(`taken_at < $${valuesIndex++}`);
     wheresValues.push(takenBefore.toISOString());
@@ -156,51 +148,6 @@ export const getWheresFromOptions = (
     wheresValues,
     lastValuesIndex: valuesIndex,
   };
-};
-
-export const getOrderByFromOptions = (options: PhotoQueryOptions) => {
-  const {
-    sortBy = APP_DEFAULT_SORT_BY,
-    sortWithPriority,
-    limit = PHOTO_DEFAULT_LIMIT,
-  } = options;
-
-  switch (sortBy) {
-    case 'takenAt':
-      return sortWithPriority
-        ? 'ORDER BY priority_order ASC, taken_at DESC'
-        : 'ORDER BY taken_at DESC';
-    case 'takenAtAsc':
-      return sortWithPriority
-        ? 'ORDER BY priority_order ASC, taken_at ASC'
-        : 'ORDER BY taken_at ASC';
-    case 'createdAt':
-      return sortWithPriority
-        ? 'ORDER BY priority_order ASC, created_at DESC'
-        : 'ORDER BY created_at DESC';
-    case 'createdAtAsc':
-      return sortWithPriority
-        ? 'ORDER BY priority_order ASC, created_at ASC'
-        : 'ORDER BY created_at ASC';
-      // Add date sort to account for photos with same color sort
-    case 'color':
-      return sortWithPriority
-        ? 'ORDER BY priority_order ASC, color_sort DESC, taken_at DESC'
-        : 'ORDER BY color_sort DESC, taken_at DESC';
-    case 'colorAsc':
-      return sortWithPriority
-        ? 'ORDER BY priority_order ASC, color_sort ASC, taken_at ASC'
-        : 'ORDER BY color_sort ASC, taken_at ASC';
-    case 'random': {
-      // Stable newest-first stride, 2× limit so hits are spaced further apart
-      const stride = Math.max(2, (Math.floor(Number(limit)) || 1) * 2);
-      return [
-        'ORDER BY',
-        `(ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % ${stride},`,
-        'taken_at DESC, id',
-      ].join(' ');
-    }
-  }
 };
 
 export const getLimitAndOffsetFromOptions = (

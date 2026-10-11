@@ -16,7 +16,6 @@ export async function GET() {
     headers,
   ] = await Promise.all([
     getPhotosCached({
-      sortWithPriority: true,
       limit: MAX_PHOTOS_TO_SHOW_TEMPLATE_TIGHT,
     }).catch(() => []),
     getPaperMono(),

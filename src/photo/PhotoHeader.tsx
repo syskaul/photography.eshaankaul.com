@@ -18,7 +18,6 @@ import ResponsiveText from '@/components/primitives/ResponsiveText';
 import { useAppState } from '@/app/AppState';
 import { GRID_GAP_CLASSNAME } from '@/components';
 import { useAppText } from '@/i18n/state/client';
-import { UPPERCASE_TITLES } from '@/app/config';
 
 export default function PhotoHeader({
   photos,
@@ -101,7 +100,6 @@ export default function PhotoHeader({
           photo={selectedPhoto}
           className={clsx(
             'font-bold truncate',
-            UPPERCASE_TITLES && 'uppercase',
           )}
         >
           {titleForPhoto(selectedPhoto, true)}
@@ -132,7 +130,7 @@ export default function PhotoHeader({
           {/* Content A: Filter Set or Photo Title */}
           <div className={clsx(
             'inline-flex',
-            (headerType !== 'photo-detail' || UPPERCASE_TITLES) && 'uppercase',
+            headerType !== 'photo-detail' && 'uppercase',
             headerType === 'photo-set'
               ? isGridHighDensity
                 ? 'col-span-2 lg:col-span-3'

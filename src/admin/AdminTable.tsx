@@ -13,8 +13,8 @@ export default function AdminTable ({
       <div className="font-bold">
         {title}
       </div>}
-    {/* py-[1px] fixes Safari vertical scroll bug */}
-    <div className="min-w-[14rem] overflow-x-auto py-[1px]">
+    {/* Bleed keeps shadows inside the scrollport without shrinking columns. */}
+    <div className="min-w-[14rem] overflow-x-auto -m-3 p-3">
       <div className={clsx(
         'w-full',
         'grid grid-cols-[auto_1fr_auto] ',

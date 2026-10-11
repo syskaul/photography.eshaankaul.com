@@ -5,7 +5,7 @@ import { PhotoSetCategory } from '../category';
 import ShareModal from '@/share/ShareModal';
 import { useCallback } from 'react';
 import { ShareMethod } from '@/share';
-import { useMixpanel } from '@/analytics/MixpanelConsentProvider';
+import { useMixpanel } from '@/analytics/MixpanelProvider';
 
 export default function PhotoShareModal(
   props: { photo: Photo } & PhotoSetCategory,

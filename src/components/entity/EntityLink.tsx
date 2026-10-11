@@ -13,14 +13,6 @@ import { clsx } from 'clsx/lite';
 import LinkWithStatus from '../LinkWithStatus';
 import Spinner from '../Spinner';
 import ResponsiveText from '../primitives/ResponsiveText';
-import { SHOW_CATEGORY_IMAGE_HOVERS } from '@/app/config';
-import PhotosHover from '@/photo/PhotosHover';
-import { getPhotosCachedAction } from '@/photo/actions';
-import { PhotoQueryOptions } from '@/db';
-import {
-  PHOTO_PREVIEW_QUERY_OPTIONS,
-  PHOTOS_TO_SHOW_PER_CATEGORY,
-} from '@/image-response';
 
 export interface EntityLinkExternalProps {
   ref?: RefObject<HTMLSpanElement | null>
@@ -34,9 +26,7 @@ export interface EntityLinkExternalProps {
   className?: string
   truncate?: boolean
   hoverCount?: number
-  hoverType?: 'auto' | 'text' | 'image' | 'none'
-  hoverQueryOptions?: PhotoQueryOptions
-  hoverDescription?: string
+  hoverType?: 'auto' | 'text' | 'none'
 }
 
 export default function EntityLink({
@@ -57,8 +47,6 @@ export default function EntityLink({
   onClick,
   hoverCount = 0,
   hoverType = 'auto',
-  hoverQueryOptions,
-  hoverDescription,
   prefetch,
   title,
   action,
@@ -112,15 +100,9 @@ export default function EntityLink({
     !isLoading &&
     hoverCount > 0;
 
-  const showHoverImage =
-    canShowHover && SHOW_CATEGORY_IMAGE_HOVERS && (
-      hoverType === 'auto' ||
-      hoverType === 'image'
-    );
-
   const showHoverText =
     canShowHover && (
-      (hoverType === 'auto' && !SHOW_CATEGORY_IMAGE_HOVERS) ||
+      hoverType === 'auto' ||
       hoverType === 'text'
     );
 
@@ -207,23 +189,7 @@ export default function EntityLink({
         className,
       )}
     >
-      {showHoverImage
-        ? <PhotosHover
-          hoverKey={path}
-          header={renderLink(true)}
-          description={hoverDescription}
-          photosCount={hoverCount}
-          maxPhotos={PHOTOS_TO_SHOW_PER_CATEGORY}
-          getPhotos={() =>
-            getPhotosCachedAction({
-              ...hoverQueryOptions,
-              ...PHOTO_PREVIEW_QUERY_OPTIONS,
-            })}
-          color={contrast === 'frosted' ? 'frosted-light' : undefined}
-        >
-          {renderLink()}
-        </PhotosHover>
-        : renderLink()}
+      {renderLink()}
       {action &&
         <span className="action shrink-0">
           {action}

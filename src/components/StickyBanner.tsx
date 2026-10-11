@@ -44,15 +44,13 @@ export default function StickyBanner({
             ref={surfaceRef}
             className={clsx(
               'p-2',
-              'component-surface-frosted',
+              'liquid-glass-surface',
               // Square off once stuck so the banner meets the content below
               'transition-[border-radius] duration-200',
-              isOutOfPosition ? 'rounded-none' : 'rounded-xl',
+              isOutOfPosition && 'rounded-none!',
               // Move 1px so nav doesn't clip the card's top border
               isOutOfPosition ? 'outline-none!' : 'translate-y-px',
               'text-gray-900! dark:text-gray-100!',
-              'bg-gray-100/90! dark:bg-gray-900/70!',
-              'shadow-xl/5',
               className,
             )}
           >

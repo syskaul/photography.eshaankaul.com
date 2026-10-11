@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { Signer } from '@aws-sdk/rds-signer';
 import { attachDatabasePool } from '@vercel/functions';
 import { awsCredentialsProvider } from '@vercel/oidc-aws-credentials-provider';
@@ -25,6 +27,13 @@ const postgresIamPort = () => {
   return port;
 };
 
+const getAwsRdsSslConfiguration = () => ({
+  ca: readFileSync(
+    path.join(process.cwd(), 'src/platforms/rds-global-bundle.pem'),
+    'utf8',
+  ),
+});
+
 const getPoolConfiguration = () => {
   if (POSTGRES_IAM_AUTH_ENABLED) {
     const region = requiredEnvironmentVariable('AWS_REGION');
@@ -51,7 +60,7 @@ const getPoolConfiguration = () => {
       user: username,
       database: process.env.PGDATABASE || 'postgres',
       password: () => signer.getAuthToken(),
-      ssl: true,
+      ssl: getAwsRdsSslConfiguration(),
     };
   }
 

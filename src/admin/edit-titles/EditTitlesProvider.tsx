@@ -6,8 +6,6 @@ import {
   PhotoTitleEdit,
 } from './EditTitlesState';
 import {
-  doesPathOfferSort,
-  isPathGrid,
   isPathPhotoSet,
   PARAM_EDIT_TITLES,
   PATH_FULL_INFERRED,
@@ -16,8 +14,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAppState } from '@/app/AppState';
 import useClientSearchParams from '@/utility/useClientSearchParams';
 import { replacePathWithEvent } from '@/utility/url';
-import { getSortStateFromPath } from '@/photo/sort/path';
-import { useAppText } from '@/i18n/state/client';
 
 export const DATA_KEY_PHOTO_LARGE = 'data-photo-large';
 
@@ -30,7 +26,6 @@ export default function EditTitlesProvider({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const appText = useAppText();
   const { isUserSignedIn, setIsPhotoSetFull } = useAppState();
 
   const searchParamsEditTitles = useClientSearchParams(
@@ -65,25 +60,8 @@ export default function EditTitlesProvider({
       return;
     }
 
-    if (doesPathOfferSort(pathname)) {
-      const { pathGrid, pathFull } =
-        getSortStateFromPath(pathname, appText);
-      const isOnGridView =
-        pathname === pathGrid ||
-        isPathGrid(pathname);
-      const targetPath = isOnGridView
-        ? pathFull
-        : pathname;
-      if (targetPath === pathname) {
-        replacePathWithEvent(`${pathname}?${PARAM_EDIT_TITLES}=true`);
-      } else {
-        router.push(`${targetPath}?${PARAM_EDIT_TITLES}=true`);
-      }
-      return;
-    }
-
     router.push(`${PATH_FULL_INFERRED}?${PARAM_EDIT_TITLES}=true`);
-  }, [appText, pathname, router]);
+  }, [pathname, router]);
 
   const stopEditingTitles = useCallback(() =>
     replacePathWithEvent(pathname)

@@ -30,7 +30,7 @@ export default function PhotosLarge({
 } & PhotoSetCategory) {
   return (
     <AnimateItems
-      className="space-y-2"
+      className="space-y-4"
       type={animate ? 'scale' : 'none'}
       duration={0.7}
       staggerDelay={0.15}
@@ -43,6 +43,7 @@ export default function PhotosLarge({
           priority={index <= 1}
           prefetchRelatedLinks={prefetchFirstPhotoLinks && index === 0}
           revalidatePhoto={revalidatePhoto}
+          showZoomButton={false}
           shouldZoomOnFKeydown={false}
           album={album}
           query={query}

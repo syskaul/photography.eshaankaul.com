@@ -4,7 +4,6 @@ import {
   query,
 } from '@/platforms/postgres';
 import {
-  convertArrayToPostgresString,
   parameterizeForDb,
 } from '@/db';
 import {
@@ -20,11 +19,9 @@ import { Films } from '@/film';
 import {
   AI_TEXT_AUTO_GENERATED_FIELDS,
   AI_CONTENT_GENERATION_ENABLED,
-  COLOR_SORT_ENABLED,
 } from '@/app/config';
 import {
   PhotoQueryOptions,
-  getOrderByFromOptions,
   getLimitAndOffsetFromOptions,
   getWheresFromOptions,
   getJoinsFromOptions,
@@ -37,7 +34,6 @@ import {
 } from '@/photo/update';
 import { Recipes } from '@/recipe';
 import { Years } from '@/year';
-import { PhotoColorData } from '@/photo/color/client';
 import { safelyQuery } from '@/db/query';
 
 export const createPhotosTable = () =>
@@ -70,12 +66,8 @@ export const createPhotosTable = () =>
       film VARCHAR(255),
       recipe_title VARCHAR(255),
       recipe_data JSONB,
-      color_data JSONB,
-      color_sort SMALLINT,
-      priority_order REAL,
       taken_at TIMESTAMP WITH TIME ZONE NOT NULL,
       taken_at_naive VARCHAR(255) NOT NULL,
-      exclude_from_feeds BOOLEAN DEFAULT FALSE,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     )
@@ -112,10 +104,6 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       film,
       recipe_title,
       recipe_data,
-      color_data,
-      color_sort,
-      priority_order,
-      exclude_from_feeds,
       taken_at,
       taken_at_naive
     ) VALUES (
@@ -148,10 +136,6 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       ${photo.film},
       ${photo.recipeTitle},
       ${photo.recipeData},
-      ${photo.colorData},
-      ${photo.colorSort},
-      ${photo.priorityOrder},
-      ${photo.excludeFromFeeds},
       ${photo.takenAt},
       ${photo.takenAtNaive}
     )
@@ -188,10 +172,6 @@ export const updatePhoto = (photo: PhotoDbInsert) =>
       film=${photo.film},
       recipe_title=${photo.recipeTitle},
       recipe_data=${photo.recipeData},
-      color_data=${photo.colorData},
-      color_sort=${photo.colorSort},
-      priority_order=${photo.priorityOrder || null},
-      exclude_from_feeds=${photo.excludeFromFeeds},
       taken_at=${photo.takenAt},
       taken_at_naive=${photo.takenAtNaive},
       updated_at=${(new Date()).toISOString()}
@@ -224,21 +204,6 @@ export const updatePhotoTitleCaption = (
     WHERE p.id = v.id
   `, values), 'updatePhotoTitleCaption');
 };
-
-export const setPhotoVisibilityForIds = (
-  photoIds: string[],
-  excludeFromFeeds: boolean,
-) =>
-  safelyQuery(() => query(`
-    UPDATE photos SET
-      exclude_from_feeds = $1,
-      updated_at = $2
-    WHERE id = ANY($3)
-  `, [
-    excludeFromFeeds,
-    (new Date()).toISOString(),
-    convertArrayToPostgresString(photoIds),
-  ]), 'setPhotoVisibilityForIds');
 
 export const deletePhotoRecipeGlobally = (recipe: string) =>
   safelyQuery(() => sql`
@@ -469,7 +434,7 @@ const _getPhotos = async (
   }
 
   if (includeOrderBy) {
-    sql.push(getOrderByFromOptions(options));
+    sql.push('ORDER BY taken_at DESC');
   }
 
   const {
@@ -561,7 +526,7 @@ export const getPhotosNearId = async (
       `
         WITH twi AS (
           SELECT p.*, row_number()
-          OVER (${getOrderByFromOptions(options)}) as row_number
+          OVER (ORDER BY taken_at DESC) as row_number
           FROM photos p
           ${joins ? `${joins}` : ''}
           ${wheres}
@@ -660,19 +625,10 @@ const needsAiTextWhereClauses =
       })
     : [];
 
-const needsColorDataWhereClauses =
-  AI_CONTENT_GENERATION_ENABLED || COLOR_SORT_ENABLED
-    ? [`(
-    color_data IS NULL OR
-    color_sort IS NULL
-  )`]
-    : [];
-
 const needsSyncWhereStatement =
   `WHERE ${[
     ...outdatedWhereClauses,
     ...needsAiTextWhereClauses,
-    ...needsColorDataWhereClauses,
   ].join(' OR ')}`;
 
 export const getPhotosInNeedOfUpdate = () =>
@@ -699,33 +655,4 @@ export const getPhotosInNeedOfUpdateCount = () =>
     )
       .then(({ rows }) => parseInt(rows[0].count, 10)),
     'getPhotosInNeedOfUpdateCount',
-  );
-
-// Backfills and experimentation
-
-export const getColorDataForPhotos = () =>
-  safelyQuery(() => sql<{
-    id: string,
-    url: string,
-    color_data?: PhotoColorData,
-  }>`
-    SELECT id, url, color_data FROM photos
-    LIMIT ${UPDATE_QUERY_LIMIT}
-  `.then(({ rows }) => rows.map(({ id, url, color_data }) =>
-        ({ id, url, colorData: color_data })))
-  , 'getColorDataForPhotos');
-
-export const updateColorDataForPhoto = (
-  photoId: string,
-  colorData: string,
-  colorSort: number,
-) =>
-  safelyQuery(
-    () => sql`
-      UPDATE photos SET
-      color_data=${colorData},
-      color_sort=${colorSort}
-      WHERE id=${photoId}
-    `,
-    'updateColorDataForPhoto',
   );

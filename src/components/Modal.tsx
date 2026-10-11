@@ -4,9 +4,9 @@ import { ReactNode, RefObject, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx/lite';
 import useClickInsideOutside from '@/utility/useClickInsideOutside';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import AnimateItems from './AnimateItems';
-import { PATH_ROOT } from '@/app/path';
+import { isPathAdmin, PATH_ROOT } from '@/app/path';
 import usePrefersReducedMotion from '@/utility/usePrefersReducedMotion';
 import useEscapeHandler from '@/utility/useEscapeHandler';
 import { useTheme } from 'next-themes';
@@ -20,6 +20,7 @@ export default function Modal({
   children,
   noPadding,
   fast,
+  surface: surfaceProp,
 }: {
   onClosePath?: string
   onClose?: () => void
@@ -29,8 +30,11 @@ export default function Modal({
   children: ReactNode
   noPadding?: boolean
   fast?: boolean
+  surface?: 'default' | 'glass'
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const surface = surfaceProp ?? (isPathAdmin(pathname) ? 'glass' : 'default');
 
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -74,6 +78,7 @@ export default function Modal({
           ? 'items-start pt-4 sm:pt-12 lg:pt-24'
           : 'items-center',
         'bg-white dark:bg-black',
+        isPathAdmin(pathname) && 'admin-interface',
       )}
       initial={!prefersReducedMotion
         ? { backgroundColor: resolvedTheme === 'dark'
@@ -81,8 +86,8 @@ export default function Modal({
           : 'rgba(255, 255, 255, 0)' }
         : false}
       animate={{ backgroundColor: resolvedTheme === 'dark'
-        ? 'rgba(0, 0, 0, 0.80)'
-        : 'rgba(255, 255, 255, 0.90)' }}
+        ? `rgba(0, 0, 0, ${surface === 'glass' ? 0.5 : 0.8})`
+        : `rgba(255, 255, 255, ${surface === 'glass' ? 0.35 : 0.9})` }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       <AnimateItems
@@ -95,10 +100,14 @@ export default function Modal({
               // "-2px" accounts for transparent outline
               'w-[calc(100vw-1.5rem-2px)] sm:w-[min(540px,90vw)]',
               !noPadding && 'p-2',
-              'rounded-xl outline outline-medium',
-              'bg-white dark:bg-black',
-              'shadow-gray-900 shadow-2xl/15',
-              'dark:shadow-black dark:shadow-2xl/100',
+              surface === 'glass'
+                ? 'liquid-glass-surface'
+                : [
+                  'rounded-xl outline outline-medium',
+                  'bg-white dark:bg-black',
+                  'shadow-gray-900 shadow-2xl/15',
+                  'dark:shadow-black dark:shadow-2xl/100',
+                ],
             ] : [],
             className,
           )}
