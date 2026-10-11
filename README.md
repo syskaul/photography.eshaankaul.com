@@ -292,6 +292,8 @@ Only one storage adapter—Vercel Blob, Cloudflare R2, AWS S3, or MinIO—can be
      }
      ```
      Replace `{PRODUCTION_DOMAIN}` with the production hostname and add any specific preview hostname that needs uploads. Do not use a broad `*` origin for authenticated uploads.
+     For this deployment, include `https://photography.eshaankaul.com`; allowing `https://photos.eshaankaul.com` alone does not allow uploads from the photography domain.
+     The JSON above is the AWS CLI/API format. In the S3 console CORS editor, paste only the array inside `CORSRules`.
    - Store public configuration
      - `NEXT_PUBLIC_AWS_S3_BUCKET`: bucket name
      - `NEXT_PUBLIC_AWS_S3_REGION`: bucket region, e.g., "us-east-2"
@@ -527,6 +529,9 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 
 #### Why are large, multi-photo uploads not finishing?
 > The default timeout for processing multiple uploads is 60 seconds (the limit for Hobby accounts). This can be extended to 5 minutes on Pro accounts by setting `maxDuration = 300` in `src/app/admin/uploads/page.tsx`.
+
+#### Why do uploads work locally but fail in production with a network error?
+> Browser uploads go directly to the storage provider using a presigned PUT URL. For S3, the bucket's CORS rules must allow the exact origin in the browser's address bar, including the scheme and any port, and the `PUT` method and requested headers. Similar hostnames are separate origins. Check the failed request in browser DevTools and test its storage endpoint with an OPTIONS request containing `Origin`, `Access-Control-Request-Method: PUT`, and `Access-Control-Request-Headers: content-type`. A successful preflight should return `Access-Control-Allow-Origin` matching the site origin and allow `PUT` and `content-type`. CORS does not grant write permissions; keep uploads authenticated through presigned URLs rather than allowing public writes.
 
 #### I've added my OpenAI key but can't seem to make it work. Why am I seeing connection errors?
 > You may need to pre-purchase credits before accessing the OpenAI API. If you've customized key permissions, make sure write access to the Responses API is enabled.
