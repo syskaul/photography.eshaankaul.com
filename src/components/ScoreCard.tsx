@@ -15,7 +15,7 @@ export default function ScoreCard({
       {title &&
         <div className={clsx(
           'pl-3.5 sm:pl-2 h-7 pb-1 flex items-end',
-          'uppercase font-medium tracking-wider text-[0.8rem]',
+          'uppercase font-normal tracking-wider text-[0.8rem]',
           'text-medium',
         )}>
           {title}

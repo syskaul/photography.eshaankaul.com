@@ -48,7 +48,7 @@ export default function OGTile({
         'group-hover:bg-gray-100 dark:group-hover:bg-gray-900/70',
         'border-t border-gray-200 dark:border-gray-800',
       )}>
-        <div className="text-gray-800 dark:text-white font-medium">
+        <div className="text-gray-800 dark:text-white font-normal">
           {props.title}
         </div>
         <div className="text-medium">

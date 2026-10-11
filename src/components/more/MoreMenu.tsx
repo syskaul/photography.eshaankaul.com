@@ -129,7 +129,7 @@ export default function MoreMenu({
         >
           {label && <div className={clsx(
             'px-3.5 pt-1.5 pb-0.5 select-none',
-            'text-extra-dim uppercase text-xs font-medium tracking-wide',
+            'text-extra-dim uppercase text-xs font-normal tracking-wide',
           )}>
             {label}
           </div>}

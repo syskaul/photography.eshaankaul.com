@@ -187,7 +187,7 @@ export default function DateTimePicker({
             >
               <TbChevronLeft size={16} />
             </button>
-            <span className="text-sm font-medium">
+            <span className="text-sm font-normal">
               {format(viewMonth, 'MMMM yyyy')}
             </span>
             <button
@@ -197,7 +197,7 @@ export default function DateTimePicker({
             >
               <TbChevronRight size={16} />
             </button>
-          </GlassSurface>
+          </div>
 
           {/* Day headers */}
           <div className="grid grid-cols-7 mb-1">
@@ -303,7 +303,7 @@ export default function DateTimePicker({
               </button>
             )}
           </div>
-        </div>
+        </GlassSurface>
       )}
     </div>
   );

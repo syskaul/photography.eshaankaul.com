@@ -1,7 +1,31 @@
 @font-face {
   font-family: "Paper Mono";
-  src: url("/fonts/PaperMono%5Bwght%5D.woff2") format("woff2");
-  font-weight: 100 900;
+  src: url("/fonts/PaperMono-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paper Mono";
+  src: url("/fonts/PaperMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paper Mono";
+  src: url("/fonts/PaperMono-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paper Mono";
+  src: url("/fonts/PaperMono-Bold.woff2") format("woff2");
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -24,6 +48,10 @@
 html {
   /* Necessary for nextjs scroll restoration */
   min-height: 100%;
+}
+
+body {
+  font-weight: 300;
 }
 
 @theme {
@@ -254,7 +282,7 @@ html {
   /* Forms */
   label {
     @apply
-      font-sans font-medium block uppercase text-xs
+      font-sans font-normal block uppercase text-xs
       text-medium
       tracking-wider
   }

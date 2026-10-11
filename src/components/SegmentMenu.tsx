@@ -45,7 +45,7 @@ export default function SegmentMenu<T extends string>({
                 ? iconSelected
                 : icon
               : <span className={clsx(
-                'text-sm font-medium uppercase tracking-wider',
+                'text-sm font-normal uppercase tracking-wider',
               )}>
                 {value}
               </span>}

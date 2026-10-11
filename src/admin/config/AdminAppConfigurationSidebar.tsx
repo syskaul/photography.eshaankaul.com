@@ -28,7 +28,7 @@ export default function AdminAppConfigurationSidebar({
               'block liquid-glass px-3 py-1.5',
               parameterize(title) === hash && 'liquid-glass-selected',
               parameterize(title) === hash
-                ? 'text-main hover:text-main font-medium'
+                ? 'text-main hover:text-main font-normal'
                 : 'text-dim hover:text-main',
             )}
           >

@@ -3,7 +3,7 @@ import path from 'path';
 import { cwd } from 'process';
 
 const FONT_PAPER_MONO_FAMILY = 'PaperMono';
-const FONT_PAPER_MONO_PATH = '/public/fonts/PaperMono-500.ttf';
+const FONT_PAPER_MONO_PATH = '/public/fonts/PaperMono-Regular.ttf';
 
 const getFontData = async () =>
   fs.readFileSync(path.join(cwd(), FONT_PAPER_MONO_PATH));
@@ -14,7 +14,7 @@ export const getPaperMono = () => getFontData()
     fonts: [{
       name: FONT_PAPER_MONO_FAMILY,
       data,
-      weight: 500,
+      weight: 400,
       style: 'normal',
     } as const],
   }));

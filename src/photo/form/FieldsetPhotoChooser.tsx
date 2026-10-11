@@ -122,7 +122,7 @@ export default function FieldsetPhotoChooser({
               'w-full',
               'flex items-center gap-1',
               'font-sans',
-              'text-xs text-medium font-medium uppercase tracking-wider',
+              'text-xs text-medium font-normal uppercase tracking-wider',
               'py-1',
               'select-none',
             )}>
@@ -198,7 +198,7 @@ export default function FieldsetPhotoChooser({
                 className={clsx(
                   'link',
                   'font-sans text-medium active:text-dim',
-                  'text-xs font-medium uppercase tracking-wider',
+                  'text-xs font-normal uppercase tracking-wider',
                   'py-1',
                   'select-none',
                 )}

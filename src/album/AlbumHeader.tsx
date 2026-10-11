@@ -52,7 +52,7 @@ export default async function AlbumHeader({
       richContent={showAlbumMeta && albumHasMeta(album)
         ? <div className="space-y-2">
           {album.subhead &&
-            <div className="text-medium mb-6 uppercase font-medium">
+            <div className="text-medium mb-6 uppercase font-normal">
               {album.subhead}
             </div>}
           {album.location &&

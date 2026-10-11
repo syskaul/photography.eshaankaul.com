@@ -30,7 +30,7 @@ export default function ImageCaption({
       color: 'white',
       backgroundBlendMode: 'multiply',
       fontFamily,
-      fontWeight: 500,
+      fontWeight: 400,
       fontSize: height *.08,
       gap, 
       lineHeight: 1.2,

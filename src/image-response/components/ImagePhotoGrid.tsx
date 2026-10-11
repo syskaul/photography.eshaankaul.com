@@ -36,7 +36,19 @@ export default async function ImagePhotoGrid({
   { width: NextImageSize, widthArbitrary?: undefined } |
   { width?: undefined, widthArbitrary: number }
 ))) {
-  const length = Math.min(photos.length, maxPhotos);
+  const useLargeImages = Math.min(photos.length, maxPhotos) <= 2;
+  const photoUrls = await getDataUrlsForPhotos(
+    photos,
+    useLargeImages ? 'lg' : 'md',
+    useLargeImages ? width ?? 1080 : 640,
+    IS_PREVIEW,
+  );
+
+  if (photos.length > 0 && photoUrls.length === 0) {
+    console.warn('Unable to load photo URLs for image response grid');
+  }
+
+  const length = Math.min(photoUrls.length, maxPhotos);
   let count = length;
   if (length >= 12) { count = 12; }
   else if (length >= 6) { count = 6; }
@@ -45,14 +57,6 @@ export default async function ImagePhotoGrid({
 
   const hasSplitLayout = count === 3;
   const hasFiveLayout = count === 5;
-
-  const nextImageWidth: NextImageSize = count <= 2
-    ? width ?? 1080
-    : 640;
-
-  const optimizedSuffix = count <= 2
-    ? 'lg'
-    : 'md';
 
   let rows = 1;
   if (count > 12) { rows = 4; }
@@ -75,13 +79,6 @@ export default async function ImagePhotoGrid({
   const [fiveCellHeight, fiveCellHeightLast] = splitSize(height, gap, 2);
   const [splitLeftWidth, splitRightWidth] = columnWidths;
   const [splitTopHeight, splitBottomHeight] = rowHeights;
-
-  const photoUrls = await getDataUrlsForPhotos(
-    photos,
-    optimizedSuffix,
-    nextImageWidth,
-    IS_PREVIEW,
-  );
 
   const renderPhoto = (
     { id, urlData }: typeof photoUrls[number],

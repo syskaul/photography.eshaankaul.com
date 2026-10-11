@@ -471,7 +471,7 @@ export default function PhotoForm({
           aiContent?.isLoading ? 'opacity-100' : 'opacity-0',
         )}>
           <div className={clsx(
-            'leading-none text-xs font-medium uppercase tracking-wide',
+            'leading-none text-xs font-normal uppercase tracking-wide',
             'px-1.5 py-1 rounded-[4px]',
             'inline-flex items-center gap-2',
             'bg-white/70 dark:bg-black/60 backdrop-blur-md',

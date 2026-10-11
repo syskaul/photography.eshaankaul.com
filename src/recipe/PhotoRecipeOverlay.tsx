@@ -68,7 +68,7 @@ export default function PhotoRecipeOverlay({
         {typeof value === 'number' ? addSign(value) : value}
       </div>
       {label && <div className={clsx(
-        'text-[10px] leading-none tracking-wide font-medium text-black/50',
+        'text-[10px] leading-none tracking-wide font-normal text-black/50',
         'uppercase',
       )}>
         {label}

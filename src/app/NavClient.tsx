@@ -114,7 +114,7 @@ export default function NavClient({
                 'grow text-right min-w-0',
                 'translate-y-[-1px]',
               )}>
-                <div className="truncate overflow-hidden select-none font-medium">
+                <div className="truncate overflow-hidden select-none font-normal">
                   {renderLink(navTitle, PATH_ROOT)}
                 </div>
               </div>

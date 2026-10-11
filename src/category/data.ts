@@ -15,6 +15,13 @@ import { getAlbumsWithMetaCached } from '@/album/cache';
 
 type CategoryData = Awaited<ReturnType<typeof getDataForCategories>>;
 
+type CategoryCounts = Record<
+  Exclude<keyof CategoryData, 'recents'>,
+  Record<string, number>
+> & {
+  recents: { count?: number }
+};
+
 export const NULL_CATEGORY_DATA: CategoryData = {
   recents: [],
   years: [],
@@ -66,7 +73,7 @@ export const getDataForCategories = () => Promise.all([
   albums,
 }));
 
-export const getCountsForCategories = async () => {
+export const getCountsForCategories = async (): Promise<CategoryCounts> => {
   const {
     recents,
     albums,
@@ -77,7 +84,7 @@ export const getCountsForCategories = async () => {
   return {
     recents: recents[0]?.count
       ? { count: recents[0].count }
-      : {} as Record<string, number>,
+      : {},
     years: {},
     albums: albums.reduce((acc, { album, count }) => {
       acc[album.slug] = count;

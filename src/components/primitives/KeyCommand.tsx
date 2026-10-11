@@ -32,7 +32,7 @@ export default function KeyCommand({
           key={key}
           className={clsx(
             'inline-flex items-center justify-center',
-            'px-1 h-4 rounded-sm text-xs font-medium',
+            'px-1 h-4 rounded-sm text-xs font-normal',
             'text-gray-500/90 bg-gray-200/70',
             'dark:text-gray-300/90 dark:bg-gray-600/50',
           )}
