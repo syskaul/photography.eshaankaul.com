@@ -15,6 +15,8 @@ import AnimateItems from '../components/AnimateItems';
 import { useRef } from 'react';
 import useStickyHeader from './useStickyHeader';
 import { useAppState } from '@/app/AppState';
+import ThemeSwitcher from '@/app/ThemeSwitcher';
+import { DARK_MODE_ENABLED } from '@/app/config';
 
 const NAV_HEIGHT_CLASS = 'min-h-[4rem]';
 
@@ -110,6 +112,7 @@ export default function NavClient({
                 animate={hasLoadedWithAnimations && isVisible}
                 isInEmptyState={isInEmptyState}
               />
+              {DARK_MODE_ENABLED && <ThemeSwitcher />}
               <div className={clsx(
                 'grow text-right min-w-0',
                 'translate-y-[-1px]',

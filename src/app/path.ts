@@ -55,13 +55,11 @@ export const PATH_ADMIN_UPLOADS         = `${PATH_ADMIN}/uploads`;
 export const PATH_ADMIN_ALBUMS          = `${PATH_ADMIN}/albums`;
 export const PATH_ADMIN_ALBUM_NEW       = `${PATH_ADMIN_ALBUMS}/new`;
 export const PATH_ADMIN_RECIPES         = `${PATH_ADMIN}/recipes`;
-export const PATH_ADMIN_CONFIGURATION   = `${PATH_ADMIN}/configuration`;
 export const PATH_ADMIN_LIBRARY_EDIT    = `${PATH_LIBRARY}/${EDIT}`;
 export const PATH_ADMIN_BASELINE        = `${PATH_ADMIN}/baseline`;
 export const PATH_ADMIN_COMPONENTS      = `${PATH_ADMIN}/components`;
 
 // Debug paths
-export const PATH_DEBUG_CONFIGURATION   = `${PATH_ADMIN_CONFIGURATION}/export.json`;
 export const PATH_OG_ALL                = `${PATH_OG}/all`;
 export const PATH_OG_SAMPLE             = `${PATH_OG}/sample`;
 
@@ -86,7 +84,6 @@ export const PATHS_ADMIN = [
   PATH_ADMIN_UPLOADS,
   PATH_ADMIN_ALBUMS,
   PATH_ADMIN_RECIPES,
-  PATH_ADMIN_CONFIGURATION,
   PATH_ADMIN_LIBRARY_EDIT,
   PATH_ADMIN_BASELINE,
   PATH_ADMIN_COMPONENTS,
@@ -395,22 +392,10 @@ export const isPathAdminPhotos = (pathname?: string) =>
 export const isPathAdminPhotoEdit = (pathname = '') =>
   new RegExp(`^${PATH_ADMIN_PHOTOS}/[^/]+/${EDIT}/?$`).test(pathname);
 
-export const isPathAdminConfiguration = (pathname?: string) =>
-  checkPathPrefix(pathname, PATH_ADMIN_CONFIGURATION);
-
-export const isPathAdminInfo = (pathname?: string) =>
-  isPathAdminConfiguration(pathname);
-
-export const isPathProtected = (pathname?: string) => {
-  const isDevelopmentConfigurationPage =
-    process.env.NODE_ENV === 'development' &&
-    pathname === PATH_ADMIN_CONFIGURATION;
-
-  return (checkPathPrefix(pathname, PATH_ADMIN) &&
-    !isDevelopmentConfigurationPage) ||
+export const isPathProtected = (pathname?: string) =>
+  checkPathPrefix(pathname, PATH_ADMIN) ||
   checkPathPrefix(pathname, PATH_ADMIN_LIBRARY_EDIT) ||
   checkPathPrefix(pathname, PATH_OG);
-};
 
 export const getPathComponents = (
   pathname = '',

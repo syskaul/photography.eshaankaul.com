@@ -5,7 +5,6 @@ import AppGrid from '@/components/AppGrid';
 import {
   PATH_ADMIN_PHOTOS_UPDATES,
   checkPathPrefix,
-  isPathAdminInfo,
   isPathTopLevelAdmin,
 } from '@/app/path';
 import { useAppState } from '@/app/AppState';
@@ -14,7 +13,6 @@ import { differenceInMinutes } from 'date-fns';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { FaRegClock } from 'react-icons/fa';
-import AdminInfoNav from './AdminInfoNav';
 import LinkWithLoaderBackground from '@/components/LinkWithLoaderBackground';
 import MaskedScroll from '@/components/MaskedScroll';
 
@@ -86,17 +84,14 @@ export default function AdminNavClient({
           </MaskedScroll>
         </div>}
       />
-      {(shouldShowBanner || isPathAdminInfo(pathname)) &&
+      {shouldShowBanner &&
         <AppGrid
           contentMain={
             <div className="space-y-4">
-              {shouldShowBanner &&
-                <Note icon={<FaRegClock className="shrink-0" />}>
-                  Photo updates detected—they may take several minutes to show
-                  up for visitors
-                </Note>}
-              {isPathAdminInfo(pathname) &&
-                <AdminInfoNav />}
+              <Note icon={<FaRegClock className="shrink-0" />}>
+                Photo updates detected—they may take several minutes to show
+                up for visitors
+              </Note>
             </div>
           }
         />}

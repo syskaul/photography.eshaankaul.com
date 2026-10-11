@@ -16,7 +16,6 @@ import {
   PATH_LIBRARY,
   PATH_ADMIN_BASELINE,
   PATH_ADMIN_COMPONENTS,
-  PATH_ADMIN_CONFIGURATION,
   PATH_ADMIN_PHOTOS,
   PATH_ADMIN_RECIPES,
   PATH_ADMIN_ALBUMS,
@@ -544,10 +543,6 @@ export default function CommandKClient({
           invalidateSwr?.();
           toastSuccess(appText.admin.clearCacheSuccess);
         }),
-    }, {
-      label: appText.admin.appConfig,
-      annotation: <IconLock narrow />,
-      path: PATH_ADMIN_CONFIGURATION,
     });
     if (areAdminDebugToolsEnabled) {
       adminSection.items.push({

@@ -27,7 +27,7 @@ Images of videos demonstrating the issue.
 If available, url to latest deployment/hosted website.
 
 **Configuration details**
-Paste contents of `/admin/configuration/export.json` here.
+Paste relevant environment variable values or app configuration details here.
 
 **Device details**
  - Device/OS: [e.g. Windows, macOS, iPhone15Pro, Android]

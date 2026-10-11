@@ -11,7 +11,6 @@ import {
   isPathPhoto,
   isPathProtected,
   PATH_ADMIN,
-  PATH_ADMIN_CONFIGURATION,
   PATH_ADMIN_LIBRARY_EDIT,
   PATH_ADMIN_PHOTOS,
   PATH_FULL,
@@ -88,17 +87,6 @@ describe('Paths', () => {
     expect(isPathProtected(PATH_OG)).toBe(true);
     expect(isPathProtected(PATH_OG_ALL)).toBe(true);
     expect(isPathProtected(PATH_OG_SAMPLE)).toBe(true);
-  });
-  it('allows the configuration checklist without authentication in development', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
-    try {
-      expect(isPathProtected(PATH_ADMIN_CONFIGURATION)).toBe(false);
-      expect(isPathProtected(`${PATH_ADMIN_CONFIGURATION}/export.json`))
-        .toBe(true);
-    } finally {
-      process.env.NODE_ENV = originalNodeEnv;
-    }
   });
   it('can be classified', () => {
     // Positive

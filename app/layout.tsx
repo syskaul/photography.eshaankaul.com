@@ -14,7 +14,6 @@ import ToasterWithThemes from '@/toast/ToasterWithThemes';
 import PhotoEscapeHandler from '@/photo/PhotoEscapeHandler';
 import { Metadata } from 'next/types';
 import Nav from '@/app/Nav';
-import Footer from '@/app/Footer';
 import CommandK from '@/cmdk/CommandK';
 import ShareModals from '@/share/ShareModals';
 import AdminUploadPanel from '@/admin/upload/AdminUploadPanel';
@@ -95,8 +94,8 @@ export default function RootLayout({
       )}>
         <StateProviders>
           <div data-app-shell="" className={clsx(
-            'mx-3 pb-3',
-            'lg:mx-6 lg:pb-6',
+            'mx-3',
+            'lg:mx-6',
             'min-h-dvh flex flex-col',
           )}>
             <Nav />
@@ -121,7 +120,6 @@ export default function RootLayout({
                 {children}
               </div>
             </main>
-            <Footer />
           </div>
           <CommandK />
           <PhotoEscapeHandler />

@@ -18,7 +18,7 @@ Personal photography website of Eshaan Kaul.
 <img src="/readme/og-image-share.png" alt="OG Image Preview" width=600 />
 
 Share modals use the same theme-aware liquid-glass treatment as controls and toast notifications, over a black backdrop at 80% opacity in both themes.
-Camera, lens, and focal-length metadata are display-only. Their dedicated collection, photo, and OG image routes have been removed; these categories are not linked in the library, CMD-K menu, or sitemap. Film, recipe, and admin configuration routes remain available.
+Camera, lens, and focal-length metadata are display-only. Their dedicated collection, photo, and OG image routes have been removed; these categories are not linked in the library, CMD-K menu, or sitemap. Film and recipe routes remain available.
 All dropdown surfaces, including nested menus, photo choosers, selects, and autocomplete lists, use the same theme-aware liquid-glass treatment.
 Admin navigation, action buttons, and dialogs share that treatment while tables and form backgrounds remain solid. Admin pages without a sidebar use the full available width, with 12px interface text (editable fields stay at 16px on phones to avoid focus zoom).
 The main toolbar's admin gear stays selected throughout admin routes, and the progressive header blur has a yellow tint. Admin tabs scroll with the page; only the tabs have glass styling, not their container. Scrollable admin tabs and tables include shadow clearance around glass controls.
@@ -72,7 +72,7 @@ Deploy updates by pushing changes to the connected repository and redeploying th
 4. Run `vercel link` to connect CLI to your project
 5. Run `vercel dev` to start dev server with Vercel-managed environment variables
 
-During local development, visit `/admin/configuration` to review required setup and optional integrations without signing in. This development-only access is not available in production.
+All required setup, optional integrations, and environment-variable checks now live in this README. There is no standalone `/admin/configuration` page.
 
 See FAQ for [limitations of local development](#can-i-work-locally-without-access-to-an-image-storage-provider)
 
@@ -198,7 +198,7 @@ Create an Upstash Redis store from the Vercel dashboard and link it to your proj
 ### Debugging
 - `DISABLE_DEBUG_OUTPUTS = 1`
   - removes build identifier in `<head />`
-  - disables `/admin/configuration/export.json`
+  - disables debug export endpoints
 
 ## Alternate storage providers
 
@@ -484,7 +484,7 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 > In the admin menu, select "Batch edit ..." From there, you can perform bulk album, visibility, and delete actions.
 
 #### Why don't my photo changes show up immediately?
-> This template statically optimizes core views such as `/` and `/grid` to minimize visitor load times. Consequently, when photos are added, edited, or removed, it might take several minutes for those changes to propagate. If it seems like a change is not taking effect, try navigating to `/admin/configuration` and clicking "Clear Cache."
+> This template statically optimizes core views such as `/` and `/grid` to minimize visitor load times. Consequently, when photos are added, edited, or removed, it might take several minutes for those changes to propagate. If it seems like a change is not taking effect, use the admin "Clear Cache" action or redeploy.
 
 #### Why do production deployments fail when static optimization is enabled?
 > Large photos (over 30MB), or a CDN such as Cloudflare in front of Vercel, may destabilize static optimization.
@@ -502,10 +502,10 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 > Thumbnail size depends on aspect ratio configuration. Ratios of 1 or less show more photos per row.
 
 #### My images/content have fallen out of sync with my database and/or my production site no longer matches local development. What do I do?
-> Navigate to `/admin/configuration` and click "Clear Cache."
+> Use the admin "Clear Cache" action or redeploy.
 
 #### I'm seeing server-side runtime errors when loading a page after updating my fork. What do I do?
-> Navigate to `/admin/configuration` and click "Clear Cache." If this doesn't help, contact the site maintainer.
+> Use the admin "Clear Cache" action or redeploy. If this doesn't help, contact the site maintainer.
 
 #### Why can’t I upload HEIC files?
 > This site relies on `sharp` to manipulate images and `next/image` to serve them, neither of which currently support HEIC (https://github.com/vercel/next.js/discussions/30043 + https://github.com/lovell/sharp/issues/3981). HEIC files uploaded from native share controls on Apple platforms are automatically converted to JPG.

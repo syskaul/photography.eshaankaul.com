@@ -2,7 +2,6 @@
 
 import {
   PATH_ADMIN_ALBUMS,
-  PATH_ADMIN_CONFIGURATION,
   PATH_ADMIN_PHOTOS,
   PATH_ADMIN_PHOTOS_UPDATES,
   PATH_ADMIN_RECIPES,
@@ -10,7 +9,6 @@ import {
 } from '@/app/path';
 import { useAppState } from '@/app/AppState';
 import { clsx } from 'clsx/lite';
-import AdminAppInfoIcon from './AdminAppInfoIcon';
 import { signOutAction } from '@/auth/actions';
 import { useMemo } from 'react';
 import IconPhoto from '@/components/icons/IconPhoto';
@@ -179,15 +177,6 @@ export default function AdminAppMenu({
           : startEditingTitles,
       });
     }
-    items.push({
-      label: appText.admin.app,
-      icon: <AdminAppInfoIcon
-        size="small"
-        className="translate-x-[-0.5px]"
-      />,
-      href: PATH_ADMIN_CONFIGURATION,
-    });
-
     return { items };
   }, [
     appText,

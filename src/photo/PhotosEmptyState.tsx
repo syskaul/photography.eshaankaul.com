@@ -8,8 +8,6 @@ import AdminAppConfiguration from '@/admin/config/AdminAppConfiguration';
 import { clsx } from 'clsx/lite';
 import { HiOutlinePhotograph } from 'react-icons/hi';
 import SignInOrUploadClient from '@/admin/SignInOrUploadClient';
-import Link from 'next/link';
-import { PATH_ADMIN_CONFIGURATION } from '@/app/path';
 import { getAppText } from '@/i18n/state/server';
 
 export default async function PhotosEmptyState() {
@@ -44,12 +42,7 @@ export default async function PhotosEmptyState() {
               <div>
                 {appText.onboarding.setupConfig}
                 {' '}
-                <Link
-                  href={PATH_ADMIN_CONFIGURATION}
-                  className="text-main hover:underline"
-                >
-                  /admin/configuration
-                </Link>
+                the project README.
               </div>
             </div>}
         </Container>

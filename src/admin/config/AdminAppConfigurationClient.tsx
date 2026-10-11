@@ -26,7 +26,6 @@ import {
 } from '@/photo/ai';
 import Link from 'next/link';
 import {
-  PATH_DEBUG_CONFIGURATION,
   PATH_FEED_JSON,
   PATH_LIBRARY,
   PATH_RSS_XML,
@@ -624,12 +623,8 @@ export default function AdminAppConfigurationClient({
             status={isDebuggingEnabled}
             optional
           >
-            Set environment variable to {'"1"'} to disable build identifier
-            and admin configuration export
-            {isDebuggingEnabled && <>
-              {' '}
-              ({renderLink(PATH_DEBUG_CONFIGURATION, 'view export.json')})
-            </>}
+            Set environment variable to {'"1"'} to disable build identifiers
+            and other debug outputs.
             {renderEnvVars(['DISABLE_DEBUG_OUTPUTS'])}
           </ChecklistRow>
         </>;

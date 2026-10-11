@@ -4,6 +4,7 @@ import Switcher from '@/components/switcher/Switcher';
 import SwitcherItem from '@/components/switcher/SwitcherItem';
 import {
   PATH_LIBRARY,
+  PATH_ADMIN_PHOTOS,
   PATH_FULL_INFERRED,
   PATH_GRID_INFERRED,
   PATH_ROOT,
@@ -38,6 +39,7 @@ import IconLibrary from '@/components/icons/IconLibrary';
 import { BiHomeAlt as HomeIcon } from 'react-icons/bi';
 import AppViewMenu from './AppViewMenu';
 import AppViewMenuCompact from './AppViewMenuCompact';
+import { FiSettings } from 'react-icons/fi';
 
 export default function AppToolbar({
   className,
@@ -55,6 +57,7 @@ export default function AppToolbar({
   const {
     isUserSignedIn,
     isUserSignedInEager,
+    isCheckingAuth,
     setIsCommandKOpen,
     isPhotoSetFull,
     setIsPhotoSetFull,
@@ -165,7 +168,7 @@ export default function AppToolbar({
             noPadding
           />}
         {/* Show spinner if admin is suspected to be logged in */}
-        {(isUserSignedInEager && !isUserSignedIn) &&
+        {(isCheckingAuth || isUserSignedInEager) && !isUserSignedIn &&
           <SwitcherItem
             icon={<Spinner />}
             isInteractive={false}
@@ -176,6 +179,15 @@ export default function AppToolbar({
                 content: appText.nav.admin,
               },
             }}
+          />}
+        {!isUserSignedIn && !isCheckingAuth && !isUserSignedInEager &&
+          <SwitcherItem
+            icon={<FiSettings size={16} />}
+            href={PATH_ADMIN_PHOTOS}
+            active={isPathAdmin(pathname)}
+            translucent
+            className="liquid-glass-square-left"
+            tooltip={{ content: appText.nav.admin }}
           />}
         {isUserSignedIn &&
           <SwitcherItem
