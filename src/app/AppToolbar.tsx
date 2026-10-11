@@ -16,7 +16,6 @@ import IconSearch from '../components/icons/IconSearch';
 import { useAppState } from '@/app/AppState';
 import {
   SHOW_KEYBOARD_SHORTCUT_TOOLTIPS,
-  NAV_SORT_CONTROL,
   MASONRY_GRID_ENABLED,
 } from './config';
 import AdminAppMenu from '@/admin/AdminAppMenu';
@@ -71,14 +70,9 @@ export default function AppToolbar({
 
   const {
     sortBy,
-    doesPathOfferSort,
     pathGrid,
     pathFull,
   } = sortConfig;
-
-  const showSortControl =
-    NAV_SORT_CONTROL !== 'none' &&
-    doesPathOfferSort;
 
   const hasLoadedRef = useRef(false);
   useEffect(() => {
@@ -142,8 +136,6 @@ export default function AppToolbar({
   ]);
   useKeydownHandler({ onKeyDown });
 
-  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-
   const showViewMenu = isHome || isPhotoSet;
   const isViewFull = isHome
     ? pathname === PATH_FULL_INFERRED || isPathFull(pathname)
@@ -206,7 +198,6 @@ export default function AppToolbar({
               setIsOpen={isOpen => {
                 setIsAdminMenuOpen(isOpen);
                 if (isOpen) {
-                  setIsSortMenuOpen(false);
                   setIsViewMenuOpen(false);
                 }
               }}
@@ -238,14 +229,11 @@ export default function AppToolbar({
             hrefFull={isHome ? pathFull : undefined}
             onSelectView={setIsPhotoSetFull}
             isLoading={isViewSwitchLoading}
-            showSortItems={showSortControl}
-            sortConfig={sortConfig}
             isOpen={isViewMenuOpen}
             setIsOpen={isOpen => {
               setIsViewMenuOpen(isOpen);
               if (isOpen) {
                 setIsAdminMenuOpen(false);
-                setIsSortMenuOpen(false);
               }
             }}
           />
@@ -256,16 +244,6 @@ export default function AppToolbar({
             hrefGrid={isHome ? pathGrid : undefined}
             hrefFull={isHome ? pathFull : undefined}
             onSelectView={setIsPhotoSetFull}
-            showSortControl={showSortControl}
-            sortConfig={sortConfig}
-            isSortMenuOpen={isSortMenuOpen}
-            setIsSortMenuOpen={isOpen => {
-              setIsSortMenuOpen(isOpen);
-              if (isOpen) {
-                setIsAdminMenuOpen(false);
-                setIsViewMenuOpen(false);
-              }
-            }}
           />
         </motion.div>}
     </div>

@@ -1,4 +1,4 @@
-import { META_TITLE, SHOW_TEMPLATE_ATTRIBUTION } from '@/app/config';
+import { META_TITLE } from '@/app/config';
 import type { CategoryKey } from '@/category';
 import { AppTextState } from '@/i18n/state';
 import type { Photo } from '@/photo';
@@ -38,7 +38,5 @@ export const getLibraryMeta = (
   subhead?: string,
 ) => ({
   title: title || META_TITLE || appText.library.titleDefault,
-  subhead: subhead || (SHOW_TEMPLATE_ATTRIBUTION
-    ? appText.utility.madeWithProject
-    : undefined),
+  subhead,
 });

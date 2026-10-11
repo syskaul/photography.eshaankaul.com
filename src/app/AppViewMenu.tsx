@@ -4,17 +4,13 @@ import SwitcherItem from '@/components/switcher/SwitcherItem';
 import IconFull from '@/components/icons/IconFull';
 import IconGrid from '@/components/icons/IconGrid';
 import IconGridMasonry from '@/components/icons/IconGridMasonry';
-import SortMenu from '@/photo/sort/SortMenu';
-import { getSortStateFromPath } from '@/photo/sort/path';
 import { useAppText } from '@/i18n/state/client';
 import { KEY_COMMANDS } from '@/photo/key-commands';
 import clsx from 'clsx/lite';
 import {
   GRID_HOMEPAGE_ENABLED,
-  NAV_SORT_CONTROL,
   SHOW_KEYBOARD_SHORTCUT_TOOLTIPS,
 } from './config';
-import IconSortNav from '@/components/icons/IconSortNav';
 
 export default function AppViewMenu({
   isViewFull,
@@ -23,10 +19,6 @@ export default function AppViewMenu({
   hrefGrid,
   hrefFull,
   onSelectView,
-  showSortControl,
-  sortConfig,
-  isSortMenuOpen,
-  setIsSortMenuOpen,
   className,
 }: {
   isViewFull?: boolean
@@ -34,19 +26,9 @@ export default function AppViewMenu({
   hrefGrid?: string
   hrefFull?: string
   onSelectView?: (isFull: boolean) => void
-  showSortControl?: boolean
-  sortConfig: ReturnType<typeof getSortStateFromPath>
-  isSortMenuOpen?: boolean
-  setIsSortMenuOpen?: (isOpen: boolean) => void
   className?: string
 }) {
   const appText = useAppText();
-
-  const {
-    isSortedByDefault,
-    isAscending,
-    pathSortToggle,
-  } = sortConfig;
 
   const switcherItemGrid = <SwitcherItem
     key="grid"
@@ -93,42 +75,6 @@ export default function AppViewMenu({
       {GRID_HOMEPAGE_ENABLED
         ? [switcherItemGrid, switcherItemFull]
         : [switcherItemFull, switcherItemGrid]}
-      {showSortControl && (NAV_SORT_CONTROL === 'menu'
-        ? <SwitcherItem
-          className={clsx(
-            !isSortedByDefault && '*:bg-dim *:text-main!',
-          )}
-          icon={<SortMenu
-            {...sortConfig}
-            isOpen={isSortMenuOpen}
-            setIsOpen={setIsSortMenuOpen}
-          />}
-          iconIsFocusable
-          tooltip={{
-            ...!isSortMenuOpen && SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-              content: appText.sort.sort,
-            },
-          }}
-          width="narrow"
-          noPadding
-        />
-        : <SwitcherItem
-          className={clsx(
-            '*:w-full *:h-full *:flex *:items-center *:justify-center',
-            !isSortedByDefault && '*:bg-dim *:text-main!',
-          )}
-          href={pathSortToggle}
-          icon={<IconSortNav
-            sort={isAscending ? 'asc' : 'desc'}
-          />}
-          tooltip={{...SHOW_KEYBOARD_SHORTCUT_TOOLTIPS && {
-            content: isAscending
-              ? appText.sort.viewNewest
-              : appText.sort.viewOldest,
-          }}}
-          width="narrow"
-          noPadding
-        />)}
     </div>
   );
 }

@@ -4,8 +4,7 @@ import { clsx } from 'clsx/lite';
 import AppGrid from '../components/AppGrid';
 import ThemeSwitcher from '@/app/ThemeSwitcher';
 import Link from 'next/link';
-import { DARK_MODE_ENABLED, SHOW_TEMPLATE_ATTRIBUTION } from '@/app/config';
-import RepoLink from '../components/RepoLink';
+import { DARK_MODE_ENABLED } from '@/app/config';
 import { usePathname } from 'next/navigation';
 import { PATH_ADMIN_PHOTOS, isPathAdmin, isPathSignIn } from './path';
 import SubmitButtonWithStatus from '@/components/SubmitButtonWithStatus';
@@ -68,11 +67,9 @@ export default function Footer() {
                   </>
                   : isCheckingAuth
                     ? <Spinner size={16} className="translate-y-[2px]" />
-                    : SHOW_TEMPLATE_ATTRIBUTION
-                      ? <RepoLink />
-                      : <Link href={PATH_ADMIN_PHOTOS}>
-                        {appText.nav.admin}
-                      </Link>}
+                    : <Link href={PATH_ADMIN_PHOTOS}>
+                      {appText.nav.admin}
+                    </Link>}
               </div>
               <div className="flex items-center h-10 shrink-0 gap-3">
                 <button

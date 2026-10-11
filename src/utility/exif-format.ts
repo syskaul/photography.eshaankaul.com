@@ -17,9 +17,12 @@ export const formatExposureTime = (exposureTime = 0) =>
 
 export const formatExposureCompensation = (exposureCompensation?: number) => {
   if (
-    exposureCompensation &&
-    Math.abs(exposureCompensation) > 0.01
+    typeof exposureCompensation === 'number' &&
+    !isNaN(exposureCompensation)
   ) {
+    if (Math.abs(exposureCompensation) <= 0.01) {
+      return '0ev';
+    }
     return `${formatNumberToFraction(exposureCompensation)}ev`;
   } else {
     return undefined;

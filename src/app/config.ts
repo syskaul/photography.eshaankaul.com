@@ -374,14 +374,10 @@ export const SHOW_KEYBOARD_SHORTCUT_TOOLTIPS =
 export const SHOW_EXIF_DATA =
   process.env.NEXT_PUBLIC_HIDE_CAMERA_DATA !== '1' &&
   process.env.NEXT_PUBLIC_HIDE_EXIF_DATA !== '1';
-export const ALWAYS_SHOW_EXPOSURE_COMP =
-  process.env.NEXT_PUBLIC_ALWAYS_SHOW_EXPOSURE_COMP === '1';
 export const SHOW_ZOOM_CONTROLS =
   process.env.NEXT_PUBLIC_HIDE_ZOOM_CONTROLS !== '1';
 export const SHOW_TAKEN_AT_TIME =
   process.env.NEXT_PUBLIC_HIDE_TAKEN_AT_TIME !== '1';
-export const SHOW_TEMPLATE_ATTRIBUTION =
-  process.env.NEXT_PUBLIC_HIDE_TEMPLATE_ATTRIBUTION === '0';
 
 // GRID
 
@@ -551,10 +547,8 @@ export const APP_CONFIGURATION = {
   // Display
   showKeyboardShortcutTooltips: SHOW_KEYBOARD_SHORTCUT_TOOLTIPS,
   showExifInfo: SHOW_EXIF_DATA,
-  alwaysShowExposureComp: ALWAYS_SHOW_EXPOSURE_COMP,
   showZoomControls: SHOW_ZOOM_CONTROLS,
   showTakenAtTimeHidden: SHOW_TAKEN_AT_TIME,
-  showRepoLink: SHOW_TEMPLATE_ATTRIBUTION,
   // Grid
   isGridHomepageEnabled: GRID_HOMEPAGE_ENABLED,
   isMasonryGridEnabled: MASONRY_GRID_ENABLED,
@@ -637,9 +631,6 @@ const ALL_DEPRECATED_ENV_VARS = [{
 }, {
   old: 'GOOGLE_PLACES_API_KEY',
   replacement: 'GOOGLE_PLACES_GEOCODING_API_KEY',
-}, {
-  old: 'NEXT_PUBLIC_HIDE_REPO_LINK',
-  replacement: 'NEXT_PUBLIC_HIDE_TEMPLATE_ATTRIBUTION',
 }];
 
 export const USED_DEPRECATED_ENV_VARS = ALL_DEPRECATED_ENV_VARS

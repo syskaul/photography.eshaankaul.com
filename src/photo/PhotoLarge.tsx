@@ -28,7 +28,6 @@ import {
   SHOW_TAKEN_AT_TIME,
   MATTE_COLOR,
   MATTE_COLOR_DARK,
-  ALWAYS_SHOW_EXPOSURE_COMP,
   UPPERCASE_TITLES,
   GEO_PRIVACY_ENABLED,
 } from '@/app/config';
@@ -455,9 +454,8 @@ export default function PhotoLarge({
                       <li>{photo.fNumberFormatted}</li>
                       <li>{photo.exposureTimeFormatted}</li>
                       <li>{photo.isoFormatted}</li>
-                      {photo.exposureCompensationFormatted
-                        ? <li>{photo.exposureCompensationFormatted}</li>
-                        : ALWAYS_SHOW_EXPOSURE_COMP && <li>0ev</li>}
+                      {photo.exposureCompensationFormatted &&
+                        <li>{photo.exposureCompensationFormatted}</li>}
                     </ul>
                     {showFilmContent && photo.film &&
                       <PhotoFilm

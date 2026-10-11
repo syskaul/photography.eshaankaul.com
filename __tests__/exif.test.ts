@@ -73,7 +73,8 @@ describe('EXIF', () => {
     it('exposure compensation', () => {
       expect(formatExposureCompensation(1)).toBe('+1ev');
       expect(formatExposureCompensation(-1)).toBe('-1ev');
-      expect(formatExposureCompensation(0)).toBe(undefined);
+      expect(formatExposureCompensation(0)).toBe('0ev');
+      expect(formatExposureCompensation(undefined)).toBe(undefined);
       expect(formatExposureCompensation(0.25)).toBe('+1/4ev');
       expect(formatExposureCompensation(0.33)).toBe('+1/3ev');
       expect(formatExposureCompensation(0.333)).toBe('+1/3ev');

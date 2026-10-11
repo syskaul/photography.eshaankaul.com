@@ -116,10 +116,8 @@ export default function AdminAppConfigurationClient({
   // Display
   showKeyboardShortcutTooltips,
   showExifInfo,
-  alwaysShowExposureComp,
   showZoomControls,
   showTakenAtTimeHidden,
-  showRepoLink,
   // Grid
   isGridHomepageEnabled,
   isMasonryGridEnabled,
@@ -865,15 +863,6 @@ export default function AdminAppConfigurationClient({
             {renderEnvVars(['NEXT_PUBLIC_HIDE_CAMERA_DATA'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Always show exposure compensation"
-            status={alwaysShowExposureComp}
-            optional
-          >
-            Set environment variable to {'"1"'} to always show
-            exposure compensation even when {'it\'s'} 0ev
-            {renderEnvVars(['NEXT_PUBLIC_ALWAYS_SHOW_EXPOSURE_COMP'])}
-          </ChecklistRow>
-          <ChecklistRow
             title="Show zoom controls"
             status={showZoomControls}
             optional
@@ -890,14 +879,6 @@ export default function AdminAppConfigurationClient({
             Set environment variable to {'"1"'} to hide
             taken at time from photo meta
             {renderEnvVars(['NEXT_PUBLIC_HIDE_TAKEN_AT_TIME'])}
-          </ChecklistRow>
-          <ChecklistRow
-            title="Show template attribution"
-            status={showRepoLink}
-            optional
-          >
-            Set environment variable to {'"1"'} to hide template attribution
-            {renderEnvVars(['NEXT_PUBLIC_HIDE_TEMPLATE_ATTRIBUTION'])}
           </ChecklistRow>
         </>;
       case 'Grid':

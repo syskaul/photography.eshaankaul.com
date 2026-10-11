@@ -16,14 +16,10 @@ import {
 } from '@/components/switcher/SwitcherItem';
 import { useAppText } from '@/i18n/state/client';
 import { KEY_COMMANDS } from '@/photo/key-commands';
-import { getSortStateFromPath } from '@/photo/sort/path';
-import { getSortMenuItems } from '@/photo/sort/menu';
 import {
   GRID_HOMEPAGE_ENABLED,
-  NAV_SORT_CONTROL,
   SHOW_KEYBOARD_SHORTCUT_TOOLTIPS,
 } from './config';
-import IconSortNav from '@/components/icons/IconSortNav';
 
 const VIEW_ICON_CLASS = 'w-[24px] -ml-[4px] translate-x-[1px]';
 
@@ -35,8 +31,6 @@ export default function AppViewMenuCompact({
   hrefFull,
   onSelectView,
   isLoading,
-  showSortItems,
-  sortConfig,
   isOpen,
   setIsOpen,
   className,
@@ -47,8 +41,6 @@ export default function AppViewMenuCompact({
   hrefFull?: string
   onSelectView?: (isFull: boolean) => void
   isLoading?: boolean
-  showSortItems?: boolean
-  sortConfig: ReturnType<typeof getSortStateFromPath>
   isOpen?: boolean
   setIsOpen?: (isOpen: boolean) => void
   className?: string
@@ -88,22 +80,6 @@ export default function AppViewMenuCompact({
   const items: MoreMenuSection['items'] = GRID_HOMEPAGE_ENABLED
     ? [itemGrid, itemFull]
     : [itemFull, itemGrid];
-
-  if (showSortItems) {
-    const { itemsSortOrder, itemsSortType } =
-      getSortMenuItems(sortConfig, appText);
-    items.push({
-      label: appText.sort.sort,
-      icon: <IconSortNav
-        sort={sortConfig.isAscending ? 'asc' : 'desc'}
-        className={clsx(VIEW_ICON_CLASS, 'w-[30px]! -ml-2!')} 
-      />,
-      // Sort types are only offered where the nav exposes a full sort menu
-      sections: NAV_SORT_CONTROL === 'menu'
-        ? [{ items: itemsSortOrder }, { items: itemsSortType }]
-        : [{ items: itemsSortOrder }],
-    });
-  }
 
   return (
     <Tooltip
