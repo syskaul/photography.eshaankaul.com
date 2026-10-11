@@ -36,3 +36,12 @@ next-env.d.ts
 
 # temp files
 temp.jpg
+
+# agents and skills
+.agents/
+skills/
+skills-lock.json
+AGENTS.md
+CLAUDE.md
+.claude/
+.cursor/
