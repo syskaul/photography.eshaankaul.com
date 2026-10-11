@@ -6,7 +6,7 @@ export const MENU_SURFACE_STYLES = clsx(
   // Above sticky headers (z-40) and page content; below tooltips (z-100)
   'z-50',
   'min-w-[8rem]',
-  'liquid-glass-surface text-main outline-hidden',
+  'text-main outline-hidden',
   'py-1',
   'data-[side=top]:animate-fade-in-from-bottom',
   'data-[side=bottom]:animate-fade-in-from-top',

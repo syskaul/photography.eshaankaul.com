@@ -4,13 +4,10 @@ import { PhotoSetCategory } from '../category';
 import PhotoLarge from './PhotoLarge';
 import AppGrid from '@/components/AppGrid';
 import PhotoGrid from './PhotoGrid';
-import CameraHeader from '@/camera/CameraHeader';
 import FilmHeader from '@/film/FilmHeader';
-import FocalLengthHeader from '@/focal/FocalLengthHeader';
 import PhotoHeader from './PhotoHeader';
 import RecipeHeader from '@/recipe/RecipeHeader';
 import { ReactNode } from 'react';
-import LensHeader from '@/lens/LensHeader';
 import {
   ADMIN_STORAGE_DEBUG_ENABLED,
   AI_CONTENT_GENERATION_ENABLED,
@@ -28,12 +25,9 @@ export default function PhotoDetailPage({
   query,
   recent,
   year,
-  camera,
-  lens,
   album,
   film,
   recipe,
-  focal,
   indexNumber,
   count,
   dateRange,
@@ -54,19 +48,13 @@ export default function PhotoDetailPage({
       ? 'recent'
       : year
         ? 'year'
-        : camera
-          ? 'camera'
-          : lens
-            ? 'lens'
-            : album
-              ? 'album'
-              : film
-                ? 'film'
-                : recipe
-                  ? 'recipe'
-                  : focal !== undefined
-                    ? 'focal_length'
-                    : 'photo';
+        : album
+          ? 'album'
+          : film
+            ? 'film'
+            : recipe
+              ? 'recipe'
+              : 'photo';
 
   if (query) {
     customHeader = <QueryHeader
@@ -88,24 +76,6 @@ export default function PhotoDetailPage({
     />;
   } else if (recent) {
     customHeader = <RecentsHeader
-      photos={photos}
-      selectedPhoto={photo}
-      indexNumber={indexNumber}
-      count={count}
-      dateRange={dateRange}
-    />;
-  } else if (camera) {
-    customHeader = <CameraHeader
-      camera={camera}
-      photos={photos}
-      selectedPhoto={photo}
-      indexNumber={indexNumber}
-      count={count}
-      dateRange={dateRange}
-    />;
-  } else if (lens) {
-    customHeader = <LensHeader
-      lens={lens}
       photos={photos}
       selectedPhoto={photo}
       indexNumber={indexNumber}
@@ -137,15 +107,6 @@ export default function PhotoDetailPage({
       selectedPhoto={photo}
       indexNumber={indexNumber}
       count={count}
-    />;
-  } else if (focal) {
-    customHeader = <FocalLengthHeader
-      focal={focal}
-      photos={photos}
-      selectedPhoto={photo}
-      indexNumber={indexNumber}
-      count={count}
-      dateRange={dateRange}
     />;
   }
 
@@ -180,20 +141,15 @@ export default function PhotoDetailPage({
             year={year}
             showTitle={Boolean(customHeader)}
             showTitleAsH1
-            showCamera={!camera}
-            showLens={!lens}
             showFilm={!film}
             showRecipe={!recipe}
             shouldShare={shouldShare}
             shouldShareQuery={query !== undefined}
             shouldShareRecents={recent !== undefined}
             shouldShareYear={year !== undefined}
-            shouldShareCamera={camera !== undefined}
-            shouldShareLens={lens !== undefined}
             shouldShareAlbum={album !== undefined}
             shouldShareFilm={film !== undefined}
             shouldShareRecipe={recipe !== undefined}
-            shouldShareFocalLength={focal !== undefined}
             showAdminKeyCommands
             showStorageCheck={ADMIN_STORAGE_DEBUG_ENABLED}
           />,
@@ -203,9 +159,7 @@ export default function PhotoDetailPage({
         contentMain={<PhotoGrid
           photos={photosGrid ?? photos}
           query={query}
-          camera={camera}
           film={film}
-          focal={focal}
           year={year}
           animateOnFirstLoadOnly
         />}

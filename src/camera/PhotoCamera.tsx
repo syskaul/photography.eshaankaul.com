@@ -1,14 +1,12 @@
 'use client';
 
 import { AiFillApple } from 'react-icons/ai';
-import { pathForCamera } from '@/app/path';
 import { Camera, formatCameraText } from '.';
 import EntityLink, {
   EntityLinkExternalProps,
 } from '@/components/entity/EntityLink';
 import IconCamera from '@/components/icons/IconCamera';
 import { isCameraApple } from '@/platforms/apple';
-import useCategoryCounts from '@/category/useCategoryCounts';
 import { getCameraBrand } from './brand';
 import CameraBrand from './CameraBrand';
 
@@ -22,8 +20,6 @@ export default function PhotoCamera({
   hideAppleIcon?: boolean
   showBrandLogo?: boolean
 } & EntityLinkExternalProps) {
-  const { getCameraCount } = useCategoryCounts();
-  
   const isApple = isCameraApple(camera);
   const showAppleIcon = !hideAppleIcon && isApple;
   const brand = showBrandLogo
@@ -41,7 +37,7 @@ export default function PhotoCamera({
       labelForHover={brand
         ? formatCameraText(camera)
         : undefined}
-      path={pathForCamera(camera)}
+      interactive={false}
       icon={showAppleIcon
         ? <AiFillApple
           title="Apple"
@@ -52,7 +48,6 @@ export default function PhotoCamera({
           size={15}
           className="translate-x-[-0.5px] translate-y-[-0.5px]"
         />}
-      hoverCount={props.hoverCount ?? getCameraCount(camera)}
     />
   );
 }

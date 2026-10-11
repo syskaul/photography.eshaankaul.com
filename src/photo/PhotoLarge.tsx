@@ -13,8 +13,6 @@ import {
 import AppGrid from '@/components/AppGrid';
 import ImageLarge from '@/components/image/ImageLarge';
 import { clsx } from 'clsx/lite';
-import Link from 'next/link';
-import { pathForFocalLength } from '@/app/path';
 import ShareButton from '@/share/ShareButton';
 import DownloadButton from '@/components/DownloadButton';
 import PhotoCamera from '../camera/PhotoCamera';
@@ -266,7 +264,7 @@ export default function PhotoLarge({
       classNameSide="relative"
       sideHiddenOnMobile={false}
       contentSide={
-        <div className="md:absolute inset-0 mt-1 text-xs">
+        <div className="md:absolute inset-0 text-xs">
           <MaskedScroll className="sticky top-4 self-start">
             <DivDebugBaselineGrid className={clsx(
               'grid grid-cols-2 md:grid-cols-1',
@@ -334,13 +332,11 @@ export default function PhotoLarge({
                             <PhotoCamera
                               camera={camera}
                               contrast="medium"
-                              prefetch={prefetchRelatedLinks}
                             />}
                           {showLensContent &&
                             <PhotoLens
                               lens={lens}
                               contrast="medium"
-                              prefetch={prefetchRelatedLinks}
                             />}
                         </div>}
                       {showRecipeContent && recipeTitle &&
@@ -368,13 +364,7 @@ export default function PhotoLarge({
                   <>
                     <ul className="text-medium">
                       <li>
-                        {photo.focalLength &&
-                          <Link
-                            href={pathForFocalLength(photo.focalLength)}
-                            className="hover:text-main active:text-medium"
-                          >
-                            {photo.focalLengthFormatted}
-                          </Link>}
+                        {photo.focalLength && photo.focalLengthFormatted}
                         {(
                           photo.focalLengthIn35MmFormatFormatted &&
                           // eslint-disable-next-line @stylistic/max-len

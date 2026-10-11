@@ -3,6 +3,7 @@
 import { clsx } from 'clsx/lite';
 import { HTMLAttributes, ReactNode, RefObject, useRef } from 'react';
 import AppGrid from './AppGrid';
+import GlassSurface from './GlassSurface';
 import useStickyHeader from '@/app/useStickyHeader';
 
 export default function StickyBanner({
@@ -39,12 +40,11 @@ export default function StickyBanner({
           className={contentClassName}
           style={contentStyle}
         >
-          <div
+          <GlassSurface
             {...props}
             ref={surfaceRef}
             className={clsx(
               'p-2',
-              'liquid-glass-surface',
               // Square off once stuck so the banner meets the content below
               'transition-[border-radius] duration-200',
               isOutOfPosition && 'rounded-none!',
@@ -55,7 +55,7 @@ export default function StickyBanner({
             )}
           >
             {children}
-          </div>
+          </GlassSurface>
         </div>
       }
     />

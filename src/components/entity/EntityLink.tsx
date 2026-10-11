@@ -27,6 +27,7 @@ export interface EntityLinkExternalProps {
   truncate?: boolean
   hoverCount?: number
   hoverType?: 'auto' | 'text' | 'none'
+  interactive?: boolean
 }
 
 export default function EntityLink({
@@ -47,6 +48,7 @@ export default function EntityLink({
   onClick,
   hoverCount = 0,
   hoverType = 'auto',
+  interactive = true,
   prefetch,
   title,
   action,
@@ -97,6 +99,7 @@ export default function EntityLink({
   };
 
   const canShowHover =
+    interactive &&
     !isLoading &&
     hoverCount > 0;
 
@@ -111,71 +114,83 @@ export default function EntityLink({
       {useForHover ? (labelForHover ?? label) : label}
     </ResponsiveText>;
 
-  const renderLink = (useForHover?: boolean) =>
-    <LinkWithStatus
-      href={path}
-      className={clsx(
-        'peer',
-        'inline-flex items-center gap-2 max-w-full truncate',
-        classForContrast(),
-        path && !badged && contrast !== 'frosted' &&
-          'hover:text-gray-900 dark:hover:text-gray-100',
-        path && !badged && 'active:text-medium!',
-      )}
-      isLoading={isLoading}
-      setIsLoading={setIsLoading}
-      target={pathTarget}
-      onClick={onClick}
-    >
-      <LabeledIcon {...{
-        icon: badged && hasBadgeIcon && !useForHover
-          ? undefined
-          : icon,
-        iconWide: badged && hasBadgeIcon && !useForHover
-          ? undefined
-          : iconWide,
-        prefetch,
-        title,
-        type: useForHover ? 'icon-first' : type,
-        uppercase,
-        className: useForHover ? 'text-white' : undefined,
-        classNameIcon: clsx(
-          !useForHover && 'text-dim',
-          classNameIcon,
-        ),
-        debug,
-      }}>
-        {badged && !useForHover
-          ? <Badge
-            type={badgeType}
-            contrast={contrast}
-            className={clsx(
-              'translate-y-[-0.5px]',
-              hasBadgeIcon && '*:flex *:items-center',
-              hasBadgeIcon && badgeType === 'medium'
-                ? '*:gap-[5px]'
-                : '*:gap-1',
-              suppressSpinner && isLoading && 'opacity-50',
-            )}
-            uppercase
-            interactive
-          >
-            {badgeType === 'medium' &&
+  const renderContent = (useForHover?: boolean) =>
+    <LabeledIcon {...{
+      icon: badged && hasBadgeIcon && !useForHover
+        ? undefined
+        : icon,
+      iconWide: badged && hasBadgeIcon && !useForHover
+        ? undefined
+        : iconWide,
+      prefetch,
+      title,
+      type: useForHover ? 'icon-first' : type,
+      uppercase,
+      className: useForHover ? 'text-white' : undefined,
+      classNameIcon: clsx(
+        !useForHover && 'text-dim',
+        classNameIcon,
+      ),
+      debug,
+    }}>
+      {badged && !useForHover
+        ? <Badge
+          type={badgeType}
+          contrast={contrast}
+          className={clsx(
+            'translate-y-[-0.5px]',
+            hasBadgeIcon && '*:flex *:items-center',
+            hasBadgeIcon && badgeType === 'medium'
+              ? '*:gap-[5px]'
+              : '*:gap-1',
+            suppressSpinner && isLoading && 'opacity-50',
+          )}
+          uppercase
+          interactive={interactive}
+        >
+          {badgeType === 'medium' &&
               <span className="translate-y-[0.5px]">{icon}</span>}
-            {badgeType !== 'medium' && iconBadgeStart}
-            {renderLabel(useForHover)}
-            {badgeType !== 'medium' && iconBadgeEnd}
-          </Badge>
-          : <span className={clsx(
-            'text-content',
-            truncate && 'inline-flex max-w-full *:truncate',
-            'decoration-dotted underline-offset-[4px]',
-            'decoration-gray-300 dark:decoration-gray-600',
-          )}>
-            {renderLabel(useForHover)}
-          </span>}
-      </LabeledIcon>
-    </LinkWithStatus>;
+          {badgeType !== 'medium' && iconBadgeStart}
+          {renderLabel(useForHover)}
+          {badgeType !== 'medium' && iconBadgeEnd}
+        </Badge>
+        : <span className={clsx(
+          'text-content',
+          truncate && 'inline-flex max-w-full *:truncate',
+          'decoration-dotted underline-offset-[4px]',
+          'decoration-gray-300 dark:decoration-gray-600',
+        )}>
+          {renderLabel(useForHover)}
+        </span>}
+    </LabeledIcon>;
+
+  const renderLink = () => {
+    const contentClassName = clsx(
+      'inline-flex items-center gap-2 max-w-full truncate',
+      classForContrast(),
+    );
+
+    return interactive
+      ? <LinkWithStatus
+        href={path}
+        className={clsx(
+          'peer',
+          contentClassName,
+          path && !badged && contrast !== 'frosted' &&
+            'hover:text-gray-900 dark:hover:text-gray-100',
+          path && !badged && 'active:text-medium!',
+        )}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        target={pathTarget}
+        onClick={onClick}
+      >
+        {renderContent()}
+      </LinkWithStatus>
+      : <span className={contentClassName}>
+        {renderContent()}
+      </span>;
+  };
 
   return (
     <span
@@ -184,7 +199,7 @@ export default function EntityLink({
         'inline-flex items-center gap-2',
         'max-w-full overflow-hidden select-none',
         // Underline link text when action is hovered
-        '[&:has(.action:hover)_.text-content]:underline',
+        interactive && '[&:has(.action:hover)_.text-content]:underline',
         !truncate && 'shrink-0',
         className,
       )}

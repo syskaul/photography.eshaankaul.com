@@ -26,10 +26,7 @@ import {
   PATH_FULL,
   PATH_GRID,
   PATH_ROOT,
-  PREFIX_CAMERA,
   PREFIX_FILM,
-  PREFIX_FOCAL_LENGTH,
-  PREFIX_LENS,
   PREFIX_RECIPE,
   pathForPhoto,
   PREFIX_YEAR,
@@ -116,12 +113,9 @@ export const revalidatePhoto = (photoId: string) => {
   revalidatePath(PATH_ROOT, 'layout');
   revalidatePath(PATH_GRID, 'layout');
   revalidatePath(PATH_FULL, 'layout');
-  revalidatePath(PREFIX_CAMERA, 'layout');
-  revalidatePath(PREFIX_LENS, 'layout');
   revalidatePath(PREFIX_ALBUM, 'layout');
   revalidatePath(PREFIX_FILM, 'layout');
   revalidatePath(PREFIX_RECIPE, 'layout');
-  revalidatePath(PREFIX_FOCAL_LENGTH, 'layout');
   revalidatePath(PREFIX_YEAR, 'layout');
   revalidatePath(PATH_ADMIN, 'layout');
 };

@@ -3,10 +3,7 @@ import { getDataForCategoriesCached } from '@/category/cache';
 import {
   ABSOLUTE_PATH_GRID,
   absolutePathForAlbum,
-  absolutePathForCamera,
   absolutePathForFilm,
-  absolutePathForFocalLength,
-  absolutePathForLens,
   absolutePathForPhoto,
   absolutePathForRecents,
   absolutePathForRecipe,
@@ -39,12 +36,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const {
     recents,
     years,
-    cameras,
-    lenses,
     albums,
     recipes,
     films,
-    focalLengths,
   } = categories;
 
   const lastModifiedSite = getLastModifiedForCategories(
@@ -77,18 +71,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: PRIORITY_CATEGORY,
       lastModified,
     })),
-    // Cameras
-    ...cameras.map(({ camera, lastModified }) => ({
-      url: absolutePathForCamera(camera),
-      priority: PRIORITY_CATEGORY,
-      lastModified,
-    })),
-    // Lenses
-    ...lenses.map(({ lens, lastModified }) => ({
-      url: absolutePathForLens(lens),
-      priority: PRIORITY_CATEGORY,
-      lastModified,
-    })),
     // Albums
     ...albums.map(({ album, lastModified }) => ({
       url: absolutePathForAlbum(album),
@@ -104,12 +86,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Films
     ...films.map(({ film, lastModified }) => ({
       url: absolutePathForFilm(film),
-      priority: PRIORITY_CATEGORY,
-      lastModified,
-    })),
-    // Focal Lengths
-    ...focalLengths.map(({ focal, lastModified }) => ({
-      url: absolutePathForFocalLength(focal),
       priority: PRIORITY_CATEGORY,
       lastModified,
     })),

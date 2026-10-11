@@ -2,9 +2,7 @@
 import { Photo } from '@/photo';
 import { PhotoSetCategory } from '@/category';
 import { getBaseUrl } from './config';
-import { Camera } from '@/camera';
 import { parameterize } from '@/utility/string';
-import { Lens } from '@/lens';
 import { AlbumOrAlbumSlug } from '@/album';
 
 // Core
@@ -46,12 +44,9 @@ export const PREFIX_FOCAL_LENGTH        = '/focal';
 const PATH_PHOTO_DYNAMIC                = `${PREFIX_PHOTO}/[photoId]`;
 const PATH_RECENTS_DYNAMIC              = `${PREFIX_RECENTS}/[photoId]`;
 const PATH_YEAR_DYNAMIC                 = `${PREFIX_YEAR}/[year]`;
-const PATH_CAMERA_DYNAMIC               = `${PREFIX_CAMERA}/[make]/[model]`;
-const PATH_LENS_DYNAMIC                 = `${PREFIX_LENS}/[make]/[model]`;
 const PATH_ALBUM_DYNAMIC                = `${PREFIX_ALBUM}/[album]`;
 const PATH_FILM_DYNAMIC                 = `${PREFIX_FILM}/[film]`;
 const PATH_RECIPE_DYNAMIC               = `${PREFIX_RECIPE}/[recipe]`;
-const PATH_FOCAL_LENGTH_DYNAMIC         = `${PREFIX_FOCAL_LENGTH}/[focal]`;
 
 // Admin paths
 export const PATH_ADMIN_PHOTOS          = `${PATH_ADMIN}/photos`;
@@ -104,11 +99,8 @@ export const PATHS_TO_CACHE = [
   PATH_LIBRARY,
   PATH_OG,
   PATH_PHOTO_DYNAMIC,
-  PATH_CAMERA_DYNAMIC,
-  PATH_LENS_DYNAMIC,
   PATH_ALBUM_DYNAMIC,
   PATH_FILM_DYNAMIC,
-  PATH_FOCAL_LENGTH_DYNAMIC,
   PATH_RECIPE_DYNAMIC,
   PATH_YEAR_DYNAMIC,
   PATH_RECENTS_DYNAMIC,
@@ -148,11 +140,8 @@ export const pathForPhoto = ({
   query,
   recent,
   year,
-  camera,
-  lens,
   album,
   film,
-  focal,
   recipe,
 }: PhotoPathParams) => {
   let prefix = PREFIX_PHOTO;
@@ -163,18 +152,12 @@ export const pathForPhoto = ({
     prefix = PREFIX_RECENTS;
   } else if (year) {
     prefix = pathForYear(year);
-  } else if (camera) {
-    prefix = pathForCamera(camera);
-  } else if (lens) {
-    prefix = pathForLens(lens);
   } else if (album) {
     prefix = pathForAlbum(album);
   } else if (recipe) {
     prefix = pathForRecipe(recipe);
   } else if (film) {
     prefix = pathForFilm(film);
-  } else if (focal) {
-    prefix = pathForFocalLength(focal);
   }
 
   return `${prefix}/${getPhotoId(photo)}`;
@@ -186,14 +169,6 @@ export const pathForQuery = (query: string) =>
 export const pathForYear = (year: string) =>
   `${PREFIX_YEAR}/${year}`;
 
-export const pathForCamera = ({ make, model }: Camera) =>
-  `${PREFIX_CAMERA}/${parameterize(make)}/${parameterize(model)}`;
-
-export const pathForLens = ({ make, model }: Lens) =>
-  make
-    ? `${PREFIX_LENS}/${parameterize(make)}/${parameterize(model)}`
-    : `${PREFIX_LENS}/${MISSING_FIELD}/${parameterize(model)}`;
-
 export const pathForAlbum = (album: AlbumOrAlbumSlug) =>
   `${PREFIX_ALBUM}/${getAlbumSlug(album)}`;
 
@@ -202,9 +177,6 @@ export const pathForRecipe = (recipe: string) =>
 
 export const pathForFilm = (film: string) =>
   `${PREFIX_FILM}/${parameterize(film)}`;
-
-export const pathForFocalLength = (focal: number) =>
-  `${PREFIX_FOCAL_LENGTH}/${focal}mm`;
 
 // Image paths
 const pathForImage = (path: string) =>
@@ -216,12 +188,6 @@ export const pathForPhotoImage = (photo: PhotoOrPhotoId) =>
 export const pathForQueryImage = (query: string) =>
   pathForImage(pathForQuery(query));
 
-export const pathForCameraImage = (camera: Camera) =>
-  pathForImage(pathForCamera(camera));
-
-export const pathForLensImage = (lens: Lens) =>
-  pathForImage(pathForLens(lens));
-
 export const pathForAlbumImage = (album: AlbumOrAlbumSlug) =>
   pathForImage(pathForAlbum(album));
 
@@ -230,9 +196,6 @@ export const pathForRecipeImage = (recipe: string) =>
 
 export const pathForFilmImage = (film: string) =>
   pathForImage(pathForFilm(film));
-
-export const pathForFocalLengthImage = (focal: number) =>
-  pathForImage(pathForFocalLength(focal));
 
 export const pathForYearImage = (year: string) =>
   pathForImage(pathForYear(year));
@@ -265,12 +228,6 @@ export const absolutePathForPhoto = (
 export const absolutePathForQuery = (query: string, share?: boolean) =>
   `${getBaseUrl(share)}${pathForQuery(query)}`;
 
-export const absolutePathForCamera= (camera: Camera, share?: boolean) =>
-  `${getBaseUrl(share)}${pathForCamera(camera)}`;
-
-export const absolutePathForLens= (lens: Lens, share?: boolean) =>
-  `${getBaseUrl(share)}${pathForLens(lens)}`;
-  
 export const absolutePathForAlbum = (
   album: AlbumOrAlbumSlug,
   share?: boolean,
@@ -282,9 +239,6 @@ export const absolutePathForRecipe = (recipe: string, share?: boolean) =>
 
 export const absolutePathForFilm = (film: string, share?: boolean) =>
   `${getBaseUrl(share)}${pathForFilm(film)}`;
-
-export const absolutePathForFocalLength = (focal: number, share?: boolean) =>
-  `${getBaseUrl(share)}${pathForFocalLength(focal)}`;
 
 export const absolutePathForYear = (year: string, share?: boolean) =>
   `${getBaseUrl(share)}${pathForYear(year)}`;
@@ -298,12 +252,6 @@ export const absolutePathForPhotoImage = (photo: PhotoOrPhotoId) =>
 export const absolutePathForQueryImage = (query: string) =>
   `${absolutePathForQuery(query)}/${IMAGE}`;
 
-export const absolutePathForCameraImage= (camera: Camera) =>
-  `${absolutePathForCamera(camera)}/${IMAGE}`;
-
-export const absolutePathForLensImage= (lens: Lens) =>
-  `${absolutePathForLens(lens)}/${IMAGE}`;
-
 export const absolutePathForAlbumImage = (album: AlbumOrAlbumSlug) =>
   `${absolutePathForAlbum(album)}/${IMAGE}`;
 
@@ -313,9 +261,6 @@ export const absolutePathForRecipeImage = (recipe: string) =>
 export const absolutePathForFilmImage = (film: string) =>
   `${absolutePathForFilm(film)}/${IMAGE}`;
 
-export const absolutePathForFocalLengthImage = (focal: number) =>
-  `${absolutePathForFocalLength(focal)}/${IMAGE}`;
-    
 export const absolutePathForYearImage = (year: string) =>
   `${absolutePathForYear(year)}/${IMAGE}`;
 
@@ -572,11 +517,11 @@ export const getEscapePath = (pathname?: string) => {
     (query && isPathQuery(pathname)) ||
     (recent && isPathRecents(pathname)) ||
     (year && isPathYear(pathname)) ||
-    (camera && isPathCamera(pathname)) ||
-    (lens && isPathLens(pathname)) ||
+    (camera && (isPathCamera(pathname) || isPathCameraPhoto(pathname))) ||
+    (lens && (isPathLens(pathname) || isPathLensPhoto(pathname))) ||
     (album && isPathAlbum(pathname)) ||
     (film && isPathFilm(pathname)) ||
-    (focal && isPathFocalLength(pathname)) ||
+    (focal && (isPathFocalLength(pathname) || isPathFocalLengthPhoto(pathname))) ||
     (recipe && isPathRecipe(pathname))
   ) {
     return PATH_ROOT;
@@ -586,17 +531,11 @@ export const getEscapePath = (pathname?: string) => {
     return PREFIX_RECENTS;
   } else if (year && isPathYearPhoto(pathname)) {
     return pathForYear(year);
-  } else if (camera && isPathCameraPhoto(pathname)) {
-    return pathForCamera(camera);
-  } else if (lens && isPathLensPhoto(pathname)) {
-    return pathForLens(lens);
   } else if (album && isPathAlbumPhoto(pathname)) {
     return pathForAlbum(album);
   } else if (recipe && isPathRecipePhoto(pathname)) {
     return pathForRecipe(recipe);
   } else if (film && isPathFilmPhoto(pathname)) {
     return pathForFilm(film);
-  } else if (focal && isPathFocalLengthPhoto(pathname)) {
-    return pathForFocalLength(focal);
   }
 };

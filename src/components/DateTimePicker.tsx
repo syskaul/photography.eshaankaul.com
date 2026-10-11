@@ -21,6 +21,7 @@ import {
   isValid,
 } from 'date-fns';
 import { clsx } from 'clsx/lite';
+import GlassSurface from './GlassSurface';
 import useClickInsideOutside from '@/utility/useClickInsideOutside';
 import { useFormStatus } from 'react-dom';
 import { TbCalendar, TbChevronLeft, TbChevronRight } from 'react-icons/tb';
@@ -171,8 +172,8 @@ export default function DateTimePicker({
         <TbCalendar size={16} />
       </button>
       {isOpen && (
-        <div className={clsx(
-          'liquid-glass-surface text-main',
+        <GlassSurface className={clsx(
+          'text-main',
           'absolute right-0 top-full mt-1 z-10',
           'p-3 w-60',
           'animate-fade-in-from-top',
@@ -196,7 +197,7 @@ export default function DateTimePicker({
             >
               <TbChevronRight size={16} />
             </button>
-          </div>
+          </GlassSurface>
 
           {/* Day headers */}
           <div className="grid grid-cols-7 mb-1">

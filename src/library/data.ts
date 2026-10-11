@@ -2,20 +2,14 @@ import { CATEGORY_VISIBILITY } from '@/app/config';
 import {
   PREFIX_RECENTS,
   pathForAlbum,
-  pathForCamera,
   pathForFilm,
-  pathForFocalLength,
-  pathForLens,
   pathForRecipe,
   pathForYear,
 } from '@/app/path';
-import { formatCameraText } from '@/camera';
 import { CategoryKey, PhotoSetCategories, getCategoryTitle } from '@/category';
 import { PhotoQueryOptions } from '@/db';
 import { labelForFilm } from '@/film';
-import { formatFocalLength } from '@/focal';
 import { AppTextState } from '@/i18n/state';
-import { formatLensText } from '@/lens';
 import { Photo } from '@/photo';
 import { getPhotoCached, getPhotosCached } from '@/photo/cache';
 import {
@@ -86,21 +80,9 @@ const getFolderQueriesForCategory = (
         count,
       }));
     case 'cameras':
-      return categories.cameras.map(({ camera, cameraKey, count }) => ({
-        key: cameraKey,
-        options: { camera },
-        caption: formatCameraText(camera),
-        path: pathForCamera(camera),
-        count,
-      }));
     case 'lenses':
-      return categories.lenses.map(({ lens, lensKey, count }) => ({
-        key: lensKey,
-        options: { lens },
-        caption: formatLensText(lens),
-        path: pathForLens(lens),
-        count,
-      }));
+    case 'focal-lengths':
+      return [];
     case 'albums':
       return categories.albums
         .filter(({ count }) => count > 0)
@@ -125,14 +107,6 @@ const getFolderQueriesForCategory = (
         options: { film },
         caption: labelForFilm(film).medium,
         path: pathForFilm(film),
-        count,
-      }));
-    case 'focal-lengths':
-      return categories.focalLengths.map(({ focal, count }) => ({
-        key: `${focal}`,
-        options: { focal },
-        caption: formatFocalLength(focal),
-        path: pathForFocalLength(focal),
         count,
       }));
   }

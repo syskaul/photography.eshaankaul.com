@@ -30,6 +30,10 @@ import {
   PREFIX_YEAR,
 } from '@/app/path';
 
+jest.mock('@/app/config', () => ({
+  getBaseUrl: () => 'http://localhost:3000',
+}));
+
 const PHOTO_ID                      = 'UsKSGcbt';
 const YEAR                          = '2025';
 const CAMERA_MAKE                   = 'fujifilm';
@@ -196,10 +200,10 @@ describe('Paths', () => {
     expect(getEscapePath(PATH_YEAR_PHOTO)).toEqual(PATH_YEAR);
     // Camera
     expect(getEscapePath(PATH_CAMERA)).toEqual(PATH_ROOT);
-    expect(getEscapePath(PATH_CAMERA_PHOTO)).toEqual(PATH_CAMERA);
+    expect(getEscapePath(PATH_CAMERA_PHOTO)).toEqual(PATH_ROOT);
     // Lens
     expect(getEscapePath(PATH_LENS)).toEqual(PATH_ROOT);
-    expect(getEscapePath(PATH_LENS_PHOTO)).toEqual(PATH_LENS);
+    expect(getEscapePath(PATH_LENS_PHOTO)).toEqual(PATH_ROOT);
     // Album
     expect(getEscapePath(PATH_ALBUM)).toEqual(PATH_ROOT);
     expect(getEscapePath(PATH_ALBUM_PHOTO)).toEqual(PATH_ALBUM);
@@ -211,6 +215,6 @@ describe('Paths', () => {
     expect(getEscapePath(PATH_FILM_PHOTO)).toEqual(PATH_FILM);
     // Focal Length
     expect(getEscapePath(PATH_FOCAL_LENGTH)).toEqual(PATH_ROOT);
-    expect(getEscapePath(PATH_FOCAL_LENGTH_PHOTO)).toEqual(PATH_FOCAL_LENGTH);
+    expect(getEscapePath(PATH_FOCAL_LENGTH_PHOTO)).toEqual(PATH_ROOT);
   });
 });

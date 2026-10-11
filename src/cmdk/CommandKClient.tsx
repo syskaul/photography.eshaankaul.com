@@ -25,10 +25,7 @@ import {
   PATH_GRID_INFERRED,
   PATH_SIGN_IN,
   pathForAlbum,
-  pathForCamera,
   pathForFilm,
-  pathForFocalLength,
-  pathForLens,
   pathForPhoto,
   pathForQuery,
   pathForRecipe,
@@ -65,15 +62,9 @@ import {
 import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { PhotoSetCategories, getCategoryTitle } from '@/category';
-import { formatCameraText } from '@/camera';
-import { formatFocalLength } from '@/focal';
 import { formatRecipe } from '@/recipe';
-import IconLens from '../components/icons/IconLens';
-import { formatLensText } from '@/lens';
-import IconCamera from '../components/icons/IconCamera';
 import IconPhoto from '../components/icons/IconPhoto';
 import IconRecipe from '../components/icons/IconRecipe';
-import IconFocalLength from '../components/icons/IconFocalLength';
 import IconFilm from '../components/icons/IconFilm';
 import IconLock from '../components/icons/IconLock';
 import IconYear from '../components/icons/IconYear';
@@ -139,12 +130,9 @@ const renderToggle = (
 export default function CommandKClient({
   recents,
   years: _years,
-  cameras,
-  lenses,
   albums,
   recipes,
   films,
-  focalLengths,
   footer,
 }: {
   footer?: string
@@ -353,27 +341,6 @@ export default function CommandKClient({
               path: pathForYear(year),
             })),
           };
-          case 'cameras': return {
-            heading,
-            accessory: <IconCamera size={14} />,
-            items: cameras.map(({ camera, count }) => ({
-              label: formatCameraText(camera),
-              annotation: formatCount(count),
-              annotationAria: formatCountDescriptive(count),
-              path: pathForCamera(camera),
-            })),
-          };
-          case 'lenses': return {
-            heading,
-            accessory: <IconLens size={14} className="translate-y-[0.5px]" />,
-            items: lenses.map(({ lens, count }) => ({
-              label: formatLensText(lens, 'medium'),
-              explicitKey: formatLensText(lens, 'long'),
-              annotation: formatCount(count),
-              annotationAria: formatCountDescriptive(count),
-              path: pathForLens(lens),
-            })),
-          };
           case 'albums': return {
             heading,
             accessory: <IconAlbum size={14} />,
@@ -409,16 +376,10 @@ export default function CommandKClient({
               path: pathForFilm(film),
             })),
           };
-          case 'focal-lengths': return {
-            heading,
-            accessory: <IconFocalLength className="text-[14px]" />,
-            items: focalLengths.map(({ focal, count }) => ({
-              label: formatFocalLength(focal),
-              annotation: formatCount(count),
-              annotationAria: formatCountDescriptive(count),
-              path: pathForFocalLength(focal),
-            })),
-          };
+          case 'cameras':
+          case 'lenses':
+          case 'focal-lengths':
+            return undefined;
         }
       })
       .filter(Boolean) as CommandKSection[]
@@ -426,12 +387,9 @@ export default function CommandKClient({
     appText,
     recentsStatus,
     years,
-    cameras,
-    lenses,
     albums,
     recipes,
     films,
-    focalLengths,
   ]);
 
   const clientSections: CommandKSection[] = DARK_MODE_ENABLED ? [{
