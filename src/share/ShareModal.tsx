@@ -58,20 +58,24 @@ export default function ShareModal({
     key: string,
     icon: ReactNode,
     action: () => void,
-    embedded?: boolean,
     tooltip?: string,
     forceTooltipOpen?: boolean,
     tooltipLabel?: string,
+    glass = true,
   ) =>
     <LoaderButton
       key={key}
       className={clsx(
         'flex items-center justify-center h-10',
         'px-3',
-        'liquid-glass shrink-0',
-        embedded
-          ? 'liquid-glass-square-left liquid-glass-border-left'
-          : undefined,
+        glass && 'liquid-glass',
+        !glass && [
+          'rounded-full border-0 bg-transparent shadow-none',
+          'hover:bg-transparent active:bg-transparent',
+          'focus-visible:outline-2 focus-visible:outline-blue-600',
+          'focus-visible:outline-offset-2',
+        ].join(' '),
+        'shrink-0',
         'cursor-pointer',
       )}
       onClick={action}
@@ -89,8 +93,16 @@ export default function ShareModal({
   useOnPathChange(clearShareModalProps);
 
   return (
-    <Modal onClose={clearShareModalProps} surface="glass" backdrop="black">
-      <div className="space-y-2 w-full">
+    <Modal
+      onClose={clearShareModalProps}
+      surface="glass"
+      backdrop="black"
+      container={false}
+    >
+      <div className={clsx(
+        'w-[calc(100vw-1.5rem-2px)] sm:w-[min(540px,90vw)]',
+        'space-y-2 p-2',
+      )}>
         {title &&
           <div className={clsx(
             'flex items-center gap-x-3',
@@ -101,16 +113,16 @@ export default function ShareModal({
               {title}
             </div>
           </div>}
-        {children}
+        <div className="[&>a]:rounded-2xl">
+          {children}
+        </div>
         <div className="flex items-stretch h-10 gap-2">
           <div className={clsx(
-            'rounded-full bg-white/20 dark:bg-white/5',
-            'w-full min-w-0 overflow-hidden',
-            'flex items-center justify-stretch',
-            'border border-white/50 dark:border-white/15',
+            'rounded-full liquid-glass',
+            'flex flex-1 min-w-0 items-center',
           )}>
             <MaskedScroll
-              className="flex grow"
+              className="flex grow min-w-0"
               direction="horizontal"
               fadeSize={50}
               scrollToEndOnMount
@@ -133,12 +145,12 @@ export default function ShareModal({
                   }, COPY_CONFIRMATION_DURATION);
                 });
               },
-              true,
               isCopyConfirmed
                 ? appText.photo.copied
                 : appText.tooltip.shareCopy,
               isCopyConfirmed,
               appText.tooltip.shareCopy,
+              false,
             )}
           </div>
           {SOCIAL_NETWORKS.map(key =>
@@ -166,7 +178,6 @@ export default function ShareModal({
                 })
                   .catch(() => console.log('Share canceled'));
               },
-              false,
               appText.tooltip.shareTo,
             )}
         </div>
