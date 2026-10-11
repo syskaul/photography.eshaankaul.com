@@ -1,7 +1,7 @@
 @font-face {
   font-family: "Paper Mono";
-  src: url("/fonts/PaperMono-Light.woff2") format("woff2");
-  font-weight: 300;
+  src: url("/fonts/PaperMono-ExtraLight.woff2") format("woff2");
+  font-weight: 200;
   font-style: normal;
   font-display: swap;
 }
@@ -10,22 +10,6 @@
   font-family: "Paper Mono";
   src: url("/fonts/PaperMono-Regular.woff2") format("woff2");
   font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Paper Mono";
-  src: url("/fonts/PaperMono-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Paper Mono";
-  src: url("/fonts/PaperMono-Bold.woff2") format("woff2");
-  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -51,7 +35,7 @@ html {
 }
 
 body {
-  font-weight: 300;
+  font-weight: 200;
 }
 
 @theme {

@@ -72,7 +72,7 @@ export default function AdminNavClient({
                 key={label}
                 href={href}
                 className={clsx(
-                  checkPathPrefix(pathname, href) ? 'font-bold' : 'text-dim',
+                  checkPathPrefix(pathname, href) ? 'font-normal' : 'text-dim',
                   'liquid-glass px-3! py-1.5!',
                   checkPathPrefix(pathname, href) && 'liquid-glass-selected',
                   'hover:text-main active:text-medium',

@@ -33,7 +33,7 @@ export default function AlbumOverview({
         {header}
         <EmptyState icon={<IconPhoto />}>
           <div className="max-w-xs text-center space-y-1">
-            <div className="font-bold">
+            <div className="font-normal">
               No photos yet!
             </div>
             <div className="text-dim">

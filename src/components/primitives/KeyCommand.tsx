@@ -40,7 +40,7 @@ export default function KeyCommand({
           {key === '⌘'
             ? isApplePlatform
               ? <PiCommandBold />
-              : <span className="font-semibold text-[10px] px-0.5">^</span>
+              : <span className="font-normal text-[10px] px-0.5">^</span>
             : key === '⏎'
               ? <GrReturn size={14} />
               : key === '⌫'

@@ -10,7 +10,7 @@ export default function AdminTable ({
 }) {
   return <div className="space-y-4">
     {title &&
-      <div className="font-bold">
+      <div className="font-normal">
         {title}
       </div>}
     {/* Bleed keeps shadows inside the scrollport without shrinking columns. */}

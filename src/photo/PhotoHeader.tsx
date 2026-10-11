@@ -99,7 +99,7 @@ export default function PhotoHeader({
         <PhotoLink
           photo={selectedPhoto}
           className={clsx(
-            'font-bold truncate',
+            'font-normal truncate',
           )}
         >
           {titleForPhoto(selectedPhoto, true)}

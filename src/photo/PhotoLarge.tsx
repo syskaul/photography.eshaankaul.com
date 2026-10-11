@@ -202,7 +202,7 @@ export default function PhotoLarge({
     <PhotoLink
       photo={photo}
       className={clsx(
-        'font-bold grow',
+        'font-normal grow',
       )}
       prefetch={prefetch}
     />;
@@ -295,7 +295,7 @@ export default function PhotoLarge({
                       placeholder="Title"
                       hideLabel
                       readOnly={isPerformingUpdate}
-                      className="[&_input]:font-bold"
+                      className="[&_input]:font-normal"
                     />
                     <FieldsetWithStatus
                       id={`edit-caption-${photo.id}`}

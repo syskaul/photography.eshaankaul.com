@@ -66,7 +66,7 @@ export default function AdminUploadsClient({
       {urlAddStatuses.length === 0
         ? <EmptyState icon={<IconUpload />}>
           <div className="max-w-xs text-center space-y-1">
-            <div className="font-bold">
+            <div className="font-normal">
               No uploads
             </div>
             <div className="text-dim">

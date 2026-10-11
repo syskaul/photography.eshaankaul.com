@@ -35,7 +35,7 @@ export default function ChecklistRow({
       content={<>
         <div className={clsx(
           'flex flex-wrap items-center gap-2 pb-0.5',
-          'font-bold text-main',
+          'font-normal text-main',
         )}>
           {title}
           {experimental &&

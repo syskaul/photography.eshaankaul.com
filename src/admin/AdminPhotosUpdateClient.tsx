@@ -112,7 +112,7 @@ export default function AdminPhotosUpdateClient({
     >
       <div className="space-y-6">
         {error && <ErrorNote>
-          <span className="font-bold">
+          <span className="font-normal">
             Issue syncing:
           </span>
           {' '}
@@ -123,7 +123,7 @@ export default function AdminPhotosUpdateClient({
           icon={<LiaBroomSolid size={18}/>}
         >
           <div className="space-y-1.5">
-            <div className="font-bold">
+            <div className="font-normal">
               {arePhotoIdsSyncing
                 ? <>Updating photos: {statusText}</>
                 : <>Photo updates: {statusText}</>}

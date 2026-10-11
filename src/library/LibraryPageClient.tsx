@@ -40,7 +40,7 @@ export default function LibraryPageClient({
                 className={clsx('sm:flex items-center justify-between grow')}
               >
                 <div>
-                  <div className="font-bold">
+                  <div className="font-normal">
                     {title}
                   </div>
                 </div>

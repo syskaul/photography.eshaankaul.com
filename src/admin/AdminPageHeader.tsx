@@ -24,7 +24,7 @@ export default function AdminPageHeader({
       className,
     )}>
       {!hideLabel &&
-        <div className="grow shrink-0 font-bold">
+        <div className="grow shrink-0 font-normal">
           {pluralize(count, singular, plural)}
         </div>}
       {accessory &&

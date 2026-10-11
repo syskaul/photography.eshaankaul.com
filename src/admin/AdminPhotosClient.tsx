@@ -100,7 +100,7 @@ export default function AdminPhotosClient({
               'border-gray-200 dark:border-gray-700',
               'space-y-4',
             )}>
-              <div className="font-bold">
+              <div className="font-normal">
                 Photo Blobs ({blobPhotoUrls.length})
               </div>
               <AdminUploadsTable urlAddStatuses={blobPhotoUrls} />

@@ -27,7 +27,7 @@ export default async function PhotosEmptyState() {
             size={24}
           />
           <div className={clsx(
-            'font-bold text-2xl',
+            'font-normal text-2xl',
             'text-gray-700 dark:text-gray-200',
           )}>
             {!IS_APP_READY

@@ -26,7 +26,7 @@ export default async function AdminStoragePage() {
 
   return (
     <div className="w-full space-y-4">
-      <div className="font-bold">
+      <div className="font-normal">
         Storage ({countComplete + countPartial}/{urls.length})
       </div>
       <div>

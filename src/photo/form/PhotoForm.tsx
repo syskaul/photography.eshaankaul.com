@@ -512,7 +512,7 @@ export default function PhotoForm({
               'active:border-b-2',
               'active:border-b-gray-200 dark:active:border-b-gray-700',
               section === hash
-                ? 'font-bold border-b-2 border-b-black dark:border-b-white'
+                ? 'font-normal border-b-2 border-b-black dark:border-b-white'
                 : 'text-dim',
             )}
           >

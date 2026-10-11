@@ -36,7 +36,7 @@ export default async function AdminTagsPage() {
             {albums.length === 0
               ? <EmptyState icon={<IconAlbum size={28} />}>
                 <div className="max-w-xs text-center space-y-1">
-                  <div className="font-bold">
+                  <div className="font-normal">
                     No albums
                   </div>
                   <div className="text-dim">
