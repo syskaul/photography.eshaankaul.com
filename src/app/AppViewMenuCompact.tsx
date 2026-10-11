@@ -111,6 +111,7 @@ export default function AppViewMenuCompact({
             'rounded-full',
             'text-main!',
             'liquid-glass',
+            'liquid-glass-inactive',
             SWITCHER_ITEM_INTERACTIVE_BG,
             'cursor-pointer',
           )}

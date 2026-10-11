@@ -510,7 +510,7 @@ export default function MultiValueInput({
         {shouldShowMenu && optionsFiltered.length > 0 &&
           <div
             className={clsx(
-              'liquid-glass-surface text-main z-1',
+              'liquid-glass rounded-2xl! text-main z-1',
               'absolute top-3 w-full px-1.5 py-1.5 -mx-px',
               'max-h-[8rem] overflow-y-auto flex flex-col',
             )}

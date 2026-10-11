@@ -8,7 +8,7 @@ export const TEXT: I18NLocale = {
     taken: 'Chụp',
     created: 'Tạo',
     updated: 'Cập nhật',
-    copied: 'Đã sao chép liên kết',
+    copied: 'Đã sao chép liên kết!',
   },
   category: {
     camera: 'Máy ảnh',

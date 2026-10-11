@@ -8,7 +8,7 @@ export const TEXT: I18NLocale = {
     taken: '拍摄时间',
     created: '创建时间',
     updated: '更新时间',
-    copied: '照片链接已复制',
+    copied: '链接已复制！',
   },
   category: {
     camera: '相机',

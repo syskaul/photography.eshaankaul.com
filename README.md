@@ -17,9 +17,9 @@ Personal photography website of Eshaan Kaul.
 
 <img src="/readme/og-image-share.png" alt="OG Image Preview" width=600 />
 
-Share modals use a theme-aware liquid-glass surface and controls, with an opaque fallback for browsers without backdrop-filter support.
+Share modals use the same theme-aware liquid-glass treatment as controls and toast notifications, over a black backdrop at 80% opacity in both themes.
 Camera, lens, and focal-length metadata are display-only. Their dedicated collection, photo, and OG image routes have been removed; these categories are not linked in the library, CMD-K menu, or sitemap. Film, recipe, and admin configuration routes remain available.
-All dropdown surfaces, including nested menus, photo choosers, selects, and autocomplete lists, use the same theme-aware liquid-glass treatment and fallback.
+All dropdown surfaces, including nested menus, photo choosers, selects, and autocomplete lists, use the same theme-aware liquid-glass treatment.
 Admin navigation, action buttons, and dialogs share that treatment while tables and form backgrounds remain solid. Admin pages without a sidebar use the full available width, with 12px interface text (editable fields stay at 16px on phones to avoid focus zoom).
 The main toolbar's admin gear stays selected throughout admin routes, and the progressive header blur has a yellow tint. Admin tabs scroll with the page; only the tabs have glass styling, not their container. Scrollable admin tabs and tables include shadow clearance around glass controls.
 

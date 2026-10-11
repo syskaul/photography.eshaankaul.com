@@ -21,6 +21,7 @@ export default function Modal({
   noPadding,
   fast,
   surface: surfaceProp,
+  backdrop = 'theme',
 }: {
   onClosePath?: string
   onClose?: () => void
@@ -31,6 +32,7 @@ export default function Modal({
   noPadding?: boolean
   fast?: boolean
   surface?: 'default' | 'glass'
+  backdrop?: 'theme' | 'black'
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -50,6 +52,7 @@ export default function Modal({
   }, []);
 
   const { resolvedTheme } = useTheme();
+  const hasBlackBackdrop = backdrop === 'black' || resolvedTheme === 'dark';
 
   useClickInsideOutside({
     htmlElements,
@@ -77,17 +80,19 @@ export default function Modal({
         anchor === 'top'
           ? 'items-start pt-4 sm:pt-12 lg:pt-24'
           : 'items-center',
-        'bg-white dark:bg-black',
+        backdrop === 'black' ? 'bg-black' : 'bg-white dark:bg-black',
         isPathAdmin(pathname) && 'admin-interface',
       )}
       initial={!prefersReducedMotion
-        ? { backgroundColor: resolvedTheme === 'dark'
+        ? { backgroundColor: hasBlackBackdrop
           ? 'rgba(0, 0, 0, 0)'
           : 'rgba(255, 255, 255, 0)' }
         : false}
-      animate={{ backgroundColor: resolvedTheme === 'dark'
-        ? `rgba(0, 0, 0, ${surface === 'glass' ? 0.5 : 0.8})`
-        : `rgba(255, 255, 255, ${surface === 'glass' ? 0.35 : 0.9})` }}
+      animate={{ backgroundColor: backdrop === 'black'
+        ? 'rgba(0, 0, 0, 0.8)'
+        : resolvedTheme === 'dark'
+          ? `rgba(0, 0, 0, ${surface === 'glass' ? 0.5 : 0.8})`
+          : `rgba(255, 255, 255, ${surface === 'glass' ? 0.35 : 0.9})` }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       <AnimateItems
@@ -101,7 +106,7 @@ export default function Modal({
               'w-[calc(100vw-1.5rem-2px)] sm:w-[min(540px,90vw)]',
               !noPadding && 'p-2',
               surface === 'glass'
-                ? 'liquid-glass-surface'
+                ? 'liquid-glass rounded-2xl!'
                 : [
                   'rounded-xl outline outline-medium',
                   'bg-white dark:bg-black',

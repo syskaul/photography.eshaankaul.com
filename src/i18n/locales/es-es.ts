@@ -8,7 +8,7 @@ export const TEXT: I18NLocale = {
     taken: 'Tomada',
     created: 'Creado',
     updated: 'Actualizado',
-    copied: 'Enlace a la foto copiado',
+    copied: '¡Enlace copiado!',
   },
   category: {
     camera: 'Cámara',

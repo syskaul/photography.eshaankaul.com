@@ -8,7 +8,7 @@ export const TEXT: I18NLocale = {
     taken: 'Çekildi',
     created: 'Oluşturuldu',
     updated: 'Güncellendi',
-    copied: 'Fotoğraf bağlantısı kopyalandı',
+    copied: 'Bağlantı Kopyalandı!',
   },
   category: {
     camera: 'Kamera',

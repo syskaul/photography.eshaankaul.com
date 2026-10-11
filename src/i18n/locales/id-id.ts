@@ -8,7 +8,7 @@ export const TEXT: I18NLocale = {
     taken: 'Diambil',
     created: 'Dibuat',
     updated: 'Diperbarui',
-    copied: 'Tautan ke foto disalin',
+    copied: 'Tautan Disalin!',
   },
   category: {
     camera: 'Kamera',

@@ -32,6 +32,7 @@ export default function LoaderButton({
   disabled,
   className,
   tooltip,
+  forceTooltipOpen,
   tooltipColor,
   tooltipSide,
   translucent,
@@ -51,6 +52,7 @@ export default function LoaderButton({
   primary?: boolean
   hideFocusOutline?: boolean
   tooltip?: string
+  forceTooltipOpen?: boolean
   tooltipColor?: ComponentProps<typeof Tooltip>['color']
   tooltipSide?: ComponentProps<typeof Tooltip>['side']
   translucent?: boolean
@@ -125,6 +127,7 @@ export default function LoaderButton({
     tooltip
       ? <Tooltip
         content={tooltip}
+        forceOpen={forceTooltipOpen}
         color={tooltipColor}
         side={tooltipSide}
         triggerIsFocusable

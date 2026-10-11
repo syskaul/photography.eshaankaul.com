@@ -14,6 +14,7 @@ export default function TooltipPrimitive({
   className,
   classNameTrigger: classNameTriggerProp,
   color,
+  forceOpen,
   supportMobile,
   triggerIsFocusable,
   animateLarge,
@@ -30,6 +31,7 @@ export default function TooltipPrimitive({
   className?: string
   classNameTrigger?: string
   color?: ComponentProps<typeof ComponentSurface>['color']
+  forceOpen?: boolean
   supportMobile?: boolean
   // Set when `children` already contains a button or link, to avoid nesting
   // interactive elements. Otherwise the trigger renders as a real button.
@@ -69,7 +71,8 @@ export default function TooltipPrimitive({
   return (
     <Tooltip.Provider {...{ delayDuration, skipDelayDuration }}>
       <Tooltip.Root
-        open={(includeButton ? isOpen : undefined) || debug}
+        open={Boolean(forceOpen || isOpen || debug)}
+        onOpenChange={setIsOpen}
         disableHoverableContent={disableHoverableContent}
       >
         <Tooltip.Trigger asChild>

@@ -201,7 +201,7 @@ export default function SelectMenu({
         {isOpen &&
           <div
             className={clsx(
-              'liquid-glass-surface text-main z-1',
+              'liquid-glass rounded-2xl! text-main z-1',
               'absolute top-3 w-full px-1.5 py-1.5',
               'max-h-[12rem] overflow-y-auto flex flex-col',
               'animate-fade-in-from-top',

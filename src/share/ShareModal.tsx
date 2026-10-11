@@ -4,9 +4,8 @@ import Modal from '@/components/Modal';
 import { TbPhotoShare } from 'react-icons/tb';
 import { clsx } from 'clsx/lite';
 import { BiCopy } from 'react-icons/bi';
-import { ReactNode, useCallback, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { shortenUrl } from '@/utility/url';
-import { toastSuccess } from '@/toast';
 import { SOCIAL_NETWORKS } from '@/app/config';
 import { useAppState } from '@/app/AppState';
 import useOnPathChange from '@/utility/useOnPathChange';
@@ -16,6 +15,8 @@ import { useAppText } from '@/i18n/state/client';
 import SocialButton from '@/social/SocialButton';
 import LoaderButton from '@/components/primitives/LoaderButton';
 import { ShareMethod } from '.';
+
+const COPY_CONFIRMATION_DURATION = 1800;
 
 export default function ShareModal({
   title,
@@ -41,9 +42,16 @@ export default function ShareModal({
 
   const appText = useAppText();
 
+  const [isCopyConfirmed, setIsCopyConfirmed] = useState(false);
+  const copyConfirmationTimeoutRef =
+    useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
   useEffect(() => {
     setShouldRespondToKeyboardCommands?.(false);
-    return () => setShouldRespondToKeyboardCommands?.(true);
+    return () => {
+      setShouldRespondToKeyboardCommands?.(true);
+      clearTimeout(copyConfirmationTimeoutRef.current);
+    };
   }, [setShouldRespondToKeyboardCommands]);
 
   const renderButton = (
@@ -52,6 +60,8 @@ export default function ShareModal({
     action: () => void,
     embedded?: boolean,
     tooltip?: string,
+    forceTooltipOpen?: boolean,
+    tooltipLabel?: string,
   ) =>
     <LoaderButton
       key={key}
@@ -66,7 +76,8 @@ export default function ShareModal({
       )}
       onClick={action}
       tooltip={tooltip}
-      aria-label={tooltip}
+      forceTooltipOpen={forceTooltipOpen}
+      aria-label={tooltipLabel ?? tooltip}
     >
       {icon}
     </LoaderButton>;
@@ -78,7 +89,7 @@ export default function ShareModal({
   useOnPathChange(clearShareModalProps);
 
   return (
-    <Modal onClose={clearShareModalProps} surface="glass">
+    <Modal onClose={clearShareModalProps} surface="glass" backdrop="black">
       <div className="space-y-2 w-full">
         {title &&
           <div className={clsx(
@@ -113,10 +124,20 @@ export default function ShareModal({
               <BiCopy size={18} />,
               () => {
                 onShareAction?.('copy_link');
-                navigator.clipboard.writeText(pathShare);
-                toastSuccess(appText.photo.copied);
+                navigator.clipboard.writeText(pathShare).then(() => {
+                  setIsCopyConfirmed(true);
+                  clearTimeout(copyConfirmationTimeoutRef.current);
+                  copyConfirmationTimeoutRef.current = setTimeout(() => {
+                    setIsCopyConfirmed(false);
+                    copyConfirmationTimeoutRef.current = undefined;
+                  }, COPY_CONFIRMATION_DURATION);
+                });
               },
               true,
+              isCopyConfirmed
+                ? appText.photo.copied
+                : appText.tooltip.shareCopy,
+              isCopyConfirmed,
               appText.tooltip.shareCopy,
             )}
           </div>
