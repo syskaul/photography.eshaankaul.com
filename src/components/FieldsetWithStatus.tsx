@@ -26,6 +26,7 @@ export default function FieldsetWithStatus({
   isModified,
   onChange,
   className,
+  inputClassName,
   selectOptions,
   selectOptionsDefaultLabel,
   selectOpenOnLoad,
@@ -65,6 +66,7 @@ export default function FieldsetWithStatus({
   isModified?: boolean
   onChange?: (value: string) => void
   className?: string
+  inputClassName?: string
   selectOptions?: SelectMenuOptionType[]
   selectOptionsDefaultLabel?: string
   selectOpenOnLoad?: boolean
@@ -133,6 +135,7 @@ export default function FieldsetWithStatus({
         type === 'email' ||
         type === 'password'
       ) && 'w-full',
+      inputClassName,
       type === 'checkbox' && (
         readOnly || pending || loading
       ) && 'opacity-50 cursor-not-allowed',

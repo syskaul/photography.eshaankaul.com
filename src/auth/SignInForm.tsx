@@ -71,6 +71,7 @@ export default function SignInForm({
       className={clsx(
         'w-[calc(100vw-1.5rem)] sm:w-[min(360px,90vw)]',
         'px-6 py-5',
+        'liquid-glass rounded-2xl!',
         className,
       )}
     >
@@ -94,6 +95,7 @@ export default function SignInForm({
           <div className="space-y-4 w-full">
             <FieldsetWithStatus
               id="email"
+              inputClassName="liquid-glass rounded-full!"
               inputRef={emailRef}
               label={appText.auth.email}
               type="email"
@@ -102,6 +104,7 @@ export default function SignInForm({
             />
             <FieldsetWithStatus
               id="password"
+              inputClassName="liquid-glass rounded-full!"
               label={appText.auth.password}
               type="password"
               value={password}
@@ -114,7 +117,10 @@ export default function SignInForm({
                 value={params.get(KEY_CALLBACK_URL) || PATH_ADMIN_PHOTOS}
               />}
           </div>
-          <SubmitButtonWithStatus disabled={!isFormValid}>
+          <SubmitButtonWithStatus
+            disabled={!isFormValid}
+            translucent
+          >
             {appText.auth.signIn}
           </SubmitButtonWithStatus>
         </div>
