@@ -173,7 +173,7 @@ export default function PhotoLarge({
     <PhotoLink
       photo={photo}
       className={clsx(
-        'font-normal grow',
+        'font-normal grow photo-meta-title',
       )}
       prefetch={prefetch}
     />;

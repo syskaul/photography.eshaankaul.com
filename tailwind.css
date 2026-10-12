@@ -650,9 +650,9 @@ button.liquid-glass-dark-open {
 }
 
 /*
-  Photo sidebar: one gray (text-dim) for every text and icon, regardless of
-  the color classes individual metadata components set. Unlayered so it
-  wins over Tailwind utilities; hover darkens interactive items slightly.
+  Photo sidebar: one gray (text-dim) for metadata and icons, regardless of
+  the color classes individual components set. Unlayered so it wins over
+  Tailwind utilities; the photo title stays black.
 */
 .photo-meta-uniform {
   --photo-meta-color: var(--color-gray-400);
@@ -672,6 +672,12 @@ button.liquid-glass-dark-open {
 .photo-meta-uniform :is(a, button):hover,
 .photo-meta-uniform :is(a, button):hover * {
   color: var(--photo-meta-color-hover);
+}
+
+.photo-meta-uniform a.photo-meta-title,
+.photo-meta-uniform a.photo-meta-title:hover,
+.photo-meta-uniform a.photo-meta-title:hover * {
+  color: #000;
 }
 
 [data-app-shell]:has(.admin-interface) {
