@@ -649,6 +649,31 @@ button.liquid-glass-dark-open {
   font-size: 12px;
 }
 
+/*
+  Photo sidebar: one gray (text-dim) for every text and icon, regardless of
+  the color classes individual metadata components set. Unlayered so it
+  wins over Tailwind utilities; hover darkens interactive items slightly.
+*/
+.photo-meta-uniform {
+  --photo-meta-color: var(--color-gray-400);
+  --photo-meta-color-hover: var(--color-gray-500);
+}
+
+.dark .photo-meta-uniform {
+  --photo-meta-color: var(--color-gray-500);
+  --photo-meta-color-hover: var(--color-gray-400);
+}
+
+.photo-meta-uniform,
+.photo-meta-uniform :not(input, textarea, select, [role=combobox]) {
+  color: var(--photo-meta-color);
+}
+
+.photo-meta-uniform :is(a, button):hover,
+.photo-meta-uniform :is(a, button):hover * {
+  color: var(--photo-meta-color-hover);
+}
+
 [data-app-shell]:has(.admin-interface) {
   align-self: stretch;
   min-width: 0;

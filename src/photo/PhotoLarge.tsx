@@ -212,7 +212,7 @@ export default function PhotoLarge({
       classNameSide="relative"
       sideHiddenOnMobile={false}
       contentSide={
-        <div className="md:absolute inset-0 text-xs">
+        <div className="md:absolute inset-0 text-xs photo-meta-uniform">
           <MaskedScroll className="sticky top-4 self-start">
             <DivDebugBaselineGrid className={clsx(
               'grid grid-cols-2 md:grid-cols-1',
