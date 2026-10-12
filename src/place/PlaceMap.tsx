@@ -9,7 +9,7 @@ import { Place } from '.';
 import 'react-openlayers/dist/index.css'; // for css
 
 const MULTIPLIER = 2;
-const MAP_ZOOM = 11;
+const MAP_ZOOM = 6;
 
 export default function PlaceMap({
   place,
