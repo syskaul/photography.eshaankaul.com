@@ -1,7 +1,7 @@
 @font-face {
   font-family: "Paper Mono";
-  src: url("/fonts/PaperMono-ExtraLight.woff2") format("woff2");
-  font-weight: 200;
+  src: url("/fonts/PaperMono-Light.woff2") format("woff2");
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
@@ -35,7 +35,7 @@ html {
 }
 
 body {
-  font-weight: 200;
+  font-weight: 300;
 }
 
 @theme {
@@ -450,6 +450,7 @@ body {
     inset 0 -1px 0 rgb(15 23 42 / 0.06),
     0 2px 8px rgb(15 23 42 / 0.1);
   transition:
+    color 160ms ease,
     background-color 160ms ease,
     border-color 160ms ease,
     box-shadow 160ms ease,
