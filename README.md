@@ -13,12 +13,14 @@ Personal photography website of Eshaan Kaul.
 - CMD-K menu with photo search
 - AI-generated text descriptions
 - RSS/JSON feeds
-- Support for Fujifilm recipes and film simulations
+- Support for Fujifilm film simulations
 
 <img src="/readme/og-image-share.png" alt="OG Image Preview" width=600 />
 
 The site uses a white appearance throughout. Share modals use the same liquid-glass treatment as controls and toast notifications, over a black backdrop at 80% opacity.
-Camera, lens, and focal-length metadata are display-only. Their dedicated collection, photo, and OG image routes have been removed; these categories are not linked in the library, CMD-K menu, or sitemap. Film and recipe routes remain available.
+Toolbar glass adapts to the content beneath each control as photos scroll behind it: dark backdrops use a white tint and white selected icons; light backdrops keep dark selected icons. Inactive icons remain muted.
+Camera, lens, and focal-length metadata are display-only. Their dedicated collection, photo, and OG image routes have been removed; these categories are not linked in the library, CMD-K menu, or sitemap. Film routes remain available.
+Recipes have been removed, including photo overlays, detail/share modals, admin fields and management, EXIF extraction, and public/admin routes. Film simulations and other camera metadata remain supported. New databases contain no recipe columns. For an existing database, back it up and run `src/db/migrations/remove-recipes.sql` after deploying this version to permanently drop the old recipe columns. This destructive migration is explicit and does not run automatically.
 All dropdown surfaces, including nested menus, photo choosers, selects, and autocomplete lists, use the same liquid-glass treatment.
 Admin navigation, action buttons, and dialogs share that treatment while tables and form backgrounds remain solid. Admin pages without a sidebar use the full available width, with 12px interface text (editable fields stay at 16px on phones to avoid focus zoom).
 The main toolbar's admin gear stays selected throughout admin routes, and the progressive header blur has a yellow tint. Admin tabs scroll with the page; only the tabs have glass styling, not their container. Scrollable admin tabs and tables include shadow clearance around glass controls.
@@ -177,8 +179,9 @@ Create an Upstash Redis store from the Vercel dashboard and link it to your proj
      - `albums` (default)
      - `films` (default)
      - `focal-lengths`
-  - Automatic categories for years, cameras, lenses, and recipes are no longer available. Photo metadata remains available on photo detail pages and in admin editing; existing year and recipe URLs still work when linked directly.
-- `NEXT_PUBLIC_ENABLE_SEARCH = 1` enables search (nav button, CMD-K, editable query headers); disabled by default
+  - Automatic categories for years, cameras, and lenses are no longer available. Photo metadata remains available on photo detail pages and in admin editing; existing year URLs still work when linked directly.
+- Search is disabled for this site (nav button, CMD-K, and editable query headers), regardless of `NEXT_PUBLIC_ENABLE_SEARCH`.
+- The navigation admin menu is available only when signed in; signed-out visitors can access the sign-in flow by navigating directly to `/admin/photos`.
 
 ### Display
 - `NEXT_PUBLIC_ALWAYS_SHOW_EXPOSURE_COMP = 1` displays exposure compensation even when it's 0ev
@@ -503,6 +506,9 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 #### My images/content have fallen out of sync with my database and/or my production site no longer matches local development. What do I do?
 > Use the admin "Clear Cache" action or redeploy.
 
+#### What happens if adding an upload fails at the database step?
+> The original stays in `/admin/uploads` until its photo record has been saved. Once the database is available, retry adding that upload; no reupload is needed. Retries reuse the same permanent file names and check for an existing photo record, including when a previous save succeeded but upload cleanup failed. Batch failures stop completion and retries skip photos already reported as added. Failed attempts may leave permanent copies in storage temporarily; they are reused on retry, not deleted automatically. This temporarily increases storage usage. This recovery behavior applies to new imports; older orphaned photo files require a separate recovery.
+
 #### I'm seeing server-side runtime errors when loading a page after updating my fork. What do I do?
 > Use the admin "Clear Cache" action or redeploy. If this doesn't help, contact the site maintainer.
 
@@ -515,11 +521,8 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 #### Why aren't Fujifilm simulations importing with camera metadata?
 > Fujifilm simulation data is stored in vendor-specific MakerNote data embedded in image metadata. Some editing or sharing tools may strip this data. If a simulation is missing, try importing the original camera file or select the simulation manually when editing the photo.
 
-#### My Fujifilm recipes are missing/displaying incorrect data. What should I do?
-> If you don't see a recipe, first try syncing your photo from the ••• menu, or from `/admin/photos`. If the data looks incorrect, open an issue with the file in question attached in order for it to be investigated. Fujifilm file specifications have evolved over time and recipe parsing may need to be adjusted based on camera model/vintage.
-
 #### How do I hide film-simulation categories?
-> Set `NEXT_PUBLIC_CATEGORY_VISIBILITY` to the photo sets you want to show, such as `recents,albums`. Recipe and lens metadata remain available on photo detail pages and in admin editing.
+> Set `NEXT_PUBLIC_CATEGORY_VISIBILITY` to the photo sets you want to show, such as `recents,albums`. Lens metadata remains available on photo detail pages and in admin editing.
 
 #### Why do my images appear flipped/rotated incorrectly?
 > Image orientations 1, 3, 6, and 8 are supported. Orientations 2, 4, 5, and 7—which use mirroring—are not supported.

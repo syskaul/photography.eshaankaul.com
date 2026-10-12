@@ -4,7 +4,6 @@ import {
   PATH_ADMIN_ALBUMS,
   PATH_ADMIN_PHOTOS,
   PATH_ADMIN_PHOTOS_UPDATES,
-  PATH_ADMIN_RECIPES,
   PATH_ADMIN_UPLOADS,
 } from '@/app/path';
 import { useAppState } from '@/app/AppState';
@@ -12,7 +11,6 @@ import { clsx } from 'clsx/lite';
 import { signOutAction } from '@/auth/actions';
 import { useMemo } from 'react';
 import IconPhoto from '@/components/icons/IconPhoto';
-import IconRecipe from '@/components/icons/IconRecipe';
 import IconFolder from '@/components/icons/IconFolder';
 import IconSignOut from '@/components/icons/IconSignOut';
 import IconBroom from '@/components/icons/IconBroom';
@@ -54,7 +52,6 @@ export default function AdminAppMenu({
     photosCountNeedSync = 0,
     uploadsCount = 0,
     albumsCount = 0,
-    recipesCount = 0,
     refreshAdminData,
     clearAuthStateAndRedirectIfNecessary,
   } = useAppState();
@@ -130,17 +127,6 @@ export default function AdminAppMenu({
         href: PATH_ADMIN_ALBUMS,
       });
     }
-    if (recipesCount) {
-      items.push({
-        label: appText.admin.manageRecipes,
-        annotation: `${recipesCount}`,
-        icon: <IconRecipe
-          size={17}
-          className="translate-x-[-0.5px]"
-        />,
-        href: PATH_ADMIN_RECIPES,
-      });
-    }
     if (photosCountTotal) {
       items.push({
         ...labelWithTrailingEllipsis(isSelectingPhotos
@@ -188,7 +174,6 @@ export default function AdminAppMenu({
     stopEditingTitles,
     photosCountNeedSync,
     photosCountTotal,
-    recipesCount,
     albumsCount,
     uploadsCount,
   ]);

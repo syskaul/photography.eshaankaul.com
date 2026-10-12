@@ -8,8 +8,6 @@ import EntityLink, {
 import clsx from 'clsx/lite';
 import { labelForFilm } from '.';
 import { isStringFujifilmSimulation } from '@/platforms/fujifilm/simulation';
-import PhotoRecipeOverlayButton from '@/recipe/PhotoRecipeOverlayButton';
-import { ComponentProps } from 'react';
 import useCategoryCounts from '@/category/useCategoryCounts';
 
 export default function PhotoFilm({
@@ -18,14 +16,12 @@ export default function PhotoFilm({
   type = 'icon-last',
   badged = true,
   contrast = 'low',
-  toggleRecipeOverlay,
-  isShowingRecipeOverlay,
+  interactive = false,
   ...props
 }: {
   film: string
   make?: string
-} & Partial<ComponentProps<typeof PhotoRecipeOverlayButton>>
-  & EntityLinkExternalProps) {
+} & EntityLinkExternalProps) {
   const { getFilmCount } = useCategoryCounts();
   
   const { small, medium, large } = labelForFilm(film);
@@ -50,11 +46,7 @@ export default function PhotoFilm({
       type={type}
       badged={badged}
       contrast={contrast}
-      action={toggleRecipeOverlay &&
-        <PhotoRecipeOverlayButton {...{
-          toggleRecipeOverlay,
-          isShowingRecipeOverlay,
-        }} />}
+      interactive={interactive}
       iconWide={isStringFujifilmSimulation(film)}
       hoverCount={props.hoverCount ?? getFilmCount(film)}
     />

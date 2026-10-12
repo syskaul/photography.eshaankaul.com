@@ -432,7 +432,6 @@ body {
       bg-white/90 dark:bg-black/80 backdrop-blur-sm
       rounded-xl
   }
-  /* Used in prominent overlays like recipes */
   .component-surface-frosted-light {
     @apply
       text-black bg-neutral-200/95 rounded-xl
@@ -573,6 +572,26 @@ body {
 .dark .liquid-glass.liquid-glass-selected,
 .dark .liquid-glass.liquid-glass-selected:hover:not(:disabled) {
   background-color: rgb(255 255 255 / 0.04);
+}
+
+.liquid-glass[data-glass-backdrop="dark"],
+.liquid-glass[data-glass-backdrop="dark"]:hover:not(:disabled) {
+  background-color: rgb(255 255 255 / 0.12);
+}
+
+.liquid-glass.liquid-glass-selected[data-glass-backdrop="dark"],
+.liquid-glass.liquid-glass-selected[data-glass-backdrop="dark"]:hover:not(:disabled) {
+  color: white;
+}
+
+.liquid-glass.liquid-glass-selected[data-glass-backdrop="light"],
+.liquid-glass.liquid-glass-selected[data-glass-backdrop="light"]:hover:not(:disabled) {
+  color: black;
+  background-color: rgb(15 23 42 / 0.12);
+}
+
+.liquid-glass.liquid-glass-selected[data-glass-backdrop] svg {
+  color: inherit;
 }
 
 .liquid-glass:active {

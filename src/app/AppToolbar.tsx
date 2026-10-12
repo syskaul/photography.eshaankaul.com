@@ -4,7 +4,6 @@ import Switcher from '@/components/switcher/Switcher';
 import SwitcherItem from '@/components/switcher/SwitcherItem';
 import {
   PATH_LIBRARY,
-  PATH_ADMIN_PHOTOS,
   PATH_FULL_INFERRED,
   PATH_GRID_INFERRED,
   PATH_ROOT,
@@ -39,7 +38,7 @@ import IconLibrary from '@/components/icons/IconLibrary';
 import { BiHomeAlt as HomeIcon } from 'react-icons/bi';
 import AppViewMenu from './AppViewMenu';
 import AppViewMenuCompact from './AppViewMenuCompact';
-import { FiSettings } from 'react-icons/fi';
+import useAdaptiveGlass from '@/utility/useAdaptiveGlass';
 
 export default function AppToolbar({
   className,
@@ -70,6 +69,8 @@ export default function AppToolbar({
 
   const refHrefHome = useRef<HTMLAnchorElement>(null);
   const refHrefLibrary = useRef<HTMLAnchorElement>(null);
+  const refToolbar = useRef<HTMLDivElement>(null);
+  useAdaptiveGlass(refToolbar);
 
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
   const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
@@ -125,7 +126,7 @@ export default function AppToolbar({
     : isPhotoSetFull;
 
   return (
-    <div className={clsx(
+    <div ref={refToolbar} className={clsx(
       className,
       'flex',
       'gap-1.5 sm:gap-4',
@@ -179,14 +180,6 @@ export default function AppToolbar({
                 content: appText.nav.admin,
               },
             }}
-          />}
-        {!isUserSignedIn && !isCheckingAuth && !isUserSignedInEager &&
-          <SwitcherItem
-            icon={<FiSettings size={16} />}
-            href={PATH_ADMIN_PHOTOS}
-            active={isPathAdmin(pathname)}
-            translucent
-            tooltip={{ content: appText.nav.admin }}
           />}
         {isUserSignedIn &&
           <SwitcherItem

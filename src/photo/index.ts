@@ -14,7 +14,6 @@ import { capitalize, parameterize } from '@/utility/string';
 import camelcaseKeys from 'camelcase-keys';
 import { isBefore } from 'date-fns';
 import type { Metadata } from 'next';
-import { FujifilmRecipe } from '@/platforms/fujifilm/recipe';
 import { PhotoUpdateStatus, generatePhotoUpdateStatus } from './update';
 import { AppTextState } from '@/i18n/state';
 import { Place } from '@/place';
@@ -62,7 +61,6 @@ export interface PhotoExif {
   latitude?: number
   longitude?: number
   film?: string
-  recipeData?: string
   takenAt?: string
   takenAtNaive?: string
   // Photo meta potentially located in EXIF/XMP data
@@ -78,7 +76,6 @@ export interface PhotoDbInsert extends PhotoExif {
   blurData?: string
   caption?: string
   semanticDescription?: string
-  recipeTitle?: string
   locationName?: string
   location?: Place
   takenAt: string
@@ -94,7 +91,7 @@ export interface PhotoDb extends
 }
 
 // Parsed db response
-export interface Photo extends Omit<PhotoDb, 'recipeData'> {
+export interface Photo extends PhotoDb {
   focalLengthFormatted?: string
   focalLengthIn35MmFormatFormatted?: string
   fNumberFormatted?: string
@@ -102,7 +99,6 @@ export interface Photo extends Omit<PhotoDb, 'recipeData'> {
   exposureTimeFormatted?: string
   exposureCompensationFormatted?: string
   takenAtNaiveFormatted: string
-  recipeData?: FujifilmRecipe
   updateStatus?: PhotoUpdateStatus
 }
 
@@ -130,12 +126,6 @@ export const parsePhotoFromDb = (photoDbRaw: PhotoDb): Photo => {
       formatExposureCompensation(photoDb.exposureCompensation),
     takenAtNaiveFormatted:
       formatDateFromPostgresString(photoDb.takenAtNaive),
-    recipeData: photoDb.recipeData
-      // Legacy check on escaped, string-based JSON
-      ? typeof photoDb.recipeData === 'string'
-        ? JSON.parse(photoDb.recipeData)
-        : photoDb.recipeData
-      : undefined,
     updateStatus: generatePhotoUpdateStatus(photoDb),
   } as Photo;
 };
@@ -155,7 +145,6 @@ export const convertPhotoToPhotoDbInsert = (
 ): PhotoDbInsert => ({
   ...photo,
   takenAt: photo.takenAt.toISOString(),
-  recipeData: JSON.stringify(photo.recipeData),
 });
 
 export const descriptionForPhoto = (
@@ -325,9 +314,6 @@ const photoHasCameraData = (photo: Photo) =>
 const photoHasLensData = (photo: Photo) =>
   Boolean(photo.lensModel);
 
-const photoHasRecipeData = (photo: Photo) =>
-  Boolean(photo.recipeData);
-
 const photoHasExifData = (photo: Photo) =>
   Boolean(photo.focalLength) ||
   Boolean(photo.focalLengthIn35MmFormat) ||
@@ -341,9 +327,6 @@ export const shouldShowCameraDataForPhoto = (photo: Photo) =>
 
 export const shouldShowLensDataForPhoto = (photo: Photo) =>
   photoHasLensData(photo);
-
-export const shouldShowRecipeDataForPhoto = (photo: Photo) =>
-  photoHasRecipeData(photo);
 
 export const shouldShowFilmDataForPhoto = (photo: Photo) =>
   SHOW_FILMS &&

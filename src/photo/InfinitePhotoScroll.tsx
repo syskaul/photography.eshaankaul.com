@@ -36,7 +36,6 @@ export default function InfinitePhotoScroll({
   camera,
   lens,
   album,
-  recipe,
   film,
   focal,
   moreButtonClassName = 'mt-4',
@@ -83,7 +82,6 @@ export default function InfinitePhotoScroll({
       camera,
       lens,
       album,
-      recipe,
       film,
       focal,
     }, warmOnly)
@@ -97,7 +95,6 @@ export default function InfinitePhotoScroll({
     camera,
     lens,
     album,
-    recipe,
     film,
     focal,
   ]);

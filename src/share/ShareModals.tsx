@@ -3,7 +3,6 @@
 import PhotoShareModal from '@/photo/PhotoShareModal';
 import FilmShareModal from '@/film/FilmShareModal';
 import { useAppState } from '@/app/AppState';
-import RecipeShareModal from '@/recipe/RecipeShareModal';
 import YearShareModal from '@/year/YearShareModal';
 import RecentsShareModal from '@/recents/RecentsShareModal';
 import AlbumShareModal from '@/album/AlbumShareModal';
@@ -23,7 +22,6 @@ export default function ShareModals() {
     camera,
     lens,
     album,
-    recipe,
     film,
     focal,
   } = shareModalProps;
@@ -37,7 +35,6 @@ export default function ShareModals() {
       camera,
       lens,
       album,
-      recipe,
       film,
       focal,
     }} />;
@@ -53,8 +50,6 @@ export default function ShareModals() {
       return <AlbumShareModal {...{ album, ...attributes }} />;
     } else if (film) {
       return <FilmShareModal {...{ film, ...attributes }} />;
-    } else if (recipe) {
-      return <RecipeShareModal {...{ recipe, ...attributes }} />;
     }
   }
 }

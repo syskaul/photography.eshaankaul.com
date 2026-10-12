@@ -61,7 +61,6 @@ const categories: PhotoSetCategories = {
   years: [{ year: '2026', count: 1, lastModified }],
   albums: [],
   films: [{ film: 'acros', count: 1, lastModified }],
-  recipes: [{ recipe: 'test-recipe', count: 1, lastModified }],
 };
 
 describe('automatic photo categories', () => {
@@ -69,9 +68,20 @@ describe('automatic photo categories', () => {
     'shot-on/[make]/[model]',
     'lens/[make]/[model]',
     'focal/[focal]',
+    'recipe/[recipe]',
   ])('has no page or image templates for %s', route => {
     ['page.tsx', '[photoId]/page.tsx', 'image/route.tsx'].forEach(file => {
       expect(existsSync(join(process.cwd(), 'app', route, file))).toBe(false);
+    });
+
+  });
+
+  it('has no admin recipe management pages', () => {
+    [
+      'admin/recipes/page.tsx',
+      'admin/recipes/[recipe]/edit/page.tsx',
+    ].forEach(route => {
+      expect(existsSync(join(process.cwd(), 'app', route))).toBe(false);
     });
   });
 

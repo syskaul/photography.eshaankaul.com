@@ -5,7 +5,6 @@ import {
   absolutePathForFilmImage,
   absolutePathForPhotoImage,
   absolutePathForQueryImage,
-  absolutePathForRecipeImage,
   absolutePathForYearImage,
 } from '@/app/path';
 
@@ -22,7 +21,6 @@ export type ShareMethod =
 export const getSharePathFromShareModalProps = ({
   photo,
   query,
-  recipe,
   film,
   year,
 }: ShareModalProps) => {
@@ -30,8 +28,6 @@ export const getSharePathFromShareModalProps = ({
     return absolutePathForPhotoImage(photo);
   } else if (query) {
     return absolutePathForQueryImage(query);
-  } else if (recipe) {
-    return absolutePathForRecipeImage(recipe);
   } else if (film) {
     return absolutePathForFilmImage(film);
   } else if (year) {

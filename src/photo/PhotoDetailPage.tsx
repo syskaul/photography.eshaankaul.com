@@ -6,7 +6,6 @@ import AppGrid from '@/components/AppGrid';
 import PhotoGrid from './PhotoGrid';
 import FilmHeader from '@/film/FilmHeader';
 import PhotoHeader from './PhotoHeader';
-import RecipeHeader from '@/recipe/RecipeHeader';
 import { ReactNode } from 'react';
 import {
   ADMIN_STORAGE_DEBUG_ENABLED,
@@ -27,7 +26,6 @@ export default function PhotoDetailPage({
   year,
   album,
   film,
-  recipe,
   indexNumber,
   count,
   dateRange,
@@ -52,9 +50,7 @@ export default function PhotoDetailPage({
           ? 'album'
           : film
             ? 'film'
-            : recipe
-              ? 'recipe'
-              : 'photo';
+            : 'photo';
 
   if (query) {
     customHeader = <QueryHeader
@@ -100,14 +96,6 @@ export default function PhotoDetailPage({
       count={count}
       dateRange={dateRange}
     />;
-  } else if (recipe) {
-    customHeader = <RecipeHeader
-      recipe={recipe}
-      photos={photos}
-      selectedPhoto={photo}
-      indexNumber={indexNumber}
-      count={count}
-    />;
   }
 
   return (
@@ -122,7 +110,6 @@ export default function PhotoDetailPage({
         contentMain={customHeader ?? <PhotoHeader
           selectedPhoto={photo}
           photos={photos}
-          recipe={recipe}
           hasAiContentGeneration={AI_CONTENT_GENERATION_ENABLED}
         />}
       />
@@ -142,14 +129,12 @@ export default function PhotoDetailPage({
             showTitle={Boolean(customHeader)}
             showTitleAsH1
             showFilm={!film}
-            showRecipe={!recipe}
             shouldShare={shouldShare}
             shouldShareQuery={query !== undefined}
             shouldShareRecents={recent !== undefined}
             shouldShareYear={year !== undefined}
             shouldShareAlbum={album !== undefined}
             shouldShareFilm={film !== undefined}
-            shouldShareRecipe={recipe !== undefined}
             showAdminKeyCommands
             showStorageCheck={ADMIN_STORAGE_DEBUG_ENABLED}
           />,

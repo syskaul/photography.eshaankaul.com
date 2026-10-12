@@ -14,7 +14,6 @@ import {
   getPhotosMeta,
   getUniqueFocalLengths,
   getUniqueLenses,
-  getUniqueRecipes,
   getUniqueYears,
   getPhotosInNeedOfUpdateCount,
 } from '@/photo/query';
@@ -27,7 +26,6 @@ import {
   PATH_GRID,
   PATH_ROOT,
   PREFIX_FILM,
-  PREFIX_RECIPE,
   pathForPhoto,
   PREFIX_YEAR,
   PREFIX_ALBUM,
@@ -39,7 +37,6 @@ import {
   KEY_CAMERAS,
   KEY_LENSES,
   KEY_FILMS,
-  KEY_RECIPES,
   KEY_FOCAL_LENGTHS,
   KEY_YEARS,
   KEY_COUNT,
@@ -49,7 +46,6 @@ import {
   revalidateLensesKey,
   revalidateAlbumsKey,
   revalidateFilmsKey,
-  revalidateRecipesKey,
   revalidateFocalLengthsKey,
 } from '@/cache';
 
@@ -106,7 +102,6 @@ export const revalidatePhoto = (photoId: string) => {
   revalidateLensesKey();
   revalidateAlbumsKey();
   revalidateFilmsKey();
-  revalidateRecipesKey();
   revalidateFocalLengthsKey();
   // Paths
   revalidatePath(pathForPhoto({ photo: photoId }), 'layout');
@@ -115,7 +110,6 @@ export const revalidatePhoto = (photoId: string) => {
   revalidatePath(PATH_FULL, 'layout');
   revalidatePath(PREFIX_ALBUM, 'layout');
   revalidatePath(PREFIX_FILM, 'layout');
-  revalidatePath(PREFIX_RECIPE, 'layout');
   revalidatePath(PREFIX_YEAR, 'layout');
   revalidatePath(PATH_ADMIN, 'layout');
 };
@@ -190,12 +184,6 @@ export const getUniqueFilmsCached =
   unstable_cache(
     getUniqueFilms,
     [KEY_PHOTOS, KEY_FILMS],
-  );
-
-export const getUniqueRecipesCached =
-  unstable_cache(
-    getUniqueRecipes,
-    [KEY_PHOTOS, KEY_RECIPES],
   );
 
 export const getUniqueFocalLengthsCached =

@@ -29,11 +29,6 @@ export default function useCategoryCounts() {
     return albumCounts[album.slug];
   }, [categoriesWithCounts]);
 
-  const getRecipeCount = useCallback((recipe: string) => {
-    const recipeCounts = categoriesWithCounts?.recipes ?? {};
-    return recipeCounts[recipe];
-  }, [categoriesWithCounts]);
-
   const getFilmCount = useCallback((film: string) => {
     const filmCounts = categoriesWithCounts?.films ?? {};
     return filmCounts[film];
@@ -50,7 +45,6 @@ export default function useCategoryCounts() {
     getCameraCount,
     getLensCount,
     getAlbumCount,
-    getRecipeCount,
     getFilmCount,
     getFocalLengthCount,
   };

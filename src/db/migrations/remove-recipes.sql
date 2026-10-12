@@ -1,0 +1,8 @@
+BEGIN;
+
+ALTER TABLE IF EXISTS photos
+  DROP COLUMN IF EXISTS recipe_title,
+  DROP COLUMN IF EXISTS recipe_data,
+  DROP COLUMN IF EXISTS fujifilm_recipe;
+
+COMMIT;

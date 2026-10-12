@@ -4,7 +4,6 @@ import { Films } from '@/film';
 import type { AppTextState } from '@/i18n/state';
 import { Lens, Lenses } from '@/lens';
 import { FocalLengths } from '@/focal';
-import { Recipes } from '@/recipe';
 import { Recents } from '@/recents';
 import { Years } from '@/year';
 import { parseCommaSeparatedKeyString } from '@/utility/key';
@@ -64,7 +63,6 @@ export interface PhotoSetCategory {
   camera?: Camera
   lens?: Lens
   album?: Album
-  recipe?: string
   film?: string
   focal?: number
 }
@@ -75,7 +73,6 @@ export interface PhotoSetCategories {
   cameras: Cameras
   lenses: Lenses
   albums: Albums
-  recipes: Recipes
   films: Films
   focalLengths: FocalLengths
 }

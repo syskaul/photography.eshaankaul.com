@@ -2,7 +2,6 @@ import {
   deleteFilesWithPrefix,
   getFileNamePartsFromStorageUrl,
 } from '@/platforms/storage';
-import { convertFormDataToPhotoDbInsert } from '@/photo/form';
 import {
   FujifilmSimulation,
   getFujifilmSimulationFromMakerNote,
@@ -13,20 +12,12 @@ import sharp, { Sharp } from 'sharp';
 import { HAS_LOCATION_SERVICES } from '@/app/config';
 import { isExifForFujifilm } from '@/platforms/fujifilm/server';
 import {
-  FujifilmRecipe,
-  getFujifilmRecipeFromMakerNote,
-} from '@/platforms/fujifilm/recipe';
-import {
   getNikonPictureControlFromMakerNote,
   NikonPictureControl,
 } from '@/platforms/nikon/simulation';
 import { isExifForNikon } from '@/platforms/nikon/server';
-import {
-  deletePhoto,
-  getRecipeTitleForData,
-  updateAllMatchingRecipeTitles,
-} from '@/photo/query';
-import { MAX_PHOTO_UPLOAD_SIZE_IN_BYTES, PhotoDbInsert } from '.';
+import { deletePhoto } from '@/photo/query';
+import { MAX_PHOTO_UPLOAD_SIZE_IN_BYTES } from '.';
 import { convertExifToFormData } from './form/server';
 import exifr from 'exifr';
 import { fetchUrlWithByteLimit } from '@/utility/fetch';
@@ -68,7 +59,6 @@ export const extractImageDataFromBlobPath = async (
   let dataExif: ExifData | undefined;
   let dataExifr: any | undefined;
   let film: FujifilmSimulation | NikonPictureControl | undefined;
-  let recipe: FujifilmRecipe | undefined;
   let blurData: string | undefined;
   let imageResizedBase64: string | undefined;
   let error: string | undefined;
@@ -100,7 +90,6 @@ export const extractImageDataFromBlobPath = async (
         if (Buffer.isBuffer(makerNote)) {
           if (isExifForFujifilm(dataExif)) {
             film = getFujifilmSimulationFromMakerNote(makerNote);
-            recipe = getFujifilmRecipeFromMakerNote(makerNote);
           } else if (isExifForNikon(dataExif)) {
             film = getNikonPictureControlFromMakerNote(makerNote);
           }
@@ -128,7 +117,7 @@ export const extractImageDataFromBlobPath = async (
         url,
       },
       ...generateBlurData && { blurData },
-      ...convertExifToFormData(dataExif, dataExifr, film, recipe),
+      ...convertExifToFormData(dataExif, dataExifr, film),
     } satisfies Partial<PhotoFormData>
     : undefined;
 
@@ -240,45 +229,6 @@ export const resizeImageToBytes = async (
     .toFormat('jpeg', { quality })
     .toBuffer();
 
-
-export const convertFormDataToPhotoDbInsertAndLookupRecipeTitle =
-  async (...args: Parameters<typeof convertFormDataToPhotoDbInsert>):
-  Promise<ReturnType<typeof convertFormDataToPhotoDbInsert>> => {
-    const photo = convertFormDataToPhotoDbInsert(...args);
-
-    if (photo.recipeData && !photo.recipeTitle && photo.film) {
-      const recipeTitle = await getRecipeTitleForData(
-        photo.recipeData,
-        photo.film,
-      );
-      // Only replace recipe title when a new one is found
-      if (recipeTitle) {
-        photo.recipeTitle = recipeTitle;
-      }
-    }
-
-    return photo;
-  };
-
-export const propagateRecipeTitleIfNecessary = async (
-  formData: FormData,
-  photo: PhotoDbInsert,
-) => {
-  if (
-    formData.get('applyRecipeTitleGlobally') === 'true' &&
-    // Only propagate recipe title if set by user before lookup
-    formData.get('recipeTitle') &&
-    photo.recipeTitle &&
-    photo.recipeData &&
-    photo.film
-  ) {
-    await updateAllMatchingRecipeTitles(
-      photo.recipeTitle,
-      photo.recipeData,
-      photo.film,
-    );
-  }
-};
 
 export const deletePhotoAndFiles = async (
   photoId: string,

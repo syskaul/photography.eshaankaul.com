@@ -59,60 +59,61 @@ export default function AdminBatchUploadActions({
   const router = useRouter();
 
   const addedUploadCount = useRef(0);
+  const addedUploadUrls = useRef(new Set<string>());
   const addUploadUrls = async (
     urls: string[],
     titles: string[],
     isFinalBatch: boolean,
   ) => {
-    try {
-      const stream = await addUploadsAction({
-        uploadUrls: urls,
-        uploadTitles: titles,
-        ...showBulkSettings && {
-          albumTitles: albumTitles?.split(','),
-        },
-        takenAtLocal: generateLocalPostgresString(),
-        takenAtNaiveLocal: generateLocalNaivePostgresString(),
-        shouldRevalidateAllKeysAndPaths: isFinalBatch,
-      });
-      for await (const data of readStreamableValue(stream)) {
-        setButtonText(
-          `Adding ${addedUploadCount.current + 1} of ${uploadUrls.length}`,
-        );
-        setUrlAddStatuses(current => {
-          const update = current.map(status =>
-            status.url === data?.url
-              ? {
-                ...status,
-                // Prevent status regressions
-                status: status.status !== 'added' ? data.status : 'added',
-                statusMessage: data.statusMessage,
-                progress: data.progress,
-              }
-              : status,
-          );
-          addedUploadCount.current = update
-            .filter(({ status }) => status === 'added')
-            .length;
-          return update;
-        });
-        setAddingProgress((current = 0) => {
-          const updatedProgress = (
-            (
-              ((addedUploadCount.current || 1) - 1) +
-              (data?.progress ?? 0)
-            ) /
-            uploadUrls.length
-          ) * 0.95;
-          // Prevent out-of-order updates causing progress to go backwards
-          return Math.max(current, updatedProgress);
-        });
+    const stream = await addUploadsAction({
+      uploadUrls: urls,
+      uploadTitles: titles,
+      ...showBulkSettings && {
+        albumTitles: albumTitles?.split(','),
+      },
+      takenAtLocal: generateLocalPostgresString(),
+      takenAtNaiveLocal: generateLocalNaivePostgresString(),
+      shouldRevalidateAllKeysAndPaths: isFinalBatch,
+    });
+    for await (const data of readStreamableValue(stream)) {
+      if (data?.status === 'added') {
+        addedUploadUrls.current.add(data.url);
+        addedUploadCount.current = addedUploadUrls.current.size;
       }
-    } catch (e: any) {
-      setIsAdding(false);
-      setButtonText('Try Again');
-      setAddingProgress(undefined);
-      setActionErrorMessage(e);
+      setButtonText(
+        `Adding ${addedUploadCount.current + 1} of ${uploadUrls.length}`,
+      );
+      setUrlAddStatuses(current => {
+        const update = current.map(status =>
+          status.url === data?.url
+            ? {
+              ...status,
+              // Prevent status regressions
+              status: status.status !== 'added' ? data.status : 'added',
+              statusMessage: data.statusMessage,
+              progress: data.progress,
+            }
+            : status,
+        );
+        return update;
+      });
+      setAddingProgress((current = 0) => {
+        const updatedProgress = (
+          (
+            ((addedUploadCount.current || 1) - 1) +
+              (data?.progress ?? 0)
+          ) /
+            uploadUrls.length
+        ) * 0.95;
+        // Prevent out-of-order updates causing progress to go backwards
+        return Math.max(current, updatedProgress);
+      });
+    }
+    if (urls.some(url => !addedUploadUrls.current.has(url))) {
+      throw new Error(
+        'Some uploads were not confirmed as saved. ' +
+        'Retry the unfinished uploads.',
+      );
     }
   };
 
@@ -166,10 +167,16 @@ export default function AdminBatchUploadActions({
                   setIsAdding(true);
                   setUrlAddStatuses(current => current.map((url, index) => ({
                     ...url,
-                    status: index === 0 ? 'adding' : 'waiting',
+                    status: addedUploadUrls.current.has(url.url)
+                      ? 'added'
+                      : index === 0 ? 'adding' : 'waiting',
                   })));
-                  const uploadsToAdd = uploadUrls.slice();
-                  const titlesToAdd = uploadTitles.slice();
+                  setActionErrorMessage('');
+                  const pendingUploads = uploadUrls
+                    .map((url, index) => ({ url, title: uploadTitles[index] }))
+                    .filter(({ url }) => !addedUploadUrls.current.has(url));
+                  const uploadsToAdd = pendingUploads.map(({ url }) => url);
+                  const titlesToAdd = pendingUploads.map(({ title }) => title);
                   try {
                     while (uploadsToAdd.length > 0) {
                       const nextBatch = uploadsToAdd
@@ -189,11 +196,13 @@ export default function AdminBatchUploadActions({
                     await onBatchActionComplete?.();
                     await sleep(1000).then(() =>
                       router.push(PATH_ADMIN_PHOTOS));
-                  } catch (e: any) {
+                  } catch (error) {
                     setAddingProgress(undefined);
                     setIsAdding(false);
                     setButtonText('Try Again');
-                    setActionErrorMessage(e);
+                    setActionErrorMessage(
+                      error instanceof Error ? error.message : String(error),
+                    );
                   }
                 }
               }}

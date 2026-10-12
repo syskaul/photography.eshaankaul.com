@@ -32,7 +32,6 @@ import {
   UPDATE_QUERY_LIMIT,
   OUTDATED_UPDATE_AT_THRESHOLD,
 } from '@/photo/update';
-import { Recipes } from '@/recipe';
 import { Years } from '@/year';
 import { safelyQuery } from '@/db/query';
 
@@ -64,8 +63,6 @@ export const createPhotosTable = () =>
       latitude DOUBLE PRECISION,
       longitude DOUBLE PRECISION,
       film VARCHAR(255),
-      recipe_title VARCHAR(255),
-      recipe_data JSONB,
       taken_at TIMESTAMP WITH TIME ZONE NOT NULL,
       taken_at_naive VARCHAR(255) NOT NULL,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -102,8 +99,6 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       latitude,
       longitude,
       film,
-      recipe_title,
-      recipe_data,
       taken_at,
       taken_at_naive
     ) VALUES (
@@ -134,8 +129,6 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       ${photo.latitude},
       ${photo.longitude},
       ${photo.film},
-      ${photo.recipeTitle},
-      ${photo.recipeData},
       ${photo.takenAt},
       ${photo.takenAtNaive}
     )
@@ -170,8 +163,6 @@ export const updatePhoto = (photo: PhotoDbInsert) =>
       latitude=${photo.latitude},
       longitude=${photo.longitude},
       film=${photo.film},
-      recipe_title=${photo.recipeTitle},
-      recipe_data=${photo.recipeData},
       taken_at=${photo.takenAt},
       taken_at_naive=${photo.takenAtNaive},
       updated_at=${(new Date()).toISOString()}
@@ -204,23 +195,6 @@ export const updatePhotoTitleCaption = (
     WHERE p.id = v.id
   `, values), 'updatePhotoTitleCaption');
 };
-
-export const deletePhotoRecipeGlobally = (recipe: string) =>
-  safelyQuery(() => sql`
-    UPDATE photos
-    SET recipe_title=NULL
-    WHERE recipe_title=${recipe}
-  `, 'deletePhotoRecipeGlobally');
-
-export const renamePhotoRecipeGlobally = (
-  recipe: string,
-  updatedRecipe: string,
-) =>
-  safelyQuery(() => sql`
-    UPDATE photos
-    SET recipe_title=${updatedRecipe}
-    WHERE recipe_title=${recipe}
-  `, 'renamePhotoRecipeGlobally');
 
 export const deletePhoto = (id: string) =>
   safelyQuery(() => sql`
@@ -279,23 +253,6 @@ export const getUniqueLenses = async () =>
     })))
   , 'getUniqueLenses');
 
-export const getUniqueRecipes = async () =>
-  safelyQuery(() => sql`
-    SELECT DISTINCT recipe_title,
-      COUNT(*),
-      MAX(updated_at) as last_modified
-    FROM photos
-    WHERE recipe_title IS NOT NULL
-    GROUP BY recipe_title
-    ORDER BY recipe_title ASC
-  `.then(({ rows }): Recipes => rows
-      .map(({ recipe_title, count, last_modified }) => ({
-        recipe: recipe_title,
-        count: parseInt(count, 10),
-        lastModified: last_modified as Date,
-      })))
-  , 'getUniqueRecipes');
-
 export const getUniqueYears = async () =>
   safelyQuery(() => sql`
     SELECT
@@ -310,62 +267,6 @@ export const getUniqueYears = async () =>
       count: parseInt(count, 10),
       lastModified: last_modified as Date,
     }))), 'getUniqueYears');
-
-export const getRecipeTitleForData = async (
-  data: string | object,
-  film: string,
-) =>
-  // Includes legacy check on pre-stringified JSON
-  safelyQuery(() => sql`
-    SELECT recipe_title FROM photos
-    AND recipe_data=${typeof data === 'string' ? data : JSON.stringify(data)}
-    AND film=${film}
-    LIMIT 1
-  `
-    .then(({ rows }) => rows[0]?.recipe_title as string | undefined)
-  , 'getRecipeTitleForData');
-
-export const getRecipeDataForTitle = async (title: string) =>
-  safelyQuery(() => sql`
-    SELECT recipe_data FROM photos
-    AND recipe_title=${title}
-    AND recipe_data IS NOT NULL
-    AND recipe_data::text <> 'null'
-    ORDER BY taken_at DESC
-    LIMIT 1
-  `
-    .then(({ rows }) => rows[0]?.recipe_data
-      ? JSON.stringify(rows[0].recipe_data)
-      : undefined)
-  , 'getRecipeDataForTitle');
-
-export const getPhotosNeedingRecipeTitleCount = async (
-  data: string,
-  film: string,
-  photoIdToExclude?: string,
-) =>
-  safelyQuery(() => sql`
-    SELECT COUNT(*)
-    FROM photos
-    WHERE recipe_title IS NULL
-    AND recipe_data=${data}
-    AND film=${film}
-    AND id <> ${photoIdToExclude}
-  `.then(({ rows }) => parseInt(rows[0].count, 10))
-  , 'getPhotosNeedingRecipeTitleCount');
-
-export const updateAllMatchingRecipeTitles = (
-  title: string,
-  data: string,
-  film: string,
-) =>
-  safelyQuery(() => sql`
-    UPDATE photos
-    SET recipe_title=${title}
-    WHERE recipe_title IS NULL
-    AND recipe_data=${data}
-    AND film=${film}
-  `, 'updateAllMatchingRecipeTitles');
 
 export const getUniqueFilms = async () =>
   safelyQuery(() => sql`
@@ -602,6 +503,12 @@ export const getPhoto = async (id: string): Promise<Photo | undefined> =>
       .then(({ rows }) => rows.map(parsePhotoFromDb))
       .then(photos => photos.length > 0 ? photos[0] : undefined);
   }, 'getPhoto');
+
+export const getPhotoByUrl = async (url: string): Promise<Photo | undefined> =>
+  safelyQuery(() =>
+    sql<PhotoDb>`SELECT * FROM photos WHERE url=${url} LIMIT 1`
+      .then(({ rows }) => rows[0] ? parsePhotoFromDb(rows[0]) : undefined)
+  , 'getPhotoByUrl');
 
 // Update queries
 

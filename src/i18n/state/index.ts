@@ -15,8 +15,6 @@ export const generateAppTextState = (i18n: I18N) => {
         i18n.category.cameraTitle.replace('{{camera}}', camera),
       cameraShare: (camera: string) =>
         i18n.category.cameraShare.replace('{{camera}}', camera),
-      recipeShare: (recipe: string) =>
-        i18n.category.recipeShare.replace('{{recipe}}', recipe),
       filmShare: (film: string) =>
         i18n.category.filmShare.replace('{{film}}', film),
       focalLengthTitle: (focal: string) =>

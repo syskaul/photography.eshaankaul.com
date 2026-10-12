@@ -47,10 +47,7 @@ import { BLUR_ENABLED, IS_PREVIEW } from '@/app/config';
 import PlaceInput from '@/place/PlaceInput';
 import { convertPlaceToAutocomplete, Place } from '@/place';
 import ErrorNote from '@/components/ErrorNote';
-import { convertRecipesForForm, Recipes } from '@/recipe';
 import deepEqual from 'fast-deep-equal/es6/react';
-import ApplyRecipeTitleGloballyCheckbox from './ApplyRecipesGloballyCheckbox';
-import FieldsetRecipeData from './FieldsetRecipeData';
 import { convertFilmsForForm, Films } from '@/film';
 import {
   Cameras,
@@ -92,7 +89,6 @@ export default function PhotoForm({
   updatedBlurData,
   photoAlbumTitles = [],
   albums,
-  uniqueRecipes,
   uniqueFilms,
   uniqueCameras,
   uniqueLenses,
@@ -109,7 +105,6 @@ export default function PhotoForm({
   updatedBlurData?: string
   photoAlbumTitles?: string[]
   albums: Albums
-  uniqueRecipes: Recipes
   uniqueFilms: Films
   uniqueCameras?: Cameras
   uniqueLenses?: Lenses
@@ -357,19 +352,6 @@ export default function PhotoForm({
     }
   };
 
-  const onMatchResults = useCallback((didFindMatchingPhotos: boolean) => {
-    setFormData(data => ({
-      ...data,
-      applyRecipeTitleGlobally: didFindMatchingPhotos
-        ? 'true'
-        : 'false',
-    }));
-  }, [setFormData]);
-
-  // Recipe data copied in from a chosen title can be replaced by subsequent
-  // titles, and is never used to search for photos needing that title
-  const [copiedRecipeData, setCopiedRecipeData] = useState<string>();
-
   const initialPlace = useMemo(() => {
     try {
       return convertPlaceToAutocomplete(
@@ -390,18 +372,8 @@ export default function PhotoForm({
     }));
   }, []);
 
-  const didCopyRecipeData =
-    Boolean(formData.recipeData) &&
-    formData.recipeData === copiedRecipeData;
-
-  const onRecipeDataFound = useCallback((recipeData: string) => {
-    setCopiedRecipeData(recipeData);
-    setFormData(data => ({ ...data, recipeData }));
-  }, [setFormData]);
-
   const formContent = useMemo(() =>
     FORM_METADATA_ENTRIES_BY_SECTION(
-      convertRecipesForForm(uniqueRecipes),
       convertFilmsForForm(
         uniqueFilms,
         isMakeFujifilm(formData.make),
@@ -415,7 +387,6 @@ export default function PhotoForm({
       aiContent !== undefined,
       hasLocationServices,
     ), [
-    uniqueRecipes,
     uniqueFilms,
     uniqueCameras,
     uniqueLenses,
@@ -673,27 +644,6 @@ export default function PhotoForm({
                           >
                             <PhotoFilmIcon />
                           </span>}
-                        />;
-                      case 'applyRecipeTitleGlobally':
-                        return <ApplyRecipeTitleGloballyCheckbox
-                          key={key}
-                          {...fieldProps}
-                          photoId={initialPhotoForm.id}
-                          recipeTitle={formData.recipeTitle}
-                          hasRecipeTitleChanged={
-                            changedFormKeys.includes('recipeTitle')}
-                          recipeData={formData.recipeData}
-                          film={formData.film}
-                          didCopyRecipeData={didCopyRecipeData}
-                          onMatchResults={onMatchResults}
-                        />;
-                      case 'recipeData':
-                        return <FieldsetRecipeData
-                          key={key}
-                          {...fieldProps}
-                          recipeTitle={formData.recipeTitle}
-                          didCopyRecipeData={didCopyRecipeData}
-                          onRecipeDataFound={onRecipeDataFound}
                         />;
                       case 'albums':
                         return <FieldsetAlbum

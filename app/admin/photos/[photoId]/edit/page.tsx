@@ -4,7 +4,6 @@ import {
   getUniqueCamerasCached,
   getUniqueFilmsCached,
   getUniqueLensesCached,
-  getUniqueRecipesCached,
 } from '@/photo/cache';
 import {
   getAlbumTitlesForPhotoCached,
@@ -35,7 +34,6 @@ export default async function PhotoEditPage({
     photo,
     photoAlbumTitles,
     albums,
-    uniqueRecipes,
     uniqueFilms,
     uniqueCameras,
     uniqueLenses,
@@ -43,7 +41,6 @@ export default async function PhotoEditPage({
     getPhotoNoStore(photoId),
     getAlbumTitlesForPhotoCached(photoId),
     getAlbumsWithMetaCached(),
-    getUniqueRecipesCached(),
     getUniqueFilmsCached(),
     getUniqueCamerasCached(),
     getUniqueLensesCached(),
@@ -74,7 +71,6 @@ export default async function PhotoEditPage({
       photoStorageUrls,
       photoAlbumTitles,
       albums,
-      uniqueRecipes,
       uniqueFilms,
       uniqueCameras,
       uniqueLenses,

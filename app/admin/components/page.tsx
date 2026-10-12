@@ -18,10 +18,8 @@ import {
   getUniqueFilmsCached,
   getUniqueFocalLengthsCached,
   getUniqueLensesCached,
-  getUniqueRecipesCached,
   getUniqueYearsCached,
 } from '@/photo/cache';
-import { formatRecipe } from '@/recipe';
 
 const FOLDER_LIMITS = [
   3,
@@ -53,7 +51,6 @@ export default async function ComponentsPage() {
     albums,
     years,
     films,
-    recipes,
     focalLengths,
   ] = await Promise.all([
     getPhotosCached({ limit: INFINITE_SCROLL_GRID_INITIAL })
@@ -66,14 +63,12 @@ export default async function ComponentsPage() {
     getAlbumsWithMetaCached().catch(() => []),
     getUniqueYearsCached().catch(() => []),
     getUniqueFilmsCached().catch(() => []),
-    getUniqueRecipesCached().catch(() => []),
     getUniqueFocalLengthsCached().catch(() => []),
   ]);
 
   const camerasByCount = sortCategoriesByCount(cameras);
   const lensesByCount = sortCategoriesByCount(lenses);
   const filmsByCount = sortCategoriesByCount(films);
-  const recipesByCount = sortCategoriesByCount(recipes);
   const focalLengthsByCount = sortCategoriesByCount(focalLengths);
 
   const foldersFrom = <T,>(
@@ -106,11 +101,6 @@ export default async function ComponentsPage() {
     ...foldersFrom(albums, ({ album, count }) => ({
       options: { album },
       caption: album.title,
-      count,
-    })),
-    ...foldersFrom(recipesByCount, ({ recipe, count }) => ({
-      options: { recipe },
-      caption: formatRecipe(recipe),
       count,
     })),
     ...foldersFrom(filmsByCount, ({ film, count }) => ({

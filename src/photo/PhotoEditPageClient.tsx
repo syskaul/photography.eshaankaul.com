@@ -12,7 +12,6 @@ import AiButton from './ai/AiButton';
 import usePhotoFormParent from './form/usePhotoFormParent';
 import ExifCaptureButton from '@/admin/ExifCaptureButton';
 import { useState } from 'react';
-import { Recipes } from '@/recipe';
 import { Films } from '@/film';
 import { StorageListResponse } from '@/platforms/storage';
 import { Albums } from '@/album';
@@ -24,7 +23,6 @@ export default function PhotoEditPageClient({
   photoStorageUrls,
   photoAlbumTitles,
   albums,
-  uniqueRecipes,
   uniqueFilms,
   uniqueCameras,
   uniqueLenses,
@@ -37,7 +35,6 @@ export default function PhotoEditPageClient({
   photoStorageUrls?: StorageListResponse
   photoAlbumTitles: string[]
   albums: Albums
-  uniqueRecipes: Recipes
   uniqueFilms: Films
   uniqueCameras: Cameras
   uniqueLenses: Lenses
@@ -95,7 +92,6 @@ export default function PhotoEditPageClient({
         updatedBlurData={blurData}
         photoAlbumTitles={photoAlbumTitles}
         albums={albums}
-        uniqueRecipes={uniqueRecipes}
         uniqueFilms={uniqueFilms}
         uniqueCameras={uniqueCameras}
         uniqueLenses={uniqueLenses}

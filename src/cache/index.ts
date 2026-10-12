@@ -11,7 +11,6 @@ export const KEY_YEARS          = 'years';
 export const KEY_CAMERAS        = 'cameras';
 export const KEY_LENSES         = 'lenses';
 export const KEY_ALBUMS         = 'albums';
-export const KEY_RECIPES        = 'recipes';
 export const KEY_FILMS          = 'films';
 export const KEY_FOCAL_LENGTHS  = 'focal-lengths';
 // Type keys
@@ -36,9 +35,6 @@ export const revalidateLensesKey = () =>
 export const revalidateAlbumsKey = () =>
   revalidateTag(KEY_ALBUMS, 'max');
 
-export const revalidateRecipesKey = () =>
-  revalidateTag(KEY_RECIPES, 'max');
-
 export const revalidateFilmsKey = () =>
   revalidateTag(KEY_FILMS, 'max');
 
@@ -52,7 +48,6 @@ export const revalidateAllKeys = () => {
   revalidateCamerasKey();
   revalidateLensesKey();
   revalidateAlbumsKey();
-  revalidateRecipesKey();
   revalidateFilmsKey();
   revalidateFocalLengthsKey();
 };

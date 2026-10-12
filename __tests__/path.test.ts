@@ -9,6 +9,7 @@ import {
   isPathFocalLength,
   isPathFocalLengthPhoto,
   isPathPhoto,
+  isPathPhotoSet,
   isPathProtected,
   PATH_ADMIN,
   PATH_ADMIN_LIBRARY_EDIT,
@@ -25,7 +26,6 @@ import {
   PREFIX_FOCAL_LENGTH,
   PREFIX_LENS,
   PREFIX_RECENTS,
-  PREFIX_RECIPE,
   PREFIX_YEAR,
 } from '@/app/path';
 
@@ -42,7 +42,6 @@ const LENS_MAKE                     = 'fujifilm';
 const LENS_MODEL                    = 'xf90mmf2-r-lm-wr';
 const LENS_OBJECT                   = { make: LENS_MAKE, model: LENS_MODEL };
 const ALBUM                         = 'album-name';
-const RECIPE                        = 'nature-nurture';
 const FILM                          = 'acros';
 const FOCAL_LENGTH                  = 90;
 const FOCAL_LENGTH_STRING           = `${FOCAL_LENGTH}mm`;
@@ -63,9 +62,6 @@ const PATH_LENS_PHOTO               = `${PATH_LENS}/${PHOTO_ID}`;
 
 const PATH_ALBUM                    = `${PREFIX_ALBUM}/${ALBUM}`;
 const PATH_ALBUM_PHOTO              = `${PATH_ALBUM}/${PHOTO_ID}`;
-
-const PATH_RECIPE                   = `${PREFIX_RECIPE}/${RECIPE}`;
-const PATH_RECIPE_PHOTO             = `${PATH_RECIPE}/${PHOTO_ID}`;
 
 const PATH_FILM                     = `${PREFIX_FILM}/${FILM}`;
 const PATH_FILM_PHOTO               = `${PATH_FILM}/${PHOTO_ID}`;
@@ -100,6 +96,13 @@ describe('Paths', () => {
     // Negative
     expect(isPathFocalLength(PATH_FILM)).toBe(false);
     expect(isPathFocalLengthPhoto(PATH_FILM_PHOTO)).toBe(false);
+  });
+  it('does not classify removed recipe URLs as photo sets', () => {
+    expect(isPathPhotoSet('/recipe/nature-nurture')).toBe(false);
+    expect(getPathComponents('/recipe/nature-nurture/UsKSGcbt'))
+      .toEqual({});
+    expect(getEscapePath('/recipe/nature-nurture/UsKSGcbt'))
+      .toBeUndefined();
   });
   it('can be parsed', () => {
     // Core
@@ -147,14 +150,6 @@ describe('Paths', () => {
       photoId: PHOTO_ID,
       album: ALBUM,
     });
-    // Recipe
-    expect(getPathComponents(PATH_RECIPE)).toEqual({
-      recipe: RECIPE,
-    });
-    expect(getPathComponents(PATH_RECIPE_PHOTO)).toEqual({
-      photoId: PHOTO_ID,
-      recipe: RECIPE,
-    });
     // Film
     expect(getPathComponents(PATH_FILM)).toEqual({
       film: FILM,
@@ -195,9 +190,6 @@ describe('Paths', () => {
     // Album
     expect(getEscapePath(PATH_ALBUM)).toEqual(PATH_ROOT);
     expect(getEscapePath(PATH_ALBUM_PHOTO)).toEqual(PATH_ALBUM);
-    // Recipe
-    expect(getEscapePath(PATH_RECIPE)).toEqual(PATH_ROOT);
-    expect(getEscapePath(PATH_RECIPE_PHOTO)).toEqual(PATH_RECIPE);
     // Film
     expect(getEscapePath(PATH_FILM)).toEqual(PATH_ROOT);
     expect(getEscapePath(PATH_FILM_PHOTO)).toEqual(PATH_FILM);

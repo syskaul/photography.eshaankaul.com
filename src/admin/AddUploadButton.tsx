@@ -8,6 +8,7 @@ import { PATH_ADMIN_PHOTOS } from '@/app/path';
 import { useRouter } from 'next/navigation';
 import { ComponentProps, useState } from 'react';
 import IconAddUpload from '@/components/icons/IconAddUpload';
+import { toastWarning } from '@/toast';
 
 export default function AddUploadButton({
   url,
@@ -49,7 +50,10 @@ export default function AddUploadButton({
               setIsAddingLocal(false);
             }
           })
-          .catch(() => {
+          .catch(error => {
+            toastWarning(
+              error instanceof Error ? error.message : String(error),
+            );
             onAddFinish?.(false);
             setIsAddingLocal(false);
           });

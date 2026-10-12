@@ -18,7 +18,6 @@ import CommandK from '@/cmdk/CommandK';
 import ShareModals from '@/share/ShareModals';
 import AdminUploadPanel from '@/admin/upload/AdminUploadPanel';
 import { revalidatePath } from 'next/cache';
-import RecipeModal from '@/recipe/RecipeModal';
 import { PATH_FEED_JSON, PATH_RSS_XML } from '@/app/path';
 import AdminBatchEditPanel from '@/admin/select/AdminBatchEditPanel';
 import AdminEditTitlesPanel from '@/admin/edit-titles/AdminEditTitlesPanel';
@@ -82,7 +81,6 @@ export default function RootLayout({
             <Nav />
             <main className="grow">
               <ShareModals />
-              <RecipeModal />
               <div className={clsx(
                 'mb-5',
                 'space-y-5',

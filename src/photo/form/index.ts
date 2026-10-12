@@ -6,17 +6,13 @@ import {
   validationMessagePostgresDateString,
 } from '@/utility/date';
 import { roundToNumber } from '@/utility/number';
-import { parameterize } from '@/utility/string';
 import { generateNanoid } from '@/utility/nanoid';
-import { MAKE_FUJIFILM } from '@/platforms/fujifilm';
-import { FujifilmRecipe } from '@/platforms/fujifilm/recipe';
 import { ReactNode } from 'react';
 import { FujifilmSimulation } from '@/platforms/fujifilm/simulation';
 import { SelectMenuOptionType } from '@/components/SelectMenuOption';
 
 type VirtualFields =
   'albums' |
-  'applyRecipeTitleGlobally' |
   'locationPlace' |
   'locationDisplayName';
 
@@ -93,7 +89,6 @@ const autocompleteOptionsForField = (
   : {};
 
 const FORM_METADATA = (
-  recipeOptions?: AnnotatedOption[],
   filmOptions?: AnnotatedOption[],
   cameraMakeOptions?: AnnotatedOption[],
   cameraModelOptions?: AnnotatedOption[],
@@ -144,49 +139,6 @@ const FORM_METADATA = (
     noteShort: 'Fujifilm / Nikon / analog scans',
     autocompleteOptions: filmOptions,
     autocompleteOptionsLimit: 1,
-  },
-  recipeTitle: {
-    section: 'exif',
-    label: 'recipe title',
-    autocompleteOptions: recipeOptions,
-    autocompleteOptionsLimit: 1,
-    spellCheck: false,
-    capitalize: false,
-    shouldHide: ({ make }) => make !== MAKE_FUJIFILM,
-  },
-  applyRecipeTitleGlobally: {
-    section: 'exif',
-    label: 'apply recipe title globally',
-    type: 'checkbox',
-    excludeFromInsert: true,
-    hideModificationStatus: true,
-    shouldHide: ({ make, recipeTitle, recipeData }, changedFormKeys) =>
-      !(
-        make === MAKE_FUJIFILM &&
-        recipeData &&
-        recipeTitle &&
-        changedFormKeys?.includes('recipeTitle')
-      ),
-  },
-  recipeData: {
-    section: 'exif',
-    type: 'textarea',
-    label: 'recipe data',
-    spellCheck: false,
-    capitalize: false,
-    shouldHide: ({ make }) => make !== MAKE_FUJIFILM,
-    isJson: true,
-    validate: value => {
-      let validationMessage = undefined;
-      if (value) {
-        try {
-          JSON.parse(value);
-        } catch {
-          validationMessage = 'Invalid JSON';
-        }
-      }
-      return validationMessage;
-    },
   },
   focalLength: {
     section: 'exif',
@@ -353,12 +305,11 @@ export const formHasExistingAiTextContent = ({
 // CREATE FORM DATA: FROM PHOTO
 
 export const convertPhotoToFormData = (photo: Photo): PhotoFormData => {
+  const metadata = FORM_METADATA();
   const valueForKey = (key: keyof Photo, value: any) => {
     switch (key) {
       case 'takenAt':
         return value?.toISOString ? value.toISOString() : value;
-      case 'recipeData':
-        return JSON.stringify(value);
       case 'location':
         return value ? JSON.stringify(value) : undefined;
       default:
@@ -367,13 +318,15 @@ export const convertPhotoToFormData = (photo: Photo): PhotoFormData => {
           : undefined;
     }
   };
-  return Object.entries(photo).reduce((photoForm, [key, value]) => ({
-    ...photoForm,
-    [key]: valueForKey(key as keyof Photo, value),
-  }), {
-    locationDisplayName:
-      photo.location?.nameFormatted ?? photo.location?.name ?? '',
-  } as PhotoFormData);
+  return Object.entries(photo)
+    .filter(([key]) => Object.hasOwn(metadata, key))
+    .reduce((photoForm, [key, value]) => ({
+      ...photoForm,
+      [key]: valueForKey(key as keyof Photo, value),
+    }), {
+      locationDisplayName:
+        photo.location?.nameFormatted ?? photo.location?.name ?? '',
+    } as PhotoFormData);
 };
 
 // PREPARE FORM FOR DB INSERT
@@ -395,6 +348,7 @@ export const convertFormDataToPhotoDbInsert = (
   Object.keys(photoForm).forEach(key => {
     const meta = FORM_METADATA()[key as keyof PhotoFormData];
     if (
+      !meta ||
       key.startsWith('$ACTION_ID_') ||
       (photoForm as any)[key] === '' ||
       meta?.excludeFromInsert
@@ -408,12 +362,8 @@ export const convertFormDataToPhotoDbInsert = (
   return {
     ...(photoForm as PhotoFormData & {
       film?: FujifilmSimulation
-      recipeData?: FujifilmRecipe
     }),
     ...!photoForm.id && { id: generateNanoid() },
-    ...photoForm.recipeTitle && {
-      recipeTitle: parameterize(photoForm.recipeTitle),
-    },
     width: photoForm.width
       ? parseInt(photoForm.width)
       : undefined,

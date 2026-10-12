@@ -41,12 +41,12 @@ export default function PhotoCamera({
       icon={showAppleIcon
         ? <AiFillApple
           title="Apple"
-          className="translate-x-[-0.5px] translate-y-[-1px]"
+          className="translate-x-[-0.5px] translate-y-[-2.5px]"
           size={16}
         />
         : <IconCamera
           size={15}
-          className="translate-x-[-0.5px] translate-y-[-0.5px]"
+          className="translate-x-[-0.5px] translate-y-[-2.5px]"
         />}
     />
   );

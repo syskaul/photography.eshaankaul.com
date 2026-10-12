@@ -279,8 +279,7 @@ export const SHOW_FOCAL_LENGTHS =
   CATEGORY_VISIBILITY.includes('focal-lengths');
 // SEARCH
 
-export const SEARCH_ENABLED =
-  process.env.NEXT_PUBLIC_ENABLE_SEARCH === '1';
+export const SEARCH_ENABLED = false;
 
 export const SHOW_LIBRARY =
   process.env.NEXT_PUBLIC_SHOW_LIBRARY === '1';

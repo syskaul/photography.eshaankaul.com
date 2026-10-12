@@ -8,7 +8,6 @@ import {
   shouldShowExifDataForPhoto,
   shouldShowFilmDataForPhoto,
   shouldShowLensDataForPhoto,
-  shouldShowRecipeDataForPhoto,
 } from '.';
 import AppGrid from '@/components/AppGrid';
 import ImageLarge from '@/components/image/ImageLarge';
@@ -34,10 +33,6 @@ import LoaderButton from '@/components/primitives/LoaderButton';
 import Tooltip from '@/components/Tooltip';
 import ZoomControls, { ZoomControlsRef }
   from '@/components/image/zoom/ZoomControls';
-import { AnimatePresence } from 'framer-motion';
-import useRecipeOverlay from '../recipe/useRecipeOverlay';
-import PhotoRecipeOverlay from '@/recipe/PhotoRecipeOverlay';
-import PhotoRecipe from '@/recipe/PhotoRecipe';
 import PhotoLens from '@/lens/PhotoLens';
 import { lensFromPhoto } from '@/lens';
 import MaskedScroll from '@/components/MaskedScroll';
@@ -65,7 +60,6 @@ export default function PhotoLarge({
   showCamera = true,
   showLens = true,
   showFilm = true,
-  showRecipe = true,
   showZoomButton = true,
   shouldZoomOnFKeydown = true,
   shouldShare = true,
@@ -76,7 +70,6 @@ export default function PhotoLarge({
   shouldShareLens,
   shouldShareAlbum,
   shouldShareFilm,
-  shouldShareRecipe,
   shouldShareFocalLength,
   onVisible,
   showAdminKeyCommands,
@@ -97,7 +90,6 @@ export default function PhotoLarge({
   showCamera?: boolean
   showLens?: boolean
   showFilm?: boolean
-  showRecipe?: boolean
   showZoomButton?: boolean
   shouldZoomOnFKeydown?: boolean
   shouldShare?: boolean
@@ -108,7 +100,6 @@ export default function PhotoLarge({
   shouldShareLens?: boolean
   shouldShareAlbum?: boolean
   shouldShareFilm?: boolean
-  shouldShareRecipe?: boolean
   shouldShareFocalLength?: boolean
   onVisible?: () => void
   showAdminKeyCommands?: boolean
@@ -116,11 +107,8 @@ export default function PhotoLarge({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const refZoomControls = useRef<ZoomControlsRef>(null);
-  const refPhotoRecipe = useRef<HTMLDivElement>(null);
-  const refPhotoFilm = useRef<HTMLDivElement>(null);
 
   const {
-    shouldDebugRecipeOverlays,
     isUserSignedIn,
   } = useAppState();
 
@@ -149,29 +137,13 @@ export default function PhotoLarge({
       .filter((img) => !img.src.startsWith('data:image'))[0]
     , []);
 
-  const refRecipe = useRef<HTMLDivElement>(null);
-  const refTriggers = useMemo(() => [
-    refPhotoRecipe,
-    refPhotoFilm,
-  ], []);
-  const {
-    isShowingRecipeOverlay,
-    toggleRecipeOverlay,
-    hideRecipeOverlay,
-  } = useRecipeOverlay({
-    ref: refRecipe,
-    refTriggers,
-  });
-
   const camera = cameraFromPhoto(photo);
   const lens = lensFromPhoto(photo);
-  const { recipeTitle } = photo;
 
   const showExifContent = shouldShowExifDataForPhoto(photo);
 
   const showCameraContent = showCamera && shouldShowCameraDataForPhoto(photo);
   const showLensContent = showLens && shouldShowLensDataForPhoto(photo);
-  const showRecipeContent = showRecipe && shouldShowRecipeDataForPhoto(photo);
   const showFilmContent = showFilm && shouldShowFilmDataForPhoto(photo);
   const showPlaceContent = Boolean(photo.location);
 
@@ -189,7 +161,6 @@ export default function PhotoLarge({
   const hasMetaContent =
     showCameraContent ||
     showLensContent ||
-    showRecipeContent ||
     showFilmContent ||
     showPlaceContent ||
     showExifContent;
@@ -223,29 +194,6 @@ export default function PhotoLarge({
           loading={priority ? 'eager' : undefined}
         />
       </ZoomControls>
-      <div className={clsx(
-        'absolute inset-0',
-        'flex items-center justify-center',
-        // Allow clicks to pass through to zoom controls
-        // when not showing recipe overlay
-        !(isShowingRecipeOverlay || shouldDebugRecipeOverlays) &&
-          'pointer-events-none',
-      )}>
-        <AnimatePresence>
-          {(isShowingRecipeOverlay || shouldDebugRecipeOverlays) &&
-            photo.recipeData &&
-            photo.film &&
-              <PhotoRecipeOverlay
-                ref={refRecipe}
-                title={photo.recipeTitle}
-                data={photo.recipeData}
-                film={photo.film}
-                iso={photo.isoFormatted}
-                exposure={photo.exposureCompensationFormatted}
-                onClose={hideRecipeOverlay}
-              />}
-        </AnimatePresence>
-      </div>
     </div>;
 
   const renderAdminMenu =
@@ -322,7 +270,6 @@ export default function PhotoLarge({
                   {(
                     showCameraContent ||
                     showLensContent ||
-                    showRecipeContent ||
                     showPlaceContent
                   ) &&
                     <div>
@@ -339,15 +286,6 @@ export default function PhotoLarge({
                               contrast="medium"
                             />}
                         </div>}
-                      {showRecipeContent && recipeTitle &&
-                        <PhotoRecipe
-                          ref={refPhotoRecipe}
-                          recipe={recipeTitle}
-                          contrast="medium"
-                          prefetch={prefetchRelatedLinks}
-                          toggleRecipeOverlay={toggleRecipeOverlay}
-                          isShowingRecipeOverlay={isShowingRecipeOverlay}
-                        />}
                     </div>}
                 </div>
               </div>
@@ -397,14 +335,9 @@ export default function PhotoLarge({
                     </ul>
                     {showFilmContent && photo.film &&
                       <PhotoFilm
-                        ref={refPhotoFilm}
                         film={photo.film}
                         make={photo.make}
                         prefetch={prefetchRelatedLinks}
-                        {...photo.recipeData && !photo.recipeTitle && {
-                          toggleRecipeOverlay,
-                          isShowingRecipeOverlay,
-                        }}
                       />}
                     {showPlaceContent && photo.location &&
                       <div>
@@ -472,9 +405,6 @@ export default function PhotoLarge({
                           : undefined}
                         film={shouldShareFilm
                           ? photo.film
-                          : undefined}
-                        recipe={shouldShareRecipe
-                          ? recipeTitle
                           : undefined}
                         focal={shouldShareFocalLength
                           ? photo.focalLength

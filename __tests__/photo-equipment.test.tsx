@@ -82,8 +82,6 @@ describe('photo equipment labels', () => {
     });
     expect(pathForPhoto({ photo: 'test-photo', film: 'acros' }))
       .toBe('/film/acros/test-photo');
-    expect(pathForPhoto({ photo: 'test-photo', recipe: 'test-recipe' }))
-      .toBe('/recipe/test-recipe/test-photo');
     expect(PATHS_TO_CACHE.some(path =>
       /^\/(shot-on|lens|focal)\//.test(path),
     )).toBe(false);

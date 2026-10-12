@@ -59,7 +59,6 @@ export const getWheresFromOptions = (
     camera,
     lens,
     film,
-    recipe,
     focal,
     photoIds,
   } = options;
@@ -126,10 +125,6 @@ export const getWheresFromOptions = (
   if (film) {
     wheres.push(`film=$${valuesIndex++}`);
     wheresValues.push(film);
-  }
-  if (recipe) {
-    wheres.push(`recipe_title=$${valuesIndex++}`);
-    wheresValues.push(recipe);
   }
   // Compare against undefined so focal lengths of 0 are filtered
   if (focal !== undefined) {

@@ -24,7 +24,6 @@ import {
 } from '@/auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { isPathProtected, PATH_ROOT } from '@/app/path';
-import { RecipeProps } from '@/recipe';
 import { nanoid } from 'nanoid';
 import { toastSuccess } from '@/toast';
 import { getCountsForCategoriesCachedAction } from '@/category/actions';
@@ -82,8 +81,6 @@ export default function AppStateProvider({
     useState<string>();
   const [shareModalProps, setShareModalProps] =
     useState<ShareModalProps>();
-  const [recipeModalProps, setRecipeModalProps] =
-    useState<RecipeProps>();
   // AUTH
   const [userEmail, setUserEmail] =
     useState<string>();
@@ -102,8 +99,6 @@ export default function AppStateProvider({
   const [shouldDebugImageFallbacks, setShouldDebugImageFallbacks] =
     useState(false);
   const [shouldShowBaselineGrid, setShouldShowBaselineGrid] =
-    useState(false);
-  const [shouldDebugRecipeOverlays, setShouldDebugRecipeOverlays] =
     useState(false);
 
   useEffect(() => {
@@ -230,8 +225,6 @@ export default function AppStateProvider({
         setNextCommandKQuery,
         shareModalProps,
         setShareModalProps,
-        recipeModalProps,
-        setRecipeModalProps,
         // AUTH
         isCheckingAuth,
         userEmail,
@@ -259,8 +252,6 @@ export default function AppStateProvider({
         setShouldDebugImageFallbacks,
         shouldShowBaselineGrid,
         setShouldShowBaselineGrid,
-        shouldDebugRecipeOverlays,
-        setShouldDebugRecipeOverlays,
       }}
     >
       {children}

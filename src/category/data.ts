@@ -27,7 +27,6 @@ export const NULL_CATEGORY_DATA: CategoryData = {
   years: [],
   cameras: [],
   lenses: [],
-  recipes: [],
   films: [],
   focalLengths: [],
   albums: [],
@@ -67,7 +66,6 @@ export const getDataForCategories = () => Promise.all([
   years: [],
   cameras: [],
   lenses: [],
-  recipes: [],
   films,
   focalLengths,
   albums,
@@ -92,7 +90,6 @@ export const getCountsForCategories = async (): Promise<CategoryCounts> => {
     }, {} as Record<string, number>),
     cameras: {},
     lenses: {},
-    recipes: {},
     films: films.reduce((acc, film) => {
       acc[film.film] = film.count;
       return acc;

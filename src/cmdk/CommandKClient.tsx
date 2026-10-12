@@ -17,7 +17,6 @@ import {
   PATH_ADMIN_BASELINE,
   PATH_ADMIN_COMPONENTS,
   PATH_ADMIN_PHOTOS,
-  PATH_ADMIN_RECIPES,
   PATH_ADMIN_ALBUMS,
   PATH_ADMIN_UPLOADS,
   PATH_FULL_INFERRED,
@@ -138,18 +137,15 @@ export default function CommandKClient({
     photosCountTotal,
     uploadsCount,
     albumsCount,
-    recipesCount,
     isGridHighDensity,
     areAdminDebugToolsEnabled,
     shouldShowBaselineGrid,
     shouldDebugImageFallbacks,
-    shouldDebugRecipeOverlays,
     setIsCommandKOpen: setIsOpen,
     setNextCommandKQuery,
     setShouldShowBaselineGrid,
     setIsGridHighDensity,
     setShouldDebugImageFallbacks,
-    setShouldDebugRecipeOverlays,
   } = useAppState();
 
   const { startUpload } = useUploadState();
@@ -368,11 +364,6 @@ export default function CommandKClient({
           setShouldShowBaselineGrid,
           shouldShowBaselineGrid,
         ),
-        renderToggle(
-          'Recipe Overlays',
-          setShouldDebugRecipeOverlays,
-          shouldDebugRecipeOverlays,
-        ),
       ],
     });
   }
@@ -435,13 +426,6 @@ export default function CommandKClient({
         label: `${appText.admin.manageAlbums} (${albumsCount})`,
         annotation: <IconLock narrow />,
         path: PATH_ADMIN_ALBUMS,
-      });
-    }
-    if (recipesCount) {
-      adminSection.items.push({
-        label: `${appText.admin.manageRecipes} (${recipesCount})`,
-        annotation: <IconLock narrow />,
-        path: PATH_ADMIN_RECIPES,
       });
     }
     adminSection.items.push({

@@ -11,7 +11,6 @@ import { getStorageUploadUrlsNoStore } from '@/platforms/storage/cache';
 import {
   getPhotosInNeedOfUpdateCountCached,
   getPhotosMetaCached,
-  getUniqueRecipesCached,
 } from '@/photo/cache';
 import { getAlbumsWithMetaCached } from '@/album/cache';
 import { revalidatePath } from 'next/cache';
@@ -31,7 +30,6 @@ export const getAdminDataAction = async () =>
       photosCountNeedSync,
       uploadsCount,
       albumsCount,
-      recipesCount,
     ] = await Promise.all([
       getPhotosMetaCached()
         .then(({ count }) => count)
@@ -46,9 +44,6 @@ export const getAdminDataAction = async () =>
       getAlbumsWithMetaCached()
         .then(albums => albums.length)
         .catch(() => 0),
-      getUniqueRecipesCached()
-        .then(recipes => recipes.length)
-        .catch(() => 0),
     ]);
 
     const photosCountTotal = photosCount;
@@ -59,7 +54,6 @@ export const getAdminDataAction = async () =>
       photosCountTotal,
       uploadsCount,
       albumsCount,
-      recipesCount,
     } as const;
   });
 

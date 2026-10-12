@@ -17,7 +17,6 @@ export default function PhotosLarge({
   camera,
   lens,
   album,
-  recipe,
   film,
   focal,
 }: {
@@ -53,7 +52,6 @@ export default function PhotosLarge({
           showCamera={!camera}
           showLens={!lens}
           showFilm={!film}
-          showRecipe={!recipe}
           shouldShareQuery={query !== undefined}
           shouldShareRecents={recent !== undefined}
           shouldShareYear={year !== undefined}
@@ -61,7 +59,6 @@ export default function PhotosLarge({
           shouldShareLens={lens !== undefined}
           shouldShareAlbum={album !== undefined}
           shouldShareFilm={film !== undefined}
-          shouldShareRecipe={recipe !== undefined}
           shouldShareFocalLength={focal !== undefined}
           onVisible={index === photos.length - 1
             ? onLastPhotoVisible

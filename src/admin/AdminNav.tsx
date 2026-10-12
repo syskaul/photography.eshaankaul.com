@@ -1,11 +1,9 @@
 import {
   getPhotosMostRecentUpdateCached,
-  getUniqueRecipesCached,
 } from '@/photo/cache';
 import {
   PATH_ADMIN_ALBUMS,
   PATH_ADMIN_PHOTOS,
-  PATH_ADMIN_RECIPES,
   PATH_ADMIN_UPLOADS,
 } from '@/app/path';
 import AdminNavClient from './AdminNavClient';
@@ -13,18 +11,11 @@ import { getAppText } from '@/i18n/state/server';
 import { HAS_DATABASE } from '@/app/config';
 
 export default async function AdminNav() {
-  let countRecipes = 0;
   let mostRecentPhotoUpdateTime;
 
   if (HAS_DATABASE) {
-    [
-      countRecipes,
-      mostRecentPhotoUpdateTime,
-    ] = await Promise.all([
-      getUniqueRecipesCached().then(recipes => recipes.length)
-        .catch(() => 0),
-      getPhotosMostRecentUpdateCached().catch(() => undefined),
-    ]);
+    mostRecentPhotoUpdateTime =
+      await getPhotosMostRecentUpdateCached().catch(() => undefined);
   }
 
   const appText = await getAppText();
@@ -46,12 +37,6 @@ export default async function AdminNav() {
     label: appText.category.albumPlural,
     href: PATH_ADMIN_ALBUMS,
   });
-
-  // Recipes
-  if (countRecipes > 0) { items.push({
-    label: appText.category.recipePlural,
-    href: PATH_ADMIN_RECIPES,
-  }); }
 
   return (
     <AdminNavClient {...{
