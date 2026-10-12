@@ -438,17 +438,28 @@ body {
   }
 }
 
+/*
+  Stable frosted glass: a neutral tint dense enough to hold contrast over
+  any backdrop, plus a dual light/dark hairline so the edge reads on both
+  bright and dark photos. No backdrop sampling or color switching.
+*/
 .liquid-glass {
+  --glass-fill: rgb(246 246 248 / 0.62);
+  --glass-fill-hover: rgb(250 250 252 / 0.74);
+  --glass-ring-outer: rgb(0 0 0 / 0.1);
+  --glass-ring-inner: rgb(255 255 255 / 0.55);
+  --glass-highlight: rgb(255 255 255 / 0.7);
+  --glass-shadow: rgb(0 0 0 / 0.12);
   border-radius: 9999px;
   border: 0;
-  background-color: rgb(255 255 255 / 0.3);
-  border-color: rgb(255 255 255 / 0.58);
-  -webkit-backdrop-filter: blur(14px) saturate(1.45);
-  backdrop-filter: blur(14px) saturate(1.45);
+  background-color: var(--glass-fill);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6) brightness(1.04);
+  backdrop-filter: blur(24px) saturate(1.6) brightness(1.04);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.72),
-    inset 0 -1px 0 rgb(15 23 42 / 0.06),
-    0 2px 8px rgb(15 23 42 / 0.1);
+    inset 0 0 0 1px var(--glass-ring-inner),
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 0 0.5px var(--glass-ring-outer),
+    0 4px 16px var(--glass-shadow);
   transition:
     color 160ms ease,
     background-color 160ms ease,
@@ -490,8 +501,8 @@ body {
 .viewer-container .viewer-button,
 .viewer-container .viewer-toolbar > ul > li {
   background-color: rgb(15 18 24 / 0.42);
-  -webkit-backdrop-filter: blur(14px) saturate(1.45);
-  backdrop-filter: blur(14px) saturate(1.45);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.6);
   border-radius: 9999px;
   overflow: visible;
   box-shadow:
@@ -517,34 +528,18 @@ body {
 }
 
 .dark .liquid-glass {
-  background-color: rgb(255 255 255 / 0.12);
-  border-color: rgb(255 255 255 / 0.24);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    inset 0 -1px 0 rgb(0 0 0 / 0.18),
-    0 2px 8px rgb(0 0 0 / 0.2);
+  --glass-fill: rgb(28 28 32 / 0.58);
+  --glass-fill-hover: rgb(44 44 50 / 0.68);
+  --glass-ring-outer: rgb(0 0 0 / 0.4);
+  --glass-ring-inner: rgb(255 255 255 / 0.12);
+  --glass-highlight: rgb(255 255 255 / 0.16);
+  --glass-shadow: rgb(0 0 0 / 0.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6) brightness(0.92);
+  backdrop-filter: blur(24px) saturate(1.6) brightness(0.92);
 }
 
 .liquid-glass:hover:not(:disabled) {
-  background-color: rgb(255 255 255 / 0.42);
-  border-color: rgb(255 255 255 / 0.76);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.82),
-    inset 0 -1px 0 rgb(15 23 42 / 0.07),
-    0 3px 12px rgb(15 23 42 / 0.14);
-}
-
-.dark .liquid-glass:hover:not(:disabled) {
-  background-color: rgb(255 255 255 / 0.18);
-  border-color: rgb(255 255 255 / 0.34);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.28),
-    inset 0 -1px 0 rgb(0 0 0 / 0.2),
-    0 3px 12px rgb(0 0 0 / 0.26);
-}
-
-.liquid-glass.liquid-glass-inactive {
-  background-color: rgb(15 23 42 / 0.06);
+  background-color: var(--glass-fill-hover);
 }
 
 .liquid-glass.liquid-glass-inactive svg,
@@ -553,45 +548,21 @@ body {
   opacity: 0.8;
 }
 
-.liquid-glass.liquid-glass-inactive:hover:not(:disabled) {
-  background-color: rgb(15 23 42 / 0.09);
-}
-
-.dark .liquid-glass.liquid-glass-inactive {
-  background-color: rgb(0 0 0 / 0.12);
-}
-
-.dark .liquid-glass.liquid-glass-inactive:hover:not(:disabled) {
-  background-color: rgb(0 0 0 / 0.18);
-}
-
 .liquid-glass.liquid-glass-selected,
 .liquid-glass.liquid-glass-selected:hover:not(:disabled) {
-  background-color: rgb(15 23 42 / 0.12);
+  --glass-fill: rgb(255 255 255 / 0.9);
+  --glass-fill-hover: rgb(255 255 255 / 0.9);
+  color: black;
 }
 
 .dark .liquid-glass.liquid-glass-selected,
 .dark .liquid-glass.liquid-glass-selected:hover:not(:disabled) {
-  background-color: rgb(255 255 255 / 0.04);
-}
-
-.liquid-glass[data-glass-backdrop="dark"],
-.liquid-glass[data-glass-backdrop="dark"]:hover:not(:disabled) {
-  background-color: rgb(255 255 255 / 0.12);
-}
-
-.liquid-glass.liquid-glass-selected[data-glass-backdrop="dark"],
-.liquid-glass.liquid-glass-selected[data-glass-backdrop="dark"]:hover:not(:disabled) {
+  --glass-fill: rgb(255 255 255 / 0.2);
+  --glass-fill-hover: rgb(255 255 255 / 0.2);
   color: white;
 }
 
-.liquid-glass.liquid-glass-selected[data-glass-backdrop="light"],
-.liquid-glass.liquid-glass-selected[data-glass-backdrop="light"]:hover:not(:disabled) {
-  color: black;
-  background-color: rgb(15 23 42 / 0.12);
-}
-
-.liquid-glass.liquid-glass-selected[data-glass-backdrop] svg {
+.liquid-glass.liquid-glass-selected svg {
   color: inherit;
 }
 

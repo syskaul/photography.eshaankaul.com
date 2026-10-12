@@ -38,7 +38,6 @@ import IconLibrary from '@/components/icons/IconLibrary';
 import { BiHomeAlt as HomeIcon } from 'react-icons/bi';
 import AppViewMenu from './AppViewMenu';
 import AppViewMenuCompact from './AppViewMenuCompact';
-import useAdaptiveGlass from '@/utility/useAdaptiveGlass';
 
 export default function AppToolbar({
   className,
@@ -69,8 +68,6 @@ export default function AppToolbar({
 
   const refHrefHome = useRef<HTMLAnchorElement>(null);
   const refHrefLibrary = useRef<HTMLAnchorElement>(null);
-  const refToolbar = useRef<HTMLDivElement>(null);
-  useAdaptiveGlass(refToolbar);
 
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
   const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
@@ -126,7 +123,7 @@ export default function AppToolbar({
     : isPhotoSetFull;
 
   return (
-    <div ref={refToolbar} className={clsx(
+    <div className={clsx(
       className,
       'flex',
       'gap-1.5 sm:gap-4',
