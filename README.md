@@ -497,6 +497,8 @@ Thank you ❤️ translators: [@sconetto](https://github.com/sconetto) (`pt-br`,
 #### Why don't my OG images load when I share a link?
 > Many services such as iMessage, Slack, and X, require near-instant responses when unfurling link-based content. In order to guarantee sufficient responsiveness, consider rendering pages and image assets ahead of time by enabling static optimization by setting `NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTOS = 1` and `NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTO_OG_IMAGES = 1`. Keep in mind that this will increase platform usage.
 
+OG image generation also requires `public/fonts/PaperMono-Regular.ttf`, converted from the bundled WOFF2 font. Keep this asset in the repository: Next.js `ImageResponse` does not support WOFF2, so the browser font alone cannot be used for OG images.
+
 #### Why do vertical images take up so much space?
 > Photo details display each image at its natural aspect ratio.
 
