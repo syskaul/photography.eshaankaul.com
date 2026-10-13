@@ -68,6 +68,13 @@ export default function TooltipPrimitive({
     classNameTriggerProp,
   );
 
+  const classNameExitTop = animateLarge
+    ? 'data-[state=closed]:data-[side=top]:animate-fade-out-to-bottom-large'
+    : 'data-[state=closed]:data-[side=top]:animate-fade-out-to-bottom';
+  const classNameExitBottom = animateLarge
+    ? 'data-[state=closed]:data-[side=bottom]:animate-fade-out-to-top-large'
+    : 'data-[state=closed]:data-[side=bottom]:animate-fade-out-to-top';
+
   return (
     <Tooltip.Provider {...{ delayDuration, skipDelayDuration }}>
       <Tooltip.Root
@@ -116,6 +123,9 @@ export default function TooltipPrimitive({
               animateLarge
                 ? 'data-[side=bottom]:animate-fade-in-from-top-large'
                 : 'data-[side=bottom]:animate-fade-in-from-top',
+              // Exit animations
+              classNameExitTop,
+              classNameExitBottom,
               // Extra collision padding
               'mx-2',
               // Z-index above

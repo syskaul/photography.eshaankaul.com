@@ -89,6 +89,28 @@ body {
     100% { opacity: 1; transform: translateY(0); }
   }
 
+  --animate-fade-out-to-top: fade-out-to-top 0.15s ease-in;
+  --animate-fade-out-to-top-large: fade-out-to-top-large 0.15s ease-in;
+  @keyframes fade-out-to-top {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+  }
+  @keyframes fade-out-to-top-large {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+  }
+
+  --animate-fade-out-to-bottom: fade-out-to-bottom 0.15s ease-in;
+  --animate-fade-out-to-bottom-large: fade-out-to-bottom-large 0.15s ease-in;
+  @keyframes fade-out-to-bottom {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(10px); }
+  }
+  @keyframes fade-out-to-bottom-large {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+  }
+
   --animate-rotate-pulse: rotate-pulse 0.75s linear infinite normal both running;
   @keyframes rotate-pulse {
     0% { transform: rotate(0deg) scale(1) }
