@@ -15,11 +15,13 @@ export default function PhotoImageResponse({
   width,
   height,
   fontFamily,
+  optimizedSuffix,
 }: {
   photo: Photo
   width: NextImageSize
   height: number
   fontFamily: string
+  optimizedSuffix?: 'md' | 'lg'
 }) {
   const caption = ogCaptionForPhoto(photo);
 
@@ -29,6 +31,7 @@ export default function PhotoImageResponse({
         photos: [photo],
         width,
         height,
+        optimizedSuffix,
         imagePosition: 'center',
       }} />
       {shouldShowExifDataForPhoto(photo) &&

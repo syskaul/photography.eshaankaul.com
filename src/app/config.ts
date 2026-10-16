@@ -71,7 +71,7 @@ export const VERCEL_BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
 // DOMAIN
 
-const SITE_DOMAIN = 'photos.eshaankaul.com';
+const SITE_DOMAIN = 'photography.eshaankaul.com';
 
 // Used primarily for absolute references such as OG images
 export const BASE_URL =

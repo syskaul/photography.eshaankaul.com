@@ -18,7 +18,11 @@ import CommandK from '@/cmdk/CommandK';
 import ShareModals from '@/share/ShareModals';
 import AdminUploadPanel from '@/admin/upload/AdminUploadPanel';
 import { revalidatePath } from 'next/cache';
-import { PATH_FEED_JSON, PATH_RSS_XML } from '@/app/path';
+import {
+  ABSOLUTE_PATH_META_PREVIEW_IMAGE,
+  PATH_FEED_JSON,
+  PATH_RSS_XML,
+} from '@/app/path';
 import AdminBatchEditPanel from '@/admin/select/AdminBatchEditPanel';
 import AdminEditTitlesPanel from '@/admin/edit-titles/AdminEditTitlesPanel';
 import '../tailwind.css';
@@ -30,6 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: META_TITLE,
     description: META_DESCRIPTION,
+    images: ABSOLUTE_PATH_META_PREVIEW_IMAGE,
   },
   twitter: {
     title: META_TITLE,

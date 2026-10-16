@@ -22,6 +22,7 @@ export const PATH_FULL_INFERRED = PATH_ROOT;
 // Modifiers
 const EDIT = 'edit';
 const IMAGE = 'image';
+const PHOTO_IMAGE_SMALL_PREVIEW_QUERY = '?preview=small';
 
 // Feeds
 export const PATH_SITEMAP               = '/sitemap.xml';
@@ -166,6 +167,9 @@ const pathForImage = (path: string) =>
 export const pathForPhotoImage = (photo: PhotoOrPhotoId) =>
   pathForImage(pathForPhoto({ photo }));
 
+export const pathForPhotoImageSmallPreview = (photo: PhotoOrPhotoId) =>
+  `${pathForPhotoImage(photo)}${PHOTO_IMAGE_SMALL_PREVIEW_QUERY}`;
+
 export const pathForQueryImage = (query: string) =>
   pathForImage(pathForQuery(query));
 
@@ -194,8 +198,8 @@ export const ABSOLUTE_PATH_FEED_JSON =
 export const ABSOLUTE_PATH_RSS_XML =
   `${getBaseUrl()}${PATH_RSS_XML}`;
 
-export const ABSOLUTE_PATH_HOME_IMAGE =
-  `${getBaseUrl()}/home-image`;
+export const ABSOLUTE_PATH_META_PREVIEW_IMAGE =
+  `${getBaseUrl()}/meta-preview.png`;
 
 export const absolutePathForPhoto = (
   params: PhotoPathParams,
@@ -223,6 +227,11 @@ export const absolutePathForRecents = (share?: boolean) =>
 
 export const absolutePathForPhotoImage = (photo: PhotoOrPhotoId) =>
   `${absolutePathForPhoto({ photo })}/${IMAGE}`;
+
+export const absolutePathForPhotoImageSmallPreview = (
+  photo: PhotoOrPhotoId,
+) =>
+  `${absolutePathForPhotoImage(photo)}${PHOTO_IMAGE_SMALL_PREVIEW_QUERY}`;
 
 export const absolutePathForQueryImage = (query: string) =>
   `${absolutePathForQuery(query)}/${IMAGE}`;

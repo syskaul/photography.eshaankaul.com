@@ -3,7 +3,7 @@ import { PhotoSetAttributes, PhotoSetCategory } from '@/category';
 import type { SocialKey } from '@/social';
 import {
   absolutePathForFilmImage,
-  absolutePathForPhotoImage,
+  absolutePathForPhotoImageSmallPreview,
   absolutePathForQueryImage,
   absolutePathForYearImage,
 } from '@/app/path';
@@ -25,7 +25,7 @@ export const getSharePathFromShareModalProps = ({
   year,
 }: ShareModalProps) => {
   if (photo) {
-    return absolutePathForPhotoImage(photo);
+    return absolutePathForPhotoImageSmallPreview(photo);
   } else if (query) {
     return absolutePathForQueryImage(query);
   } else if (film) {

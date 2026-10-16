@@ -25,6 +25,7 @@ export default async function ImagePhotoGrid({
   gap: gapProp = true,
   imageStyle,
   maxPhotos = PHOTOS_TO_SHOW_PER_CATEGORY,
+  optimizedSuffix: optimizedSuffixProp,
 }: ({
   photos: Photo[]
   height: number
@@ -32,15 +33,18 @@ export default async function ImagePhotoGrid({
   gap?: number | boolean
   imageStyle?: React.CSSProperties
   maxPhotos?: number
+  optimizedSuffix?: 'md' | 'lg'
 } & (
   { width: NextImageSize, widthArbitrary?: undefined } |
   { width?: undefined, widthArbitrary: number }
 ))) {
   const useLargeImages = Math.min(photos.length, maxPhotos) <= 2;
+  const optimizedSuffix =
+    optimizedSuffixProp ?? (useLargeImages ? 'lg' : 'md');
   const photoUrls = await getDataUrlsForPhotos(
     photos,
-    useLargeImages ? 'lg' : 'md',
-    useLargeImages ? width ?? 1080 : 640,
+    optimizedSuffix,
+    optimizedSuffix === 'lg' ? width ?? 1080 : 640,
     IS_PREVIEW,
   );
 

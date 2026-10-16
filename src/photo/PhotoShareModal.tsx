@@ -26,7 +26,7 @@ export default function PhotoShareModal(
       socialText="Check out this photo"
       onShareAction={onShareAction}
     >
-      <PhotoOGTile {...props} />
+      <PhotoOGTile {...props} smallPreview />
     </ShareModal>
   );
 }

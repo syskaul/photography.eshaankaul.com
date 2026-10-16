@@ -1,7 +1,7 @@
 import { formatFocalLength } from '@/focal';
 import { photoHasFilmData } from '@/film';
 import { SHOW_FILMS } from '@/app/config';
-import { ABSOLUTE_PATH_HOME_IMAGE } from '@/app/path';
+import { ABSOLUTE_PATH_META_PREVIEW_IMAGE } from '@/app/path';
 import { cameraFromPhoto, formatCameraText } from '@/camera';
 import { formatDate, formatDateFromPostgresString } from '@/utility/date';
 import {
@@ -173,11 +173,11 @@ export const generateOgImageMetaForPhotos = (photos: Photo[]): Metadata => {
   if (photos.length > 0) {
     return {
       openGraph: {
-        images: ABSOLUTE_PATH_HOME_IMAGE,
+        images: ABSOLUTE_PATH_META_PREVIEW_IMAGE,
       },
       twitter: {
         card: 'summary_large_image',
-        images: ABSOLUTE_PATH_HOME_IMAGE,
+        images: ABSOLUTE_PATH_META_PREVIEW_IMAGE,
       },
     };
   } else {
