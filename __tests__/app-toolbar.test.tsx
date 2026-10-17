@@ -5,17 +5,24 @@ import AppToolbar from '@/app/AppToolbar';
 import { AppStateContext, AppStateContextType } from '@/app/AppState';
 import AdminAppMenu from '@/admin/AdminAppMenu';
 import { SEARCH_ENABLED } from '@/app/config';
+import { usePathname } from 'next/navigation';
 
 jest.mock('@upstash/redis', () => ({ Redis: jest.fn() }));
 
 jest.mock('next/navigation', () => ({
-  usePathname: () => '/',
+  usePathname: jest.fn(() => '/'),
   useRouter: () => ({ push: jest.fn() }),
 }));
 
 jest.mock('@/i18n/state/client', () => ({
   useAppText: () => ({
-    nav: { home: 'Home', library: 'Library', search: 'Search', admin: 'Admin' },
+    nav: {
+      home: 'Home',
+      about: 'About Me',
+      library: 'Library',
+      search: 'Search',
+      admin: 'Admin',
+    },
   }),
 }));
 
@@ -29,7 +36,7 @@ jest.mock('@/admin/AdminAppMenu', () => ({
 
 jest.mock('@/app/AppViewMenu', () => ({
   __esModule: true,
-  default: () => null,
+  default: () => <button>Photo view options</button>,
 }));
 
 jest.mock('@/app/AppViewMenuCompact', () => ({
@@ -37,13 +44,53 @@ jest.mock('@/app/AppViewMenuCompact', () => ({
   default: () => null,
 }));
 
-const renderToolbar = (state: AppStateContextType = {}) => render(
+const renderToolbar = (
+  state: AppStateContextType = {},
+  isInEmptyState = true,
+) => render(
   <AppStateContext value={state}>
-    <AppToolbar animate={false} isInEmptyState />
+    <AppToolbar animate={false} isInEmptyState={isInEmptyState} />
   </AppStateContext>,
 );
 
 describe('navigation visibility', () => {
+  beforeEach(() => {
+    jest.mocked(usePathname).mockReturnValue('/');
+  });
+
+  it('places the person link directly after Home for all visitors', () => {
+    renderToolbar();
+
+    const home = screen.getByRole('link', { name: 'Home' });
+    const about = screen.getByRole('link', { name: 'About Me' });
+    expect(about).toHaveAttribute('href', '/about');
+    expect(screen.getAllByRole('link').slice(0, 2)).toEqual([home, about]);
+    expect(home).toHaveAttribute('aria-current', 'page');
+    expect(about).not.toHaveAttribute('aria-current');
+    expect(about.querySelector('svg')).toBeInTheDocument();
+  });
+
+  it('selects About instead of Home on the standalone page', () => {
+    jest.mocked(usePathname).mockReturnValue('/about');
+    renderToolbar();
+
+    expect(screen.getByRole('link', { name: 'About Me' }))
+      .toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: 'Home' }))
+      .not.toHaveAttribute('aria-current');
+  });
+
+  it.each([
+    ['/', false],
+    ['/about', true],
+  ])('sets hidden photo view controls inert on %s', (path, isInert) => {
+    jest.mocked(usePathname).mockReturnValue(path);
+    renderToolbar({}, false);
+
+    const controls = screen.getByText('Photo view options').parentElement;
+    expect(controls?.hasAttribute('inert')).toBe(isInert);
+  });
+
   it.each([{}, {
     isUserSignedIn: false,
     isUserSignedInEager: false,

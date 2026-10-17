@@ -101,6 +101,7 @@ export default function SwitcherItem({
       loader: <Spinner />,
     }}
     aria-label={ariaLabel ?? title}
+    aria-current={active ? 'page' : undefined}
     />
     : onClick
       ? <button

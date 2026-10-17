@@ -84,6 +84,16 @@ See FAQ for [limitations of local development](#can-i-work-locally-without-acces
 ### Content
 - The site domain, title, description, language, and navigation title are
   hardcoded in `src/app/config.ts`.
+- The person icon beside Home opens the standalone `/about` page. Update
+  `app/about/page.tsx` to replace the gray horizontal photo placeholder,
+  three-paragraph Lorem ipsum bio, and example photographer portfolio links.
+  On desktop, the photo spans columns 7-11 above text in columns 7-12; on mobile,
+  the page uses the full width. Contact uses an `sms:` link to open Messages
+  with `eshaankaul29@gmail.com` as the iMessage recipient on supported devices,
+  plus a `mailto:` link. Link labels show "Message" and "email", not the address.
+  About uses Home's shared scale-and-fade entrance animation, with the photo
+  and text appearing together on each visit. Reduced-motion preferences
+  disable this entrance.
 
 ### Analytics
 

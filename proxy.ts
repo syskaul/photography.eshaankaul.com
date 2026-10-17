@@ -40,11 +40,12 @@ export const config = {
   // - /grid
   // - /full
   // - /library
+  // - /about
   // - / (root)
   // - /home-image
   // - /template-image
   // - /template-image-tight
   // - /template-url
   // eslint-disable-next-line @stylistic/max-len
-  matcher: ['/((?!api$|api/auth|_next/static|_next/image|favicon.ico$|favicons/|grid$|full$|library$|home-image$|template-image$|template-image-tight$|template-url$|$).*)'],
+  matcher: ['/((?!api$|api/auth|_next/static|_next/image|favicon.ico$|favicons/|grid$|full$|library$|about$|home-image$|template-image$|template-image-tight$|template-url$|$).*)'],
 };

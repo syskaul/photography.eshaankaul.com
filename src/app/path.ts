@@ -7,6 +7,7 @@ import { AlbumOrAlbumSlug } from '@/album';
 
 // Core
 export const PATH_ROOT                  = '/';
+export const PATH_ABOUT                 = '/about';
 export const PATH_GRID                  = '/grid';
 export const PATH_FULL                  = '/full';
 export const PATH_LIBRARY               = '/library';

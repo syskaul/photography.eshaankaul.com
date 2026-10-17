@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { getDataForCategoriesCached } from '@/category/cache';
 import {
   ABSOLUTE_PATH_GRID,
+  PATH_ABOUT,
   absolutePathForAlbum,
   absolutePathForFilm,
   absolutePathForPhoto,
@@ -54,6 +55,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: ABSOLUTE_PATH_GRID,
       priority: PRIORITY_HOME_VIEW,
       lastModified: lastModifiedSite,
+    },
+    {
+      url: `${BASE_URL}${PATH_ABOUT}`,
+      priority: PRIORITY_CATEGORY,
     },
     // Recents
     ...recents.map(({ lastModified }) => ({

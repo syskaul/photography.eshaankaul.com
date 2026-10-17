@@ -3,6 +3,7 @@
 import Switcher from '@/components/switcher/Switcher';
 import SwitcherItem from '@/components/switcher/SwitcherItem';
 import {
+  PATH_ABOUT,
   PATH_LIBRARY,
   PATH_FULL_INFERRED,
   PATH_GRID_INFERRED,
@@ -35,7 +36,10 @@ import { KEY_COMMANDS } from '@/photo/key-commands';
 import { useAppText } from '@/i18n/state/client';
 import { motion } from 'framer-motion';
 import IconLibrary from '@/components/icons/IconLibrary';
-import { BiHomeAlt as HomeIcon } from 'react-icons/bi';
+import {
+  BiHomeAlt as HomeIcon,
+  BiUser as PersonIcon,
+} from 'react-icons/bi';
 import AppViewMenu from './AppViewMenu';
 import AppViewMenuCompact from './AppViewMenuCompact';
 
@@ -135,11 +139,20 @@ export default function AppToolbar({
           hrefRef={refHrefHome}
           active={isHome}
           translucent
-          className={clsx(
-            (SHOW_LIBRARY || SEARCH_ENABLED || hasAdminItem) &&
-              'liquid-glass-square-right',
-          )}
+          className="liquid-glass-square-right"
           tooltip={{ content: appText.nav.home }}
+        />
+        <SwitcherItem
+          icon={<PersonIcon size={17} />}
+          href={PATH_ABOUT}
+          active={pathname === PATH_ABOUT}
+          translucent
+          className={clsx(
+            SHOW_LIBRARY || SEARCH_ENABLED || hasAdminItem
+              ? 'liquid-glass-square liquid-glass-border-inline'
+              : 'liquid-glass-square-left liquid-glass-border-left',
+          )}
+          tooltip={{ content: appText.nav.about }}
         />
         {SHOW_LIBRARY &&
           <SwitcherItem
@@ -203,6 +216,7 @@ export default function AppToolbar({
       </Switcher>
       {!isInEmptyState &&
         <motion.div
+          inert={!showViewMenu}
           initial={animate ? { opacity: 0, width: 0 } : false}
           animate={{
             opacity: showViewMenu ? 1 : 0,
