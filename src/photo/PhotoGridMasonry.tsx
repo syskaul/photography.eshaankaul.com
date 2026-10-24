@@ -4,6 +4,8 @@ import { ReactNode, useState, useEffect } from 'react';
 import AnimateItems from '@/components/AnimateItems';
 import { DATA_KEY_PHOTO_GRID } from '@/admin/select/SelectPhotosProvider';
 import { Photo } from '.';
+import { clsx } from 'clsx/lite';
+import { PAGE_GRID_GAP_CLASSNAME } from '@/components';
 
 function useMasonryColumns(small?: boolean, isGridHighDensity?: boolean) {
   const [columns, setColumns] = useState(
@@ -20,9 +22,7 @@ function useMasonryColumns(small?: boolean, isGridHighDensity?: boolean) {
         else if (width >= 480) setColumns(4);
         else setColumns(2);
       } else {
-        if (width >= 1024) setColumns(4);
-        else if (width >= 768) setColumns(3);
-        else if (width >= 640) setColumns(4);
+        if (width >= 1024) setColumns(3);
         else setColumns(2);
       }
     };
@@ -63,6 +63,9 @@ export default function PhotoGridMasonry({
   onAnimationCompleteAction?: () => void;
 }) {
   const masonryColsCount = useMasonryColumns(small, isGridHighDensity);
+  const gapClassName = small || isGridHighDensity
+    ? 'gap-2'
+    : PAGE_GRID_GAP_CLASSNAME;
   const partitionedColumns = Array.from(
     { length: masonryColsCount },
     () => [] as ReactNode[],
@@ -102,11 +105,11 @@ export default function PhotoGridMasonry({
 
   return (
     <div {...{ [DATA_KEY_PHOTO_GRID]: selectable, className }}>
-      <div className="flex flex-row gap-2 items-start">
+      <div className={clsx('flex flex-row items-start', gapClassName)}>
         {partitionedColumns.map((colItems, i) => (
           <AnimateItems
             key={`col-${i}`}
-            className="flex flex-col flex-1 gap-2"
+            className={clsx('flex flex-col flex-1 min-w-0', gapClassName)}
             type={animate === false ? 'none' : undefined}
             canStart={canStart}
             duration={0.7}

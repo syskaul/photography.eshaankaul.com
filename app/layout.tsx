@@ -73,14 +73,10 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
       </head>
-      <body className={clsx(
-        // Center on large screens
-        '3xl:flex flex-col items-center',
-      )}>
+      <body>
         <StateProviders>
           <div data-app-shell="" className={clsx(
-            'mx-3',
-            'lg:mx-6',
+            'mx-4 md:mx-6 lg:mx-8',
             'min-h-dvh flex flex-col',
           )}>
             <Nav />

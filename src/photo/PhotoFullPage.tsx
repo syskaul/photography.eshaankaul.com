@@ -6,6 +6,7 @@ import {
 import PhotosLarge from './PhotosLarge';
 import PhotosLargeInfinite from './PhotosLargeInfinite';
 import { PATH_FULL_INFERRED } from '@/app/path';
+import { PAGE_GRID_SPACE_CLASSNAME } from '@/components';
 
 export default function PhotoFullPage({
   photos,
@@ -16,7 +17,7 @@ export default function PhotoFullPage({
 }) {
   const showStorageCheck = ADMIN_STORAGE_DEBUG_ENABLED;
   return (
-    <div className="space-y-4">
+    <div className={PAGE_GRID_SPACE_CLASSNAME}>
       <PhotosLarge {...{ photos, showStorageCheck }} />
       {photosCount > photos.length &&
         <PhotosLargeInfinite

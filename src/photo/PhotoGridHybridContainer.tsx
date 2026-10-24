@@ -8,7 +8,7 @@ import PhotosLargeInfinite from './PhotosLargeInfinite';
 import { clsx } from 'clsx/lite';
 import AnimateItems from '@/components/AnimateItems';
 import { ComponentProps, useCallback, useState, ReactNode } from 'react';
-import { GRID_SPACE_CLASSNAME } from '@/components';
+import { PAGE_GRID_SPACE_CLASSNAME } from '@/components';
 import { useAppState } from '@/app/AppState';
 import {
   INFINITE_SCROLL_FULL_INITIAL,
@@ -61,7 +61,7 @@ export default function PhotoGridHybridContainer({
         contentMain={renderHeader}
         mainFullWidth
       />
-      <div className="space-y-4">
+      <div className={PAGE_GRID_SPACE_CLASSNAME}>
         <PhotosLarge {...{ photos: photosFull, ...categories }} />
         {count > photosFull.length &&
           <PhotosLargeInfinite {...{
@@ -80,7 +80,7 @@ export default function PhotoGridHybridContainer({
         className,
       )}>
         {renderHeader}
-        <div className={GRID_SPACE_CLASSNAME}>
+        <div className={PAGE_GRID_SPACE_CLASSNAME}>
           {count <= photos.length && (
             <PhotoGrid {...{
               photos,

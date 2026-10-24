@@ -3,6 +3,8 @@ import AppGrid from '@/components/AppGrid';
 import AnimateItems from '@/components/AnimateItems';
 import { META_TITLE } from '@/app/config';
 import { PATH_ABOUT } from '@/app/path';
+import { PAGE_GRID_GAP_CLASSNAME } from '@/components';
+import { clsx } from 'clsx/lite';
 
 const title = `About - ${META_TITLE}`;
 const description = 'Eshaan Kaul is a photographer of Kashmiri descent based ' +
@@ -22,12 +24,12 @@ export default function AboutPage() {
     <AppGrid
       key="about-page"
       mainFullWidth
-      classNameMain="grid grid-cols-1 gap-3 md:grid-cols-12 md:gap-4"
       contentMain={
-        <article className={
-          'grid grid-cols-1 items-start gap-y-8 pb-8 md:col-span-12 ' +
-          'md:mx-8 md:mt-10 md:grid-cols-12 md:gap-x-8 md:pb-16 lg:mx-16'
-        }>
+        <article className={clsx(
+          'grid grid-cols-1 items-start pb-8',
+          'md:grid-cols-12 md:pb-16',
+          PAGE_GRID_GAP_CLASSNAME,
+        )}>
           <AnimateItems
             type="scale"
             duration={0.7}

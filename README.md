@@ -18,6 +18,7 @@ Personal photography website of Eshaan Kaul.
 <img src="/readme/og-image-share.png" alt="OG Image Preview" width=600 />
 
 The site uses a white appearance throughout. Share modals use the same liquid-glass treatment as controls and toast notifications, over a black backdrop at 80% opacity.
+Home, About, Grid, and Full share gutters and outer margins of 16px (mobile), 24px (from 768px), and 32px (from 1024px). The toolbar has matching top and bottom padding, so the space above page content matches the gutters. Pages fill the available width without a fixed width cap. The underlying desktop page grid has 12 tracks: Home and Full use nine for photos and three for metadata; About uses four for the portrait and eight for text, without extra side or top insets. Full-width photo grids use two columns below 1024px and three columns on desktop. Photo rows use the same responsive spacing. Photos keep their natural proportions; compact thumbnail grids and high-density mode retain their tighter layouts.
 Toolbar glass adapts to the content beneath each control as photos scroll behind it: dark backdrops use a white tint and white selected icons; light backdrops keep dark selected icons. Inactive icons remain muted.
 Camera, lens, and focal-length metadata are display-only. Their dedicated collection, photo, and OG image routes have been removed; these categories are not linked in the library, CMD-K menu, or sitemap. Film routes remain available.
 Recipes have been removed, including photo overlays, detail/share modals, admin fields and management, EXIF extraction, and public/admin routes. Film simulations and other camera metadata remain supported. New databases contain no recipe columns. For an existing database, back it up and run `src/db/migrations/remove-recipes.sql` after deploying this version to permanently drop the old recipe columns. This destructive migration is explicit and does not run automatically.
@@ -85,15 +86,12 @@ See FAQ for [limitations of local development](#can-i-work-locally-without-acces
 - The site domain, title, description, language, and navigation title are
   hardcoded in `src/app/config.ts`.
 - The person icon beside Home opens the standalone `/about` page. Update
-  `app/about/page.tsx` to replace the gray horizontal photo placeholder,
-  three-paragraph Lorem ipsum bio, and example photographer portfolio links.
-  On desktop, the photo spans columns 7-11 above text in columns 7-12; on mobile,
-  the page uses the full width. Contact uses an `sms:` link to open Messages
-  with `eshaankaul29@gmail.com` as the iMessage recipient on supported devices,
-  plus a `mailto:` link. Link labels show "Message" and "email", not the address.
-  About uses Home's shared scale-and-fade entrance animation, with the photo
-  and text appearing together on each visit. Reduced-motion preferences
-  disable this entrance.
+  `app/about/page.tsx` to change the gray portrait placeholder, biography,
+  and photographer portfolio links. On desktop, the portrait spans the
+  first four tracks and the text spans the remaining eight; on mobile,
+  they stack at full width. Contact displays an email address with a `mailto:`
+  link. The portrait uses Home's shared scale-and-fade entrance animation.
+  Reduced-motion preferences disable this entrance.
 
 ### Analytics
 

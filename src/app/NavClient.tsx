@@ -16,8 +16,6 @@ import { useRef } from 'react';
 import useStickyHeader from './useStickyHeader';
 import { useAppState } from '@/app/AppState';
 
-const NAV_HEIGHT_CLASS = 'min-h-[4rem]';
-
 export default function NavClient({
   navTitle,
   isInEmptyState,
@@ -71,7 +69,7 @@ export default function NavClient({
               key="nav"
               className={clsx(
                 'w-full flex items-center gap-1.5 sm:gap-2 relative',
-                NAV_HEIGHT_CLASS,
+                'py-4 md:py-6 lg:py-8',
                 // Enlarge nav to ensure it fully masks underlying content
                 'md:w-[calc(100%+8px)] md:translate-x-[-4px] md:px-[4px]',
                 contentClassName,

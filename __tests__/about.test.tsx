@@ -68,24 +68,26 @@ describe('About page', () => {
 
     const article = screen.getByRole('article');
     expect(article.parentElement).toHaveClass('md:col-span-12');
-    expect(article.parentElement).toHaveClass('md:grid-cols-12', 'md:gap-4');
-    expect(article).toHaveClass('md:col-span-12', 'items-start');
+    expect(article).toHaveClass('items-start');
     const photo = screen.getByRole('img', { name: 'Photo placeholder' });
     const portrait = article.firstElementChild;
     expect(portrait).toContainElement(photo);
     expect(portrait).toHaveClass('md:col-span-4');
-    expect(article).toHaveClass('md:grid-cols-12', 'md:gap-x-8');
+    expect(article).toHaveClass(
+      'md:grid-cols-12', 'gap-4', 'md:gap-6', 'lg:gap-8',
+    );
+    expect(article.className).not.toMatch(/(?:^|\s)(?:md:|lg:)?mx-/);
     expect(photo).toHaveClass('aspect-[3/4]', 'w-full');
     expect(portrait?.nextElementSibling)
       .toHaveClass('md:col-span-8', 'md:col-start-5');
   });
 
-  it('adds desktop whitespace without extra mobile top spacing', () => {
+  it('uses the shared header spacing without extra top margins', () => {
     render(<AboutPage />);
 
     const article = screen.getByRole('article');
-    expect(article).toHaveClass('md:mt-10');
-    expect(article.className).not.toMatch(/(?:^|\s)(?:pt|py|mt|my)-/);
+    expect(article.className)
+      .not.toMatch(/(?:^|\s)(?:(?:md|lg):)?(?:pt|py|mt|my)-/);
   });
 
   it('uses About-specific metadata and a canonical route', () => {

@@ -3,6 +3,7 @@ import { Photo } from '.';
 import PhotoLarge from './PhotoLarge';
 import { RevalidatePhoto } from './InfinitePhotoScroll';
 import { PhotoSetCategory } from '../category';
+import { PAGE_GRID_SPACE_CLASSNAME } from '@/components';
 
 export default function PhotosLarge({
   photos,
@@ -29,7 +30,7 @@ export default function PhotosLarge({
 } & PhotoSetCategory) {
   return (
     <AnimateItems
-      className="space-y-4"
+      className={PAGE_GRID_SPACE_CLASSNAME}
       type={animate ? 'scale' : 'none'}
       duration={0.7}
       staggerDelay={0.15}
