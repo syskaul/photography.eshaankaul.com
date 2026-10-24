@@ -37,7 +37,7 @@ export const TEXT = {
   },
   nav: {
     home: 'Home',
-    about: 'About Me',
+    about: 'About',
     full: 'Full',
     grid: 'Grid',
     viewOptions: 'View Options',

@@ -18,7 +18,7 @@ jest.mock('@/i18n/state/client', () => ({
   useAppText: () => ({
     nav: {
       home: 'Home',
-      about: 'About Me',
+      about: 'About',
       library: 'Library',
       search: 'Search',
       admin: 'Admin',
@@ -62,7 +62,7 @@ describe('navigation visibility', () => {
     renderToolbar();
 
     const home = screen.getByRole('link', { name: 'Home' });
-    const about = screen.getByRole('link', { name: 'About Me' });
+    const about = screen.getByRole('link', { name: 'About' });
     expect(about).toHaveAttribute('href', '/about');
     expect(screen.getAllByRole('link').slice(0, 2)).toEqual([home, about]);
     expect(home).toHaveAttribute('aria-current', 'page');
@@ -74,7 +74,7 @@ describe('navigation visibility', () => {
     jest.mocked(usePathname).mockReturnValue('/about');
     renderToolbar();
 
-    expect(screen.getByRole('link', { name: 'About Me' }))
+    expect(screen.getByRole('link', { name: 'About' }))
       .toHaveAttribute('aria-current', 'page');
     expect(screen.getByRole('link', { name: 'Home' }))
       .not.toHaveAttribute('aria-current');
