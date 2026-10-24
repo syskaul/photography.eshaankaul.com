@@ -100,26 +100,57 @@ See FAQ for [limitations of local development](#can-i-work-locally-without-acces
 Set `NEXT_PUBLIC_MIXPANEL_TOKEN` to the project token in `.env.local` for local
 development and in the deployment environment for production. The token is a
 public project identifier used by the browser SDK; do not hardcode it in
-source files. This setup uses the same Mixpanel project in every environment,
-so development and production events will be mixed.
+source files. Set it **before building**, then rebuild/redeploy when changing
+it: Next.js embeds public environment variables in the browser bundle.
+Without a token, tracking is disabled. Use separate Mixpanel projects/tokens
+for development and production to keep test traffic out of production reports.
+Each event includes `platform: web` and `environment` (the Vercel environment
+when available, otherwise `NODE_ENV`).
 
-Mixpanel tracks automatically, except in regions where consent would be
-required (detected by browser timezone: Europe and EU/EEA territories), where
-nothing is tracked. There is no consent UI. The implementation records:
+Tracking starts automatically under the site owner's confirmed policy that
+consent is not required for its audience. There is no consent UI or timezone
+geofencing; browser timezone is not a reliable consent/region signal. If that
+policy or audience changes, gate SDK initialization and event collection on
+explicit consent before enabling tracking.
 
-- `photo_detail_viewed`: `photo_id`, optional `photo_title`, and
-  `view_context`
-- `photo_share_action`: `photo_id`, optional `photo_title`, and `share_method`
+The tracking plan uses existing snake_case names and string properties:
+
+| Event | Trigger | Properties |
+| --- | --- | --- |
+| `photo_detail_viewed` | Public photo detail is displayed, once per photo/context transition | `photo_id`, `photo_title`, `view_context` (`photo`, `search`, `recent`, `year`, `album`, `film`) |
+| `photo_share_action` | Visitor chooses a share action | `photo_id`, `photo_title`, `share_method` (`copy_link`, `native`, or social network key) |
+| `photo_download` | Visitor requests a download | `photo_id`, `photo_title`, `download_method` (`button` or `keyboard`) |
+
+An untitled photo sends an empty `photo_title`. Share and download events
+measure **intent**, not successful delivery: native sharing can be canceled,
+clipboard access can fail, and a file transfer may not complete. Events
+triggered while the SDK loads are queued and sent once initialization finishes.
 
 Automatic page tracking and autocapture are disabled. Events use a
 pseudonymous browser identifier; URL/referrer/UTM and browser/device/screen
-properties are excluded, and IP-based geolocation is disabled. Private-photo
-views, admin activity, and camera/exposure/location metadata are not tracked.
+properties are excluded, IP-based geolocation and session recording are
+disabled. Tracking calls are suppressed while auth is loading, for signed-in
+administrators, and on protected/sign-in routes. Camera/exposure/location
+metadata is not tracked. This public portfolio has no visitor signup/login,
+so no signup events, `identify`, user profiles, groups, or email collection are
+added. Admin authentication is deliberately excluded from visitor analytics.
 
-Before first use, verify the project uses the
-Simplified API and the `America/New_York` reporting timezone in Mixpanel
-Project Settings. After deploying, confirm both events in
-Mixpanel Live View.
+After deploying, verify the project token, data residency, Simplified ID Merge,
+and reporting timezone in Mixpanel Project Settings. In Live View, filter by
+`environment` and test in a signed-out browser:
+
+1. Open a photo: confirm one `photo_detail_viewed` with the expected ID/context.
+2. Copy/share it: confirm `photo_share_action` and its chosen method.
+3. Download using the button and keyboard: confirm `photo_download` with
+   `button` and `keyboard` respectively.
+4. Navigate to a different photo and back: confirm a new view for each visit,
+   without duplicate views on rerenders.
+5. Sign in as admin and repeat: confirm no new visitor events.
+
+Use the view-to-share and view-to-download funnels and unique sharing/downloading
+visitors to measure the site's value moment. Mixpanel project access is needed
+to configure dashboards, retention/access policies, and verify Live View;
+automated tests alone do not prove ingestion into the intended project.
 
 ### Performance
 > ⚠️ Enabling may result in increased project usage. See FAQ for static optimization [troubleshooting hints](#why-do-production-deployments-fail-when-static-optimization-is-enabled).

@@ -14,16 +14,17 @@ describe('About page', () => {
     jest.mocked(usePrefersReducedMotion).mockReturnValue(false);
   });
 
-  it('renders the photo and placeholder biography', () => {
+  it('renders the portrait and updated biography', () => {
     render(<AboutPage />);
 
-    expect(screen.getByRole('heading', { level: 1, name: 'About' }))
+    expect(screen.getByRole('heading', { level: 1, name: 'Eshaan Kaul' }))
       .toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'Photo placeholder' }))
       .toHaveClass('bg-gray-200');
-    const biography = screen.getByRole('region', { name: 'About' });
-    expect(biography.querySelectorAll('p')).toHaveLength(3);
-    expect(screen.getByText(/Lorem ipsum dolor sit amet/)).toBeInTheDocument();
+    expect(screen.getByText(/photographs the built and organized world/))
+      .toBeInTheDocument();
+    expect(screen.getByText(/Canon 550D since 2010/)).toBeInTheDocument();
+    expect(screen.queryByText(/Lorem ipsum/)).not.toBeInTheDocument();
   });
 
   it('links to photographer portfolios', () => {
@@ -33,51 +34,49 @@ describe('About page', () => {
       .toHaveAttribute('href', 'https://rinkokawauchi.com/');
     expect(screen.getByRole('link', { name: 'Steve McCurry' }))
       .toHaveAttribute('href', 'https://www.stevemccurry.com/');
-    screen.getAllByRole('link').forEach(link => {
+    expect(screen.getByRole('link', { name: 'Sasha Arutyunova' }))
+      .toHaveAttribute('href', 'https://www.sashaarutyunova.com/');
+    expect(screen.getByRole('link', { name: 'Rob Stephenson' }))
+      .toHaveAttribute('href', 'https://www.robstephenson.com/');
+    screen.getAllByRole('link').filter(link =>
+      link.getAttribute('target') === '_blank',
+    ).forEach(link => {
       expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     });
   });
 
-  it('links iMessage and email without displaying the address', () => {
+  it('places the visible email contact above the biography', () => {
     render(<AboutPage />);
 
-    const contact = screen.getByRole('link', {
-      name: 'Message',
-    });
-    expect(contact).toHaveAttribute('href', 'sms:eshaankaul29@gmail.com');
-    expect(contact).not.toHaveAttribute('target');
-    expect(screen.getByRole('link', { name: 'e-mail' }))
+    const contact = screen.getByRole('region', { name: 'Contact' });
+    expect(screen.getByRole('link', { name: 'eshaankaul29@gmail.com' }))
       .toHaveAttribute('href', 'mailto:eshaankaul29@gmail.com');
-    expect(screen.queryByText(/eshaankaul29@gmail\.com/))
-      .not.toBeInTheDocument();
-    expect(screen.queryByText(/Telegram/)).not.toBeInTheDocument();
-    expect(screen.getByRole('region', { name: 'Contact Me' }))
-      .toHaveTextContent(
-        'Questions about a photo? Want to work together? I shoot ' +
-        'commissions, documentary projects, and more. Message or e-mail me.',
-      );
+    expect(contact.nextElementSibling).toHaveTextContent(
+      'Eshaan Kaul photographs the built and organized world',
+    );
   });
 
-  it('places a horizontal photo above About in the right six columns', () => {
+  it('places a portrait left of the wider text column', () => {
     render(<AboutPage />);
 
     const article = screen.getByRole('article');
     expect(article.parentElement).toHaveClass('md:col-span-12');
     expect(article.parentElement).toHaveClass('md:grid-cols-12', 'md:gap-4');
-    expect(article).toHaveClass('md:col-span-6', 'md:col-start-7');
-    expect(article.className).not.toMatch(/max-w-|(?:^|:|\s)px-/);
+    expect(article).toHaveClass('md:col-span-12', 'items-start');
     const photo = screen.getByRole('img', { name: 'Photo placeholder' });
     expect(article.firstElementChild).toBe(photo);
-    expect(article).toHaveClass('md:grid-cols-6', 'md:gap-x-4');
-    expect(photo).toHaveClass('aspect-3/1', 'w-full', 'md:col-span-6');
-    expect(photo.nextElementSibling).toHaveClass('md:col-span-6');
+    expect(article).toHaveClass('md:grid-cols-12', 'md:gap-x-8');
+    expect(photo).toHaveClass('aspect-[3/4]', 'w-full', 'md:col-span-4');
+    expect(photo.nextElementSibling)
+      .toHaveClass('md:col-span-8', 'md:col-start-5');
   });
 
-  it('inherits the shared top spacing without extra top padding', () => {
+  it('adds desktop whitespace without extra mobile top spacing', () => {
     render(<AboutPage />);
 
     const article = screen.getByRole('article');
-    expect(article.className).not.toMatch(/(?:^|:|\s)(?:pt|py|mt|my)-/);
+    expect(article).toHaveClass('md:mt-10');
+    expect(article.className).not.toMatch(/(?:^|\s)(?:pt|py|mt|my)-/);
   });
 
   it('uses About-specific metadata and a canonical route', () => {
