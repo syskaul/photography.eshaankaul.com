@@ -16,6 +16,7 @@ export default function useImageZoomControls({
   refImageContainer,
   selectImageElement,
   isEnabled,
+  onOpen,
 } : {
   refImageContainer: RefObject<HTMLElement | null>
 } & Omit<ComponentProps<typeof ZoomControls>, 'ref' | 'children'>) {
@@ -86,6 +87,9 @@ export default function useImageZoomControls({
             setShouldRespondToKeyboardCommands?.(false);
             setColorLight('#000');
           },
+          shown: () => {
+            onOpen?.();
+          },
           hide: () => {
             // Optimizes Safari status bar animation
             setTimeout(() => setColorLight(undefined), 300);
@@ -109,6 +113,7 @@ export default function useImageZoomControls({
     refImageContainer,
     selectImageElement,
     setShouldRespondToKeyboardCommands,
+    onOpen,
   ]);
 
   return {

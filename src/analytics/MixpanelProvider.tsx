@@ -21,7 +21,27 @@ interface PhotoEventProperties {
 }
 
 interface MixpanelEvents {
+  page_viewed: {
+    page_path: string
+    page_type: string
+    previous_page_path: string
+    is_entry: boolean
+  }
+  navigation_clicked: {
+    page_path: string
+    destination_path: string
+    destination_type: string
+  }
+  contact_clicked: {
+    page_path: string
+    contact_method: 'email' | 'sms' | 'phone'
+  }
+  external_link_clicked: {
+    page_path: string
+    destination_domain: string
+  }
   photo_detail_viewed: PhotoEventProperties & { view_context: string }
+  photo_zoom_opened: PhotoEventProperties
   photo_share_action: PhotoEventProperties & { share_method: ShareMethod }
   photo_download: PhotoEventProperties & {
     download_method: 'button' | 'keyboard'

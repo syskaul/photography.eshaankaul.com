@@ -19,6 +19,7 @@ export default function ZoomControls({
   selectImageElement?: (container: HTMLElement | null) =>
     HTMLImageElement | null
   isEnabled?: boolean
+  onOpen?: () => void
 }) {
   const refImageContainer = useRef<HTMLDivElement>(null);
 

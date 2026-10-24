@@ -113,11 +113,17 @@ geofencing; browser timezone is not a reliable consent/region signal. If that
 policy or audience changes, gate SDK initialization and event collection on
 explicit consent before enabling tracking.
 
-The tracking plan uses existing snake_case names and string properties:
+The tracking plan uses snake_case names and string properties, except the
+boolean `is_entry`:
 
 | Event | Trigger | Properties |
 | --- | --- | --- |
+| `page_viewed` | Initial public page load and every pathname transition, including Home/About and browser back/forward | `page_path`, `page_type`, `previous_page_path`, `is_entry` |
+| `navigation_clicked` | Internal link to a different public pathname (including photo tiles, next/previous, gallery modes, and category links) | `page_path`, `destination_path`, `destination_type` |
+| `contact_clicked` | Email, SMS, or phone link activation | `page_path`, `contact_method` (`email`, `sms`, `phone`) |
+| `external_link_clicked` | External HTTP(S) link activation | `page_path`, `destination_domain` |
 | `photo_detail_viewed` | Public photo detail is displayed, once per photo/context transition | `photo_id`, `photo_title`, `view_context` (`photo`, `search`, `recent`, `year`, `album`, `film`) |
+| `photo_zoom_opened` | Photo viewer finishes opening, via image click or zoom control | `photo_id`, `photo_title` |
 | `photo_share_action` | Visitor chooses a share action | `photo_id`, `photo_title`, `share_method` (`copy_link`, `native`, or social network key) |
 | `photo_download` | Visitor requests a download | `photo_id`, `photo_title`, `download_method` (`button` or `keyboard`) |
 
@@ -126,10 +132,20 @@ measure **intent**, not successful delivery: native sharing can be canceled,
 clipboard access can fail, and a file transfer may not complete. Events
 triggered while the SDK loads are queued and sent once initialization finishes.
 
-Automatic page tracking and autocapture are disabled. Events use a
-pseudonymous browser identifier; URL/referrer/UTM and browser/device/screen
-properties are excluded, IP-based geolocation and session recording are
-disabled. Tracking calls are suppressed while auth is loading, for signed-in
+Pageviews are explicitly tracked through the Next.js router to respect the
+same admin exclusions as other events; SDK automatic page tracking and
+autocapture remain disabled. `is_entry` marks the first tracked page in the
+current app mount, not a separate session metric. Rerenders, query-string
+changes, and hash changes do not create extra pageviews. Link events measure
+intent; a navigation may be canceled or open another tab. Search text in `/q/`
+paths is replaced with `[query]`; unrecognized routes use `/[other]`.
+No query strings, hashes, link text, contact addresses, phone numbers, external
+URL paths, or form contents are collected by these events.
+
+Events use a pseudonymous browser identifier; default URL/referrer/UTM and
+browser/device/screen properties are excluded, IP-based geolocation and
+session recording are disabled. Tracking calls are suppressed while auth is
+loading, for signed-in
 administrators, and on protected/sign-in routes. Camera/exposure/location
 metadata is not tracked. This public portfolio has no visitor signup/login,
 so no signup events, `identify`, user profiles, groups, or email collection are
@@ -139,13 +155,19 @@ After deploying, verify the project token, data residency, Simplified ID Merge,
 and reporting timezone in Mixpanel Project Settings. In Live View, filter by
 `environment` and test in a signed-out browser:
 
-1. Open a photo: confirm one `photo_detail_viewed` with the expected ID/context.
-2. Copy/share it: confirm `photo_share_action` and its chosen method.
-3. Download using the button and keyboard: confirm `photo_download` with
+1. Open Home, navigate to About, and use browser back/forward: confirm one
+   `page_viewed` per transition with the expected previous page. Internal link
+   activation also records `navigation_clicked`.
+2. Click an About contact or inspiration link: confirm `contact_clicked` or
+   `external_link_clicked` without the email address or full external URL.
+3. Open a photo: confirm `page_viewed` and one `photo_detail_viewed` with the
+   expected ID/context. Zoom it: confirm `photo_zoom_opened`.
+4. Copy/share it: confirm `photo_share_action` and its chosen method.
+5. Download using the button and keyboard: confirm `photo_download` with
    `button` and `keyboard` respectively.
-4. Navigate to a different photo and back: confirm a new view for each visit,
+6. Navigate to a different photo and back: confirm a new view for each visit,
    without duplicate views on rerenders.
-5. Sign in as admin and repeat: confirm no new visitor events.
+7. Sign in as admin and repeat: confirm no new visitor events.
 
 Use the view-to-share and view-to-download funnels and unique sharing/downloading
 visitors to measure the site's value moment. Mixpanel project access is needed

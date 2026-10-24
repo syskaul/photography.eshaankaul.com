@@ -43,6 +43,7 @@ import { useEditTitlesState } from '@/admin/edit-titles/EditTitlesState';
 import { DATA_KEY_PHOTO_LARGE } from '@/admin/edit-titles/EditTitlesProvider';
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
 import PlaceEntity from '@/place/PlaceEntity';
+import { useMixpanel } from '@/analytics/MixpanelProvider';
 
 export default function PhotoLarge({
   photo,
@@ -120,6 +121,13 @@ export default function PhotoLarge({
   } = useEditTitlesState();
 
   const appText = useAppText();
+  const { track } = useMixpanel();
+  const onZoomOpen = useCallback(() => {
+    track('photo_zoom_opened', {
+      photo_id: photo.id,
+      photo_title: photo.title ?? '',
+    });
+  }, [photo.id, photo.title, track]);
 
   const photoEditOriginal = useMemo(() => ({
     title: photo.title ?? '',
@@ -183,6 +191,7 @@ export default function PhotoLarge({
       <ZoomControls
         ref={refZoomControls}
         selectImageElement={selectZoomImageElement}
+        onOpen={onZoomOpen}
         {...{ isEnabled: true, shouldZoomOnFKeydown }}
       >
         <ImageLarge
