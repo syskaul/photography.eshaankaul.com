@@ -17,13 +17,20 @@ describe('About page', () => {
   it('renders the portrait and updated biography', () => {
     render(<AboutPage />);
 
+    expect(screen.queryByRole('heading', { name: 'A way of seeing' }))
+      .not.toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1, name: 'Eshaan Kaul' }))
       .toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'Photo placeholder' }))
       .toHaveClass('bg-gray-200');
     expect(screen.getByText(/photographs the built and organized world/))
       .toBeInTheDocument();
-    expect(screen.getByText(/Canon 550D since 2010/)).toBeInTheDocument();
+    expect(screen.getByText(
+      /began photographing with a Canon 550D in 2010, which he still owns/,
+    )).toBeInTheDocument();
+    expect(screen.getByText(
+      /Fujifilm X100V and, just as often, his iPhone/,
+    )).toBeInTheDocument();
     expect(screen.queryByText(/Lorem ipsum/)).not.toBeInTheDocument();
   });
 
@@ -64,10 +71,12 @@ describe('About page', () => {
     expect(article.parentElement).toHaveClass('md:grid-cols-12', 'md:gap-4');
     expect(article).toHaveClass('md:col-span-12', 'items-start');
     const photo = screen.getByRole('img', { name: 'Photo placeholder' });
-    expect(article.firstElementChild).toBe(photo);
+    const portrait = article.firstElementChild;
+    expect(portrait).toContainElement(photo);
+    expect(portrait).toHaveClass('md:col-span-4');
     expect(article).toHaveClass('md:grid-cols-12', 'md:gap-x-8');
-    expect(photo).toHaveClass('aspect-[3/4]', 'w-full', 'md:col-span-4');
-    expect(photo.nextElementSibling)
+    expect(photo).toHaveClass('aspect-[3/4]', 'w-full');
+    expect(portrait?.nextElementSibling)
       .toHaveClass('md:col-span-8', 'md:col-start-5');
   });
 
@@ -85,24 +94,25 @@ describe('About page', () => {
     expect(metadata.openGraph).toMatchObject({ url: '/about' });
   });
 
-  it('reveals the page using the shared scale animation', () => {
+  it('animates only the portrait using the shared scale animation', () => {
     const { container } = render(<AboutPage />);
 
-    const animatedPage = container.firstElementChild?.firstElementChild;
-    expect(animatedPage).toHaveStyle({
+    const photo = screen.getByRole('img', { name: 'Photo placeholder' });
+    expect(photo.parentElement).toHaveStyle({
       opacity: '0',
       transform: 'translateY(0px) scale(0.9)',
     });
-    expect(animatedPage).toContainElement(screen.getByRole('article'));
+    expect(screen.getByRole('article')).not.toHaveStyle({ opacity: '0' });
+    expect(container).not.toHaveStyle({ opacity: '0' });
   });
 
   it('renders immediately when reduced motion is preferred', () => {
     jest.mocked(usePrefersReducedMotion).mockReturnValue(true);
-    const { container } = render(<AboutPage />);
+    render(<AboutPage />);
 
-    const animatedPage = container.firstElementChild?.firstElementChild;
-    expect(animatedPage).not.toHaveStyle({ opacity: '0' });
-    expect(animatedPage).not.toHaveStyle({
+    const photo = screen.getByRole('img', { name: 'Photo placeholder' });
+    expect(photo.parentElement).not.toHaveStyle({ opacity: '0' });
+    expect(photo.parentElement).not.toHaveStyle({
       transform: 'translateY(0px) scale(0.9)',
     });
   });
